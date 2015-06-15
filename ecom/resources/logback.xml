@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration scan="true" scanPeriod="300 seconds">
 
-	<property name="PREFIX_HOME" value="C:\\logs\\Ecom"/>
+	<property name="PREFIX_HOME" value="C:\\logs\\Ecom\\"/>
 
 	<appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT">
 		<encoder>
@@ -10,13 +10,13 @@
 	</appender>
 
 	<appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="FILE">
-		<file>${PREFIX_HOME}\\ECom.log</file>
+		<file>${PREFIX_HOME}ECom.log</file>
 		<append>true</append>
 		<encoder>
 			<pattern>%d{MM-dd-yy HH:mm:ss.SSS} %-5level [%33.33logger{5}]: %msg%n</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${PREFIX_HOME}\\ECom-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+			<fileNamePattern>${PREFIX_HOME}ECom-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
 			<maxHistory>5<!-- days --></maxHistory>
 			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 			    <!-- or whenever the file size reaches 2MB -->
@@ -26,13 +26,13 @@
 	</appender>
 
 	<appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="INPUT_LOG_APPENDER">
-        <file>${PREFIX_HOME}\\Input.log</file>
+        <file>${PREFIX_HOME}Input.log</file>
         <append>true</append>
         <encoder>
             <pattern>%d{MM-dd-yy HH:mm:ss.SSS} %-5level [%33.33logger{5}]: %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${PREFIX_HOME}\\Input-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <fileNamePattern>${PREFIX_HOME}Input-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
             <maxHistory>5<!-- days --></maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 2MB -->
