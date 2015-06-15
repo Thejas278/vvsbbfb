@@ -4,6 +4,8 @@ import static com.fdt.common.SystemConstants.CERTIFIED_DOCUMENT_NUMBER_LENGTH;
 import static com.fdt.common.SystemConstants.NOTIFY_ADMIN;
 import static com.fdt.common.SystemConstants.REFERENCE_NUMBER_LENGTH;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -218,6 +220,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
                         merchant = site.getMerchant();
                     }
 
+                    totalTxAmount = new BigDecimal(totalTxAmount).setScale(2, RoundingMode.HALF_DOWN).doubleValue();
                     paymentTxResponseDTO = this.paymentGateway.doSale(site, totalTxAmount, creditCard, "doSaleWeb",
                     		userName, false);
                     txRefNumbers.add(paymentTxResponseDTO.getTxRefNum());
@@ -273,8 +276,8 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
                 	totalBaseAmount = totalTxAmount;
                 	thresholdReachedflag = true;
                 }
-                payAsUGoTransaction.setBaseAmount(totalBaseAmount);
-                payAsUGoTransaction.setServiceFee(totalServiceFee);
+                payAsUGoTransaction.setBaseAmount(new BigDecimal(totalBaseAmount).setScale(2, RoundingMode.HALF_DOWN).doubleValue());
+                payAsUGoTransaction.setServiceFee(new BigDecimal(totalServiceFee).setScale(2, RoundingMode.HALF_DOWN).doubleValue());
                 payAsUGoTransaction.setTotalTxAmount(totalTxAmount);
                 payAsUGoTransaction.setTransactionType(TransactionType.CHARGE);
                 payAsUGoTransaction.setSettlementStatus(SettlementStatusType.UNSETTLED);
