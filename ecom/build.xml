@@ -2,16 +2,16 @@
     <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
     <property file="build.properties"/>
 
-    <property name="dist"                value="${basedir}\dist"/>
-    <property name="java.src"            value="${basedir}\src"/>
+    <property name="dist"                value="${basedir}/dist"/>
+    <property name="java.src"            value="${basedir}/src"/>
     <property name="java.clientStub.src" value="${dist}/ecomWSClient"/>
     <property name="wsdl"                value="${wsdl}"/>
-    <property name="WSlib"               value="${basedir}\WSJars"/>
+    <property name="WSlib"               value="${basedir}/WSJars"/>
     <property name="webcontent"          value="${basedir}/WebContent/"/>
     <property name="webcontent.web-inf"  value="${webcontent}/WEB-INF/"/>
     <property name="webcontent.lib"      value="${webcontent.web-inf}/lib/"/>
-    <property name="server-conf"         value="${webcontent.web-inf}\conf\spring\properties\server.properties"/>
-    <property name="atomikos-conf"       value="${basedir}\resources\jta.properties"/>
+    <property name="server-conf"         value="${webcontent.web-inf}/conf/spring/properties/server.properties"/>
+    <property name="atomikos-conf"       value="${basedir}/resources/jta.properties"/>
 
 
     <target name="clean">
@@ -60,7 +60,7 @@
             <entry  key="com.atomikos.icatch.log_base_dir" value="${atomikos.base_dir}" />
         	<entry  key="com.atomikos.icatch.tm_unique_name" value="${com.atomikos.icatch.tm_unique_name}" />
         </propertyfile>
-        <xmltask source="${basedir}\resources\logback.xml" dest="${basedir}\resources\logback.xml" failWithoutMatch="true">
+        <xmltask source="${basedir}/resources/logback.xml" dest="${basedir}/resources/logback.xml" failWithoutMatch="true">
         	  <attr path="/configuration/property" attr="value" value="${logfileprefix}" />
               <replace path="/configuration/appender/subject/text()" withText="${logfileSubject}" />
               <replace path="/configuration/appender/to/text()" withText="${toEmail}" />
@@ -81,7 +81,7 @@
     <path id="cxf.classpath">
       <fileset dir="${webcontent.lib}">
          <include name="**/*.jar" />
-          <include name="${webcontent.web-inf}\lib\cxf-2.7.0.jar" />
+          <include name="${webcontent.web-inf}/lib/cxf-2.7.0.jar" />
       </fileset>
         <fileset dir="${WSlib}">
            <include name="**/*.jar" />
@@ -89,7 +89,7 @@
     </path>
 
     <target name="compile" depends="ConfUpdate">
-        <javac destdir="${dist}\build\classes" debug="true" srcdir="${java.src}" encoding="utf-8">
+        <javac destdir="${dist}/build/classes" debug="true" srcdir="${java.src}" encoding="utf-8">
             <classpath refid="compile.classpath"/>
         </javac>
     </target>
