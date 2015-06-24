@@ -1,0 +1,5 @@
+language: java
+before_install: ant init-xmltask
+script: ant buildJenkins
+jdk:
+  - oraclejdk8
