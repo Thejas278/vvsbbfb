@@ -17,4 +17,4 @@ addons:
   artifacts:
     debug: true
     paths:
-      - $(ls granicus-development-builds/eaccept-ecom/${TRAVIS_COMMIT}/ | tr "\n" ":")
+      - $(find granicus-development-builds/eaccept-ecom/${TRAVIS_COMMIT}/ -type f | tr "\n" ":")
