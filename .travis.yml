@@ -15,7 +15,7 @@ addons:
   artifacts:
     debug: true
     paths:
-      - $(find . -type f | tr "\n" ":")
+      - $(find dist/ -type f | tr "\n" ":")
     working_dir: dist
     target_paths: eaccept-ecom/${TRAVIS_COMMIT:0:7}/${ENV_NAME}
     s3_region: us-west-1
