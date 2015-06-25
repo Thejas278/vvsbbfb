@@ -1,5 +1,7 @@
 <project name="ECom Build" default="buildwar" basedir="." >
 
+    <property environment="env"/>
+    <property file="build-props/${env.ENV_NAME}.build.properties"/>
     <property file="build.properties"/>
 
     <property name="dist"                value="${basedir}/dist"/>

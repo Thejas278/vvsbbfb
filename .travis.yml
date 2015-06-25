@@ -1,5 +1,20 @@
 language: java
 before_install: ant init-xmltask
 script: ant buildwar
+after_script:
+  - mkdir -p granicus-development-builds/eaccept-ecom/
+  - mv dist/ granicus-development-builds/eaccept-ecom/${TRAVIS_COMMIT}/
 jdk:
   - oraclejdk8
+env:
+  global:
+    - ARTIFACTS_KEY=AKIAJF225RQRARLOD63Q
+    - ARTIFACTS_SECRET=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
+    - ARTIFACTS_BUCKET=granicus-development-builds
+  matrix:
+    - ENV_NAME=node-1-test
+addons:
+  artifacts: true
+  debug: true
+  paths:
+    - $(ls granicus-development-builds/eaccept/${TRAVIS_COMMIT}/ | tr "\n" ":")
