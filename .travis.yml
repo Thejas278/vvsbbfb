@@ -16,3 +16,4 @@ addons:
     debug: true
     paths:
       - $(find dist/ -type f | tr "\n" ":")
+    target_paths: granicus-development-builds/eaccept-ecom/$TRAVIS_COMMIT
