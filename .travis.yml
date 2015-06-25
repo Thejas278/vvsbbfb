@@ -14,7 +14,7 @@ env:
   matrix:
     - ENV_NAME=node-1-test
 addons:
-  artifacts: true
-  debug: true
-  paths:
-    - $(ls granicus-development-builds/eaccept/${TRAVIS_COMMIT}/ | tr "\n" ":")
+  artifacts:
+    debug: true
+    paths:
+      - $(ls granicus-development-builds/eaccept/${TRAVIS_COMMIT}/ | tr "\n" ":")
