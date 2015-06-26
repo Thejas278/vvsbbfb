@@ -1,5 +1,4 @@
 language: java
-before_install: ant init-xmltask
 script: ant buildwar
 jdk:
   - oraclejdk8
