@@ -1,5 +1,7 @@
 <project name="ECom Build" default="buildwar" basedir="." >
-    <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
+
+    <property environment="env"/>
+    <property file="build-props/${env.ENV_NAME}.build.properties"/>
     <property file="build.properties"/>
 
     <property name="dist"                value="${basedir}/dist"/>
@@ -13,7 +15,6 @@
     <property name="server-conf"         value="${webcontent.web-inf}/conf/spring/properties/server.properties"/>
     <property name="atomikos-conf"       value="${basedir}/resources/jta.properties"/>
 
-
     <target name="clean">
          <delete dir="${dist}"/>
      </target>
@@ -24,51 +25,57 @@
         <mkdir dir="${java.clientStub.src}" />
     </target>
 
-    <target name="ConfUpdate" depends="init" >
-        <propertyfile file="${server-conf}" >
-            <entry  key="jdbc.url" value="${jdbc.url}" />
-            <entry  key="jdbc.username" value="${jdbc.username}"/>
-            <entry  key="jdbc.password" value="${jdbc.password}"/>
-            <entry  key="ecom.webservice.username" value="${ecom.webservice.username}"/>
-            <entry  key="ecom.webservice.password" value="${ecom.webservice.password}"/>
-            <entry  key="ecomadmin.webservice.username" value="${ecomadmin.webservice.username}"/>
-            <entry  key="ecomadmin.webservice.password" value="${ecomadmin.webservice.password}"/>
-            <entry  key="ecommerce.serverurl" value="${ecommerce.serverurl}"/>
-            <entry  key="ecommerce.paypal.paypallogfilename" value="${ecommerce.paypal.paypallogfilename}"/>
-            <entry  key="ecommerce.paypal.paypalhostaddress" value="${ecommerce.paypal.paypalhostaddress}"/>
-            <entry  key="activemq.url" value="${activemq.url}"/>
-            <entry  key="scheduler.ecom.isenabled" value="${scheduler.ecom.isenabled}"/>        	
-        	<entry  key="scheduler.ecom.cancelrecurringprofile" value="${scheduler.ecom.cancelrecurringprofile}"/>
-        	<entry  key="scheduler.ecom.chargerecurringprofiles" value="${scheduler.ecom.chargerecurringprofiles}"/>
-        	<entry  key="scheduler.ecom.notifyinactiveusers" value="${scheduler.ecom.notifyinactiveusers}"/> 
-        	<entry  key="scheduler.ecom.archivetransactions" value="${scheduler.ecom.archivetransactions}"/> 
-        	<entry  key="scheduler.ecom.disableoverriddensubscriptions" value="${scheduler.ecom.disableoverriddensubscriptions}"/> 
-            <entry  key="activemq.emailqueue" value="${activemq.emailqueue}"/>
-            <entry  key="emailservice.emailserver" value="${emailservice.emailserver}"/>
-            <entry  key="emailservice.emailport" value="${emailservice.emailport}"/>
-            <entry  key="emailservice.username" value="${emailservice.username}"/>
-            <entry  key="emailservice.password" value="${emailservice.password}"/>
-            <entry  key="ecommerce.magensa.wsdl" value="${ecommerce.magensa.wsdl}"/>
-            <entry  key="ecommerce.magensa.certificatepath" value="${ecommerce.magensa.certificatepath}"/>
-            <entry  key="ecommerce.magensa.certificatepwd" value="${ecommerce.magensa.certificatepwd}"/>
-        	<entry  key="achtransactions.scheduler.isenabled" value="${achtransactions.scheduler.isenabled}"/>
-        	<entry  key="achtransactions.mode" value="${achtransactions.mode}"/>
-            <entry  key="achtransactions.tempDirectory" value="${achtransactions.tempDirectory}"/>
-        	<entry  key="achtransactions.poll.cron" value="${achtransactions.poll.cron}"/>        	
+    <path id="xmltask.lib.path">
+        <fileset dir="ant-lib" includes="*.jar"/>
+    </path>
+
+    <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask" classpathref="xmltask.lib.path"/>
+
+    <target name="ConfUpdate" depends="init">
+        <propertyfile file="${server-conf}">
+            <entry key="jdbc.url" value="${jdbc.url}" />
+            <entry key="jdbc.username" value="${jdbc.username}"/>
+            <entry key="jdbc.password" value="${jdbc.password}"/>
+            <entry key="ecom.webservice.username" value="${ecom.webservice.username}"/>
+            <entry key="ecom.webservice.password" value="${ecom.webservice.password}"/>
+            <entry key="ecomadmin.webservice.username" value="${ecomadmin.webservice.username}"/>
+            <entry key="ecomadmin.webservice.password" value="${ecomadmin.webservice.password}"/>
+            <entry key="ecommerce.serverurl" value="${ecommerce.serverurl}"/>
+            <entry key="ecommerce.paypal.paypallogfilename" value="${ecommerce.paypal.paypallogfilename}"/>
+            <entry key="ecommerce.paypal.paypalhostaddress" value="${ecommerce.paypal.paypalhostaddress}"/>
+            <entry key="activemq.url" value="${activemq.url}"/>
+            <entry key="scheduler.ecom.isenabled" value="${scheduler.ecom.isenabled}"/>        	
+            <entry key="scheduler.ecom.cancelrecurringprofile" value="${scheduler.ecom.cancelrecurringprofile}"/>
+            <entry key="scheduler.ecom.chargerecurringprofiles" value="${scheduler.ecom.chargerecurringprofiles}"/>
+            <entry key="scheduler.ecom.notifyinactiveusers" value="${scheduler.ecom.notifyinactiveusers}"/> 
+            <entry key="scheduler.ecom.archivetransactions" value="${scheduler.ecom.archivetransactions}"/> 
+            <entry key="scheduler.ecom.disableoverriddensubscriptions" value="${scheduler.ecom.disableoverriddensubscriptions}"/> 
+            <entry key="activemq.emailqueue" value="${activemq.emailqueue}"/>
+            <entry key="emailservice.emailserver" value="${emailservice.emailserver}"/>
+            <entry key="emailservice.emailport" value="${emailservice.emailport}"/>
+            <entry key="emailservice.username" value="${emailservice.username}"/>
+            <entry key="emailservice.password" value="${emailservice.password}"/>
+            <entry key="ecommerce.magensa.wsdl" value="${ecommerce.magensa.wsdl}"/>
+            <entry key="ecommerce.magensa.certificatepath" value="${ecommerce.magensa.certificatepath}"/>
+            <entry key="ecommerce.magensa.certificatepwd" value="${ecommerce.magensa.certificatepwd}"/>
+            <entry key="achtransactions.scheduler.isenabled" value="${achtransactions.scheduler.isenabled}"/>
+            <entry key="achtransactions.mode" value="${achtransactions.mode}"/>
+            <entry key="achtransactions.tempDirectory" value="${achtransactions.tempDirectory}"/>
+            <entry key="achtransactions.poll.cron" value="${achtransactions.poll.cron}"/>        	
         </propertyfile>
-        <propertyfile file="${atomikos-conf}" >
-            <entry  key="com.atomikos.icatch.log_base_dir" value="${atomikos.base_dir}" />
-        	<entry  key="com.atomikos.icatch.tm_unique_name" value="${com.atomikos.icatch.tm_unique_name}" />
+        <propertyfile file="${atomikos-conf}">
+            <entry key="com.atomikos.icatch.log_base_dir" value="${atomikos.base_dir}" />
+            <entry key="com.atomikos.icatch.tm_unique_name" value="${com.atomikos.icatch.tm_unique_name}" />
         </propertyfile>
         <xmltask source="${basedir}/resources/logback.xml" dest="${basedir}/resources/logback.xml" failWithoutMatch="true">
-        	  <attr path="/configuration/property" attr="value" value="${logfileprefix}" />
-              <replace path="/configuration/appender/subject/text()" withText="${logfileSubject}" />
-              <replace path="/configuration/appender/to/text()" withText="${toEmail}" />
-              <replace path="/configuration/appender/from/text()" withText="${fromEmail}" />
-	    	<replace path="/configuration/appender/smtpHost/text()" withText="${smtp.host}" />
-			<replace path="/configuration/appender/smtpPort/text()" withText="${smtp.port}" />
-			<replace path="/configuration/appender/username/text()" withText="${smtp.username}" />
-			<replace path="/configuration/appender/password/text()" withText="${smtp.password}" />
+            <attr path="/configuration/property" attr="value" value="${logfileprefix}" />
+            <replace path="/configuration/appender/subject/text()" withText="${logfileSubject}" />
+            <replace path="/configuration/appender/to/text()" withText="${toEmail}" />
+            <replace path="/configuration/appender/from/text()" withText="${fromEmail}" />
+            <replace path="/configuration/appender/smtpHost/text()" withText="${smtp.host}" />
+            <replace path="/configuration/appender/smtpPort/text()" withText="${smtp.port}" />
+            <replace path="/configuration/appender/username/text()" withText="${smtp.username}" />
+            <replace path="/configuration/appender/password/text()" withText="${smtp.password}" />
         </xmltask>
     </target>
 
@@ -95,19 +102,19 @@
     </target>
 
     <target name="cxfWSDLToJavaEcom"  depends="init">
-          <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
-             <arg value="-client"/>
-             <arg value="-b"/>
-             <arg value="binding.xml"/>
-             <arg value="-d"/>
-             <arg value="${java.clientStub.src}"/>
-             <arg value="-compile" />
-               <arg value="${EComFacadeServiceWSDL}"/>
-             <classpath>
+        <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
+            <arg value="-client"/>
+            <arg value="-b"/>
+            <arg value="binding.xml"/>
+            <arg value="-d"/>
+            <arg value="${java.clientStub.src}"/>
+            <arg value="-compile" />
+            <arg value="${EComFacadeServiceWSDL}"/>
+            <classpath>
                 <path refid="cxf.classpath"/>
-             </classpath>
-          </java>
-       </target>
+            </classpath>
+        </java>
+    </target>
 
     <target name="buildEcomClientStubJar" depends="cxfWSDLToJavaEcom">
         <jar destfile="${dist}/ecomws-stub.jar" basedir="${java.clientStub.src}" compress="true" excludes="**/*.java" />
@@ -122,39 +129,39 @@
         </jar>
         <jar jarfile="${dist}/ecomclient.jar" compress="true">
             <fileset dir="${dist}/build/classes">
-            	<include name="com/fdt/achtx/dto/**" /> 
-            	<include name="com/fdt/achtx/entity/**" /> 
-            	<include name="com/fdt/alerts/dto/**" /> 
-            	<include name="com/fdt/alerts/entity/**" /> 
-            	<include name="com/fdt/alerts/service/AlertFacadeService.class" />
-            	<include name="com/fdt/alerts/service/AlertFacadeServiceImpl.class" />
-            	<include name="com/fdt/common/dto/**" /> 
-            	<include name="com/fdt/common/entity/**" /> 
-            	<include name="com/fdt/common/exception/**" /> 
-            	<include name="com/fdt/ecom/dto/**" /> 
-            	<include name="com/fdt/ecom/entity/**" /> 
-            	<include name="com/fdt/ecom/exception/**" /> 
-            	<include name="com/fdt/ecom/service/EComFacadeService.class" /> 
-            	<include name="com/fdt/ecom/service/EComAdminFacadeService.class" /> 
-            	<include name="com/fdt/otctx/dto/**" /> 
-            	<include name="com/fdt/otctx/entity/**" /> 
-            	<include name="com/fdt/otctx/exception/**" />
-            	<include name="com/fdt/payasugotx/dto/**" /> 
-            	<include name="com/fdt/payasugotx/entity/**" /> 
-            	<include name="com/fdt/paymentgateway/dto/**" /> 
-            	<include name="com/fdt/paymentgateway/exception/**" />            	
-            	<include name="com/fdt/subscriptions/entity/**" /> 
-            	<include name="com/fdt/subscriptions/dto/**" /> 
-            	<include name="com/fdt/recurtx/dto/**" /> 
-            	<include name="com/fdt/recurtx/entity/**" /> 
-            	<include name="com/fdt/recurtx/exception/**" />
-            	<include name="com/fdt/webtx/dto/**" /> 
-            	<include name="com/fdt/webtx/entity/**" />
-            	<include name="com/fdt/security/entity/**" /> 
-            	<include name="com/fdt/security/exception/**" />
-            	<exclude name="com/fdt/security/service/**" />
-            	<include name="com/fdt/security/dto/**" />
-            	<include name="com/fdt/email/dto/**" />
+                <include name="com/fdt/achtx/dto/**" /> 
+                <include name="com/fdt/achtx/entity/**" /> 
+                <include name="com/fdt/alerts/dto/**" /> 
+                <include name="com/fdt/alerts/entity/**" /> 
+                <include name="com/fdt/alerts/service/AlertFacadeService.class" />
+                <include name="com/fdt/alerts/service/AlertFacadeServiceImpl.class" />
+                <include name="com/fdt/common/dto/**" /> 
+                <include name="com/fdt/common/entity/**" /> 
+                <include name="com/fdt/common/exception/**" /> 
+                <include name="com/fdt/ecom/dto/**" /> 
+                <include name="com/fdt/ecom/entity/**" /> 
+                <include name="com/fdt/ecom/exception/**" /> 
+                <include name="com/fdt/ecom/service/EComFacadeService.class" /> 
+                <include name="com/fdt/ecom/service/EComAdminFacadeService.class" /> 
+                <include name="com/fdt/otctx/dto/**" /> 
+                <include name="com/fdt/otctx/entity/**" /> 
+                <include name="com/fdt/otctx/exception/**" />
+                <include name="com/fdt/payasugotx/dto/**" /> 
+                <include name="com/fdt/payasugotx/entity/**" /> 
+                <include name="com/fdt/paymentgateway/dto/**" /> 
+                <include name="com/fdt/paymentgateway/exception/**" />            	
+                <include name="com/fdt/subscriptions/entity/**" /> 
+                <include name="com/fdt/subscriptions/dto/**" /> 
+                <include name="com/fdt/recurtx/dto/**" /> 
+                <include name="com/fdt/recurtx/entity/**" /> 
+                <include name="com/fdt/recurtx/exception/**" />
+                <include name="com/fdt/webtx/dto/**" /> 
+                <include name="com/fdt/webtx/entity/**" />
+                <include name="com/fdt/security/entity/**" /> 
+                <include name="com/fdt/security/exception/**" />
+                <exclude name="com/fdt/security/service/**" />
+                <include name="com/fdt/security/dto/**" />
+                <include name="com/fdt/email/dto/**" />
             </fileset>
         </jar>
         <mkdir dir="${webcontent}/WEB-INF/classes" />
@@ -177,15 +184,15 @@
             </fileset>
             <fileset dir="${webcontent}" >
                 <include name="resources/images/**" />
-            	<include name="resources/styles/**" />
-            	<include name="WEB-INF/view/**/*.*" />
+                <include name="resources/styles/**" />
+                <include name="WEB-INF/view/**/*.*" />
               </fileset>
-        	 <fileset dir="${webcontent}" >
+            <fileset dir="${webcontent}" >
                 <include name="WEB-INF/resources/javascripts/**" />
-            	<include name="WEB-INF/resources/styles/**.css" />                
-        	  </fileset>
+                <include name="WEB-INF/resources/styles/**.css" />
+            </fileset>
             <lib dir="${dist}" >
-                 <include name="ecom.jar" />
+                <include name="ecom.jar" />
             </lib>
         </war>
         <delete dir="${java.clientStub.src}"/>
