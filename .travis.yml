@@ -1,15 +1,24 @@
 language: java
-script: ant buildwar
 jdk:
   - oraclejdk8
 env:
   global:
+    - secure: "IUKaxc42ZMvokp6ZFlXrXYOsUmHb/UZLVe+4TBZ+8RoXCyOwV8HMDcaeIyQU+3VUZhHgrZDxtn1gCINXMrK49QY6evvIOO4Xj/8oKT9Yos3VOIHQSolidpg3ywYaQhnxiJPjV/xoGinoyh6m6Z8ym/xsHM6L7//G+s6vttQPvOw=" #SECRET
     - ARTIFACTS_KEY=AKIAJF225RQRARLOD63Q
     - ARTIFACTS_SECRET=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
     - ARTIFACTS_BUCKET=granicus-development-builds
   matrix:
     - ENV_NAME=node-1-test
     - ENV_NAME=node-2-test
+before_install: gem install travis-chef && travis-chef prepare
+script: travis-chef
+branches:
+  only:
+    - master
+    - develop
+    - /^hotfix\/.*$/
+    - /^release\/.*$/
+    - /^environment\/.*$/
 addons:
   artifacts:
     debug: true
