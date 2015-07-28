@@ -1,0 +1,4 @@
+UPDATE AUTH_ACCESS
+SET ACCESS_DESCR = 'Pay as You Go ($2.00 + $0.50 per page) with Image Preview (free)'
+WHERE ACCESS_CD = 'VABEACH_PERPAGE_ACCESS'
+GO
