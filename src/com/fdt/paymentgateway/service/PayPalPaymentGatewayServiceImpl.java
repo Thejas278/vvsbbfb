@@ -34,6 +34,7 @@ import paypal.payflow.SwipeCard;
 import paypal.payflow.TransactionResponse;
 import paypal.payflow.UserInfo;
 
+import com.fdt.common.dto.TxDTO;
 import com.fdt.common.entity.ErrorCode;
 import com.fdt.ecom.dao.EComDAO;
 import com.fdt.ecom.entity.BankAccount;
@@ -570,12 +571,13 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
      */
     /* The Transactional attribute should be There if not the System will not insert data in the the Error Code Table **/
     @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = PaymentGatewaySystemException.class)
-    public PayPalDTO doReferenceCredit(Site site, String originalTxRefNumber, String refCreditType,
+    public PayPalDTO doReferenceCredit(Site site, TxDTO txDTO, String refCreditType,
             String moduleName, String userName) throws PaymentGatewayUserException, PaymentGatewaySystemException {
+    	String originalTxRefNumber = txDTO.getTxRefNumber();
     	Assert.hasLength(originalTxRefNumber, "Original Transaction Number Cannot Be Null");
         PayflowConnectionData connection = new PayflowConnectionData();
         PayPalDTO referenceCreditDTO =  null;
-        UserInfo user = this.getMerchantInfo(site.getMerchant());
+        UserInfo user = this.getMerchantInfo(txDTO.getMerchant());
         Invoice invoice = new Invoice();
         invoice.setComment1(site.getName() + " " + refCreditType);
         invoice.setComment2(originalTxRefNumber);

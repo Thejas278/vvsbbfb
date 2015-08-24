@@ -1,5 +1,6 @@
 package com.fdt.paymentgateway.service;
 
+import com.fdt.common.dto.TxDTO;
 import com.fdt.ecom.entity.BankAccount;
 import com.fdt.ecom.entity.CreditCard;
 import com.fdt.ecom.entity.Merchant;
@@ -97,7 +98,7 @@ public interface PaymentGatewayService {
      * @throws PaymentGatewayUserException
      * @throws PaymentGatewaySystemException
      */
-    public PayPalDTO doReferenceCredit(Site site, String originalTxRefNumber, String refCreditType,
+    public PayPalDTO doReferenceCredit(Site site, TxDTO txDTO, String refCreditType,
         String moduleName, String userName) throws PaymentGatewayUserException, PaymentGatewaySystemException;
 
     /** The Method Is Used Do Credit PartialRefundAmount To The Card Which User Used To Do OriginalTxNumber. This Method

@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.fdt.common.dto.PageRecordsDTO;
+import com.fdt.common.dto.TxDTO;
 import com.fdt.common.exception.SDLBusinessException;
 import com.fdt.common.util.SystemUtil;
 import com.fdt.common.util.spring.SpringUtil;
@@ -132,7 +133,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
         Assert.notEmpty(payAsUGoTransactionDTO.getShoppingCartItemList(), "Shopping Cart Cannot be Empty");
         PayPalDTO paymentTxResponseDTO = null;
         List<PayAsUGoTx> payAsUGoTransactions =  new LinkedList<PayAsUGoTx>();
-        List<String> txRefNumbers =  new LinkedList<String>();
+        List<TxDTO> txDTOList =  new LinkedList<TxDTO>();
         Site site = null;
         boolean isException = false;
         double totalTxAmount   = 0.0d;
@@ -223,7 +224,10 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
                     totalTxAmount = new BigDecimal(totalTxAmount).setScale(2, RoundingMode.HALF_DOWN).doubleValue();
                     paymentTxResponseDTO = this.paymentGateway.doSale(site, totalTxAmount, creditCard, "doSaleWeb",
                     		userName, false);
-                    txRefNumbers.add(paymentTxResponseDTO.getTxRefNum());
+                    TxDTO txDTO = new TxDTO();
+                    txDTO.setMerchant(merchant);
+                    txDTO.setTxRefNumber(paymentTxResponseDTO.getTxRefNum());
+                    txDTOList.add(txDTO);
                     payAsUGoTransaction.setTxRefNum(paymentTxResponseDTO.getTxRefNum());
                     payAsUGoTransaction.setAuthCode(paymentTxResponseDTO.getAuthCode());
                     payAsUGoTransaction.setAccountName(creditCard.getName());
@@ -422,12 +426,12 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
         } finally {
             /** We Have to do this as PayPal Does not Support Rolling Back Transactions **/
             if (isException) {
-                for (String errTxRefNum : txRefNumbers) {
+                for (TxDTO txDTO : txDTOList) {
                     try {
-                        this.paymentGateway.doReferenceCredit(site, errTxRefNum, "WEB", "doSalePayAsUGo", userName);
+                        this.paymentGateway.doReferenceCredit(site, txDTO, "WEB", "doSalePayAsUGo", userName);
                     } catch (Exception exception) {
-                        logger.error(NOTIFY_ADMIN, "Error in Refunding the Money Back when there is an Exception in" +
-                            "doSalePayAsUGo site {}, errTxRefNum {} userName {}", site, errTxRefNum, userName, exception);
+                        logger.error(NOTIFY_ADMIN, "Error in Refunding the Money Back when there is an Exception in " +
+                            "doSalePayAsUGo site {}, errTxRefNum {} userName {}", site.getName(), txDTO.getTxRefNumber(), userName, exception);
                     }
                 }
             }
@@ -592,6 +596,8 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
         Assert.hasLength(modUserId, "Modified User Id Cannot be Null/Empty");
         Assert.isTrue((comments.length() < 249), "Comments Cannot Be Greater Than 250 characters length.");
         SDLBusinessException sDLBusinessException = null;
+        PayAsUSubDTO payAsUSubDTO = new PayAsUSubDTO();
+        
         PayAsUGoTx payAsUGoTransaction = this.payAsUGoSubDAO.getPayAsUGoTransactionByTxRefNum(txRefNumber, siteName);
 
         if(payAsUGoTransaction == null) {
@@ -614,8 +620,17 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
         Long originalWebTxId = payAsUGoTransaction.getId();
         Site site = payAsUGoTransaction.getSite();
         PayPalDTO paymentTxResponseDTO = null;
-        if(payAsUGoTransaction.getTotalTxAmount() > 0.0){
-        	paymentTxResponseDTO = this.paymentGateway.doReferenceCredit(site, txRefNumber, "WEB",
+        Merchant merchant = null;
+        if(payAsUGoTransaction.getTotalTxAmount() > 0.0) {        	
+			if (payAsUGoTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
+			    merchant = site.getMicroMerchant();
+			} else {
+			    merchant = site.getMerchant();
+			}
+			TxDTO txDTO = new TxDTO();
+			txDTO.setMerchant(merchant);
+			txDTO.setTxRefNumber(payAsUGoTransaction.getTxRefNum());
+        	paymentTxResponseDTO = this.paymentGateway.doReferenceCredit(site, txDTO, "PAYASUGO",
         			"doReferenceCreditWeb", modUserId);
         } else {
         	paymentTxResponseDTO = new PayPalDTO();

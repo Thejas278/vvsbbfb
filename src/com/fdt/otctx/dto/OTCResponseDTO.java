@@ -1,6 +1,7 @@
 package com.fdt.otctx.dto;
 
 import com.fdt.common.dto.AbstractBaseDTO;
+import com.fdt.ecom.entity.Merchant;
 
 public class OTCResponseDTO extends AbstractBaseDTO {
 
@@ -19,6 +20,8 @@ public class OTCResponseDTO extends AbstractBaseDTO {
     private double serviceFee;
 
     private double totalTxAmount;
+    
+    private Merchant merchant = null;
 
     public String getPayPalTxRefNum() {
         return payPalTxRefNum;
@@ -75,8 +78,16 @@ public class OTCResponseDTO extends AbstractBaseDTO {
     public void setTotalTxAmount(double totalTxAmount) {
         this.totalTxAmount = totalTxAmount;
     }
+    
+    public Merchant getMerchant() {
+		return merchant;
+	}
 
-    @Override
+	public void setMerchant(Merchant merchant) {
+		this.merchant = merchant;
+	}
+
+	@Override
     public String toString() {
         return "OTCResponseDTO [payPalTxRefNum=" + payPalTxRefNum
                 + ", authCode=" + authCode + ", errorCode=" + errorCode

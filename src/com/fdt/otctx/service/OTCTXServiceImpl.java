@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.fdt.common.dto.TxDTO;
 import com.fdt.common.entity.ErrorCode;
 import com.fdt.common.exception.SDLBusinessException;
 import com.fdt.common.util.SystemUtil;
@@ -136,7 +137,17 @@ public class OTCTXServiceImpl implements OTCTXService {
         }
 
         Assert.notNull(oTCTransaction.getSite(), "Original Transaction Reference Number Has No MerchantInfo");
-        paymentTxResponseDTO = this.paymentGateway.doReferenceCredit(oTCTransaction.getSite(), txRefNumber, "OTC",
+        Site site = oTCTransaction.getSite();
+        Merchant merchant = null;
+        if (oTCTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
+		    merchant = site.getMicroMerchant();
+		} else {
+		    merchant = site.getMerchant();
+		}
+        TxDTO txDTO = new TxDTO();
+        txDTO.setMerchant(merchant);
+        txDTO.setTxRefNumber(txRefNumber);        
+        paymentTxResponseDTO = this.paymentGateway.doReferenceCredit(oTCTransaction.getSite(), txDTO, "OTC",
             "doReferenceCreditOTC", modUserId);
         paymentTxResponseDTO.setTxAmount(oTCTransaction.getTotalTxAmount());
         oTCTransaction.setOrigTxRefNum(oTCTransaction.getTxRefNum());
@@ -214,6 +225,7 @@ public class OTCTXServiceImpl implements OTCTXService {
             } else {
                 merchant = site.getMerchant();
             }
+            oTCResponseDTO.setMerchant(merchant);
             try {
             	logger.info("Magensa Credentials: hostId {} hostPwd {}", hostId, hostPwd);
                 tracMap = this.decrypt(oTCRequestDTO.getEncTrackOne(), oTCRequestDTO.getEncTrackTwo(),
@@ -295,6 +307,7 @@ public class OTCTXServiceImpl implements OTCTXService {
             } else {
                 merchant = site.getMerchant();
             }
+            oTCResponseDTO.setMerchant(merchant);
             //Read Track 1 Data first
             if(oTCRequestDTO.getEncTrackOne() != null) {
                 oTCTransaction = getCreditCardInfo(oTCRequestDTO.getEncTrackOne(), TRACK_1);
@@ -591,7 +604,10 @@ public class OTCTXServiceImpl implements OTCTXService {
             Exception exception) {
         if (oTCResponseDTO.getPayPalTxRefNum() != null) {
             try {
-                this.paymentGateway.doReferenceCredit(site, oTCResponseDTO.getPayPalTxRefNum(), "OTC", "doSaleOTC",
+            	TxDTO txDTO = new TxDTO();
+                txDTO.setMerchant(oTCResponseDTO.getMerchant());
+                txDTO.setTxRefNumber(oTCResponseDTO.getPayPalTxRefNum());
+                this.paymentGateway.doReferenceCredit(site, txDTO, "OTC", "doSaleOTC",
                     oTCRequestDTO.getUserLogged());
             } catch (Exception ex) {
                 logger.error(NOTIFY_ADMIN, "Error in Refunding the Money Back when ther is an Exception in OTCdoSaleOTC",

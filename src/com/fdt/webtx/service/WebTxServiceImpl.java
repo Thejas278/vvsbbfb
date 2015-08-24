@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.fdt.common.dto.TxDTO;
 import com.fdt.common.exception.SDLBusinessException;
 import com.fdt.common.util.SystemUtil;
 import com.fdt.ecom.dao.EComDAO;
@@ -133,6 +134,7 @@ public class WebTxServiceImpl implements WebTxService {
         CreditCard creditCard = webTransactionDTO.getCreditCard();
         BankAccount bankAccount = webTransactionDTO.getBankAccount();
         CardType cardType = null;
+        TxDTO txDTO = new TxDTO();
 
         try {
             List<Code> registeredApplicationList = this.eComDAO.getCodes(REGISTERED_APPLICATION_CATEGORY);
@@ -224,6 +226,8 @@ public class WebTxServiceImpl implements WebTxService {
                                      
                                                            
                     txRefNumber = paymentTxResponseDTO.getTxRefNum();
+                    txDTO.setTxRefNumber(txRefNumber);
+                    txDTO.setMerchant(merchant);
                     if (paymentTxResponseDTO.getTxRefNum() != null && !paymentTxResponseDTO.getTxRefNum().isEmpty()) {
                         webTransaction.setTxRefNum(paymentTxResponseDTO.getTxRefNum());
                         webTransaction.setAuthCode(paymentTxResponseDTO.getAuthCode());
@@ -342,7 +346,7 @@ public class WebTxServiceImpl implements WebTxService {
         } finally {
             if (isException && txRefNumber != null) {
                 try {
-                    this.paymentGateway.doReferenceCredit(site, txRefNumber, "WEB", "doSaleWebPosts", emailId);
+                    this.paymentGateway.doReferenceCredit(site, txDTO, "WEB", "doSaleWebPosts", emailId);
                 } catch (Exception exception) {
                     logger.error(NOTIFY_ADMIN, "Error in Refunding the Money Back when there is an Exception in " +
                         "doSaleWebPosts {}", exception);
@@ -395,7 +399,16 @@ public class WebTxServiceImpl implements WebTxService {
 
         Long originalWebTxId = webTransaction.getId();
         Site site = webTransaction.getSite();
-        PayPalDTO paymentTxResponseDTO = this.paymentGateway.doReferenceCredit(site, txRefNumber, "WEB",
+        Merchant merchant = null;
+        if (webTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
+		    merchant = site.getMicroMerchant();
+		} else {
+		    merchant = site.getMerchant();
+		}
+        TxDTO txDTO = new TxDTO();
+        txDTO.setMerchant(merchant);
+        txDTO.setTxRefNumber(txRefNumber);       
+        PayPalDTO paymentTxResponseDTO = this.paymentGateway.doReferenceCredit(site, txDTO, "WEB",
         		"doReferenceCreditWeb", modUserId);
         paymentTxResponseDTO.setTxAmount(webTransaction.getTotalTxAmount());
         webTransaction.setOrigTxRefNum(webTransaction.getTxRefNum());

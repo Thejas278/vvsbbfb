@@ -85,6 +85,44 @@ public class SystemUtil {
         return decryptedText;
     }
 
+    public static String decrypt(String encryptedText, String algorithm, String passwordKey) {
+    	String decryptedText =  null;
+		if (StringUtils.isBlank(encryptedText)) {
+			return encryptedText;
+		}
+    	try {
+	    	StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+	    	encryptor.setAlgorithm(algorithm);
+			encryptor.setPassword(passwordKey);
+			Provider p = new BouncyCastleProvider();
+			encryptor.setProvider(p);
+			encryptor.setStringOutputType("HEXADECIMAL");
+			decryptedText = encryptor.decrypt(encryptedText);
+		} catch (Exception exception) {
+			logger.error("Exception Occured in Decrypting the Data", exception);
+		}
+    	return decryptedText;
+    }
+
+    public static String encrypt(String plainText, String algorithm, String passwordKey) {
+    	String encryptedText =  null;
+		if (StringUtils.isBlank(plainText)) {
+			return encryptedText;
+		}
+    	try {
+	    	StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+	    	encryptor.setAlgorithm(algorithm);
+			encryptor.setPassword(passwordKey);
+			Provider p = new BouncyCastleProvider();
+			encryptor.setProvider(p);
+			encryptor.setStringOutputType("HEXADECIMAL");
+			encryptedText = encryptor.encrypt(plainText);
+		} catch (Exception exception) {
+			logger.error("Exception Occured in Encrypting the Data", exception);
+		}
+    	return encryptedText;
+    }
+    
     public static String format(String inputDateStr, String inputFormat, String outputFormat) {
         String outputDateStr = "";
         if (inputDateStr == null || inputDateStr.isEmpty()) {
