@@ -10,6 +10,26 @@
     ]]>
 </sql-query>
 
+ <sql-query name="GET_ACH_SFTP_INFO">
+   SELECT DISTINCT 
+		SFTP_HOST,
+		SFTP_PORT,
+		SFTP_USER,
+		SFTP_PASSWORD,
+		SFTP_TO_WORKING_DIRECTORY,
+		SFTP_FROM_WORKING_DIRECTORY
+   FROM ECOMM_ACH_LOGININFO
+</sql-query>
+
+<sql-query name="GET_ACH_BY_PR_ID">
+   SELECT SITE_ID
+         ,CHECKNUM
+         ,PAYMENT_TYPE
+         ,ACH_REFERENCE_NUM
+         ,ACH_STATUS
+  FROM ECOMM_CHECK_HIST
+  WHERE ACH_REFERENCE_NUM = :paymentReferenceId
+</sql-query>
 
 
 </hibernate-mapping>

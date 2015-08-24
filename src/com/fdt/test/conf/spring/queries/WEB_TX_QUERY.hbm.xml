@@ -60,9 +60,32 @@
       ,PHONE      
       ,BANK_ROUTING_NUMBER
       ,BANK_ACCOUNT_NUMBER
-      ,BANK_ACCOUNT_TYPE     
+      ,BANK_ACCOUNT_TYPE
+      ,ID
+      ,CARD_TYPE     
   FROM ECOMM_WEBPAY_TX
   WHERE PAYMENT_TOKEN IN (:paymentTokens)
+</sql-query>
+
+<sql-query name="GET_PAYMENT_INFO_BY_ID">
+  SELECT
+	   ACCOUNTNAME
+      ,CREDIT_CARD_NUMBER
+	  ,EXPMON
+      ,EXPYEAR
+      ,ADDRESS_1
+      ,ADDRESS_2
+      ,CITY
+      ,STATE
+      ,ZIP
+      ,PHONE      
+      ,BANK_ROUTING_NUMBER
+      ,BANK_ACCOUNT_NUMBER
+      ,BANK_ACCOUNT_TYPE
+      ,ID
+      ,CARD_TYPE     
+  FROM ECOMM_WEBPAY_TX
+  WHERE ID = :paymentInfoID
 </sql-query>
 
 </hibernate-mapping>

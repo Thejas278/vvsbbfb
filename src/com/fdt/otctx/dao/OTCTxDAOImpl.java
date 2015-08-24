@@ -10,6 +10,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Repository;
 
 import com.fdt.common.dao.AbstractBaseDAOImpl;
+import com.fdt.ecom.entity.CreditUsageFee;
 import com.fdt.ecom.entity.Merchant;
 import com.fdt.ecom.entity.Site;
 import com.fdt.otctx.entity.OTCTx;
@@ -34,6 +35,7 @@ public class OTCTxDAOImpl extends AbstractBaseDAOImpl implements OTCTxDAO {
             otcTransaction = new OTCTx();
             Site site = new Site();
             Merchant merchant = new Merchant();
+            CreditUsageFee cardUsageFee = new CreditUsageFee();
             Object[] row = (Object[]) resultSet.get(0);
             otcTransaction.setId(this.getLongFromBigInteger(row[0]));
             otcTransaction.setTxRefNum(this.getString(row[1]));
@@ -70,9 +72,19 @@ public class OTCTxDAOImpl extends AbstractBaseDAOImpl implements OTCTxDAO {
             merchant.setTxFeeFlat(this.getDoubleFromBigDecimal(row[26]));
             merchant.setTxFeePercentAmex(this.getDoubleFromBigDecimal(row[27]));
             merchant.setTxFeeFlatAmex(this.getDoubleFromBigDecimal(row[28]));
+            merchant.setMicroPaymentAccount(this.getBoolean(row[36]));
             otcTransaction.setItemName(this.getString(row[33]));
             otcTransaction.setProductType(this.getString(row[34]));
             otcTransaction.setInvoiceNumber(this.getString(row[35]));
+            cardUsageFee.setFlatFee(this.getDoubleFromBigDecimal(row[37]));
+            cardUsageFee.setFlatFeeCutOff(this.getDoubleFromBigDecimal(row[38]));
+            cardUsageFee.setPercenteFee(this.getDoubleFromBigDecimal(row[39]));
+            cardUsageFee.setDowngradeFee(this.getDoubleFromBigDecimal(row[40]));
+            cardUsageFee.setAdditionalFee(this.getDoubleFromBigDecimal(row[41]));
+            cardUsageFee.setMicroTxFeeCutOff(this.getDoubleFromBigDecimal(row[42]));
+            site.setEnableMicroTxWeb(this.getBoolean(row[43]));
+            site.setEnableMicroTxOTC(this.getBoolean(row[44]));
+            site.setCardUsageFee(cardUsageFee);
             site.addMerchant(merchant);
             otcTransaction.setSite(site);
             otcTransaction.setMerchantId(merchant.getId());

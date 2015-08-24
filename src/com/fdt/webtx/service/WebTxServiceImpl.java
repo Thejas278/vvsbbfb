@@ -399,7 +399,7 @@ public class WebTxServiceImpl implements WebTxService {
 
         Long originalWebTxId = webTransaction.getId();
         Site site = webTransaction.getSite();
-        Merchant merchant = null;
+        Merchant merchant = site.getMerchant();
         if (webTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
 		    merchant = site.getMicroMerchant();
 		} else {

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Repository;
 import com.fdt.common.dao.AbstractBaseDAOImpl;
 import com.fdt.common.dto.PageRecordsDTO;
 import com.fdt.common.util.SystemUtil;
+import com.fdt.ecom.entity.CreditUsageFee;
 import com.fdt.ecom.entity.Location;
 import com.fdt.ecom.entity.Merchant;
 import com.fdt.ecom.entity.ShoppingCartItem;
@@ -228,6 +229,7 @@ public class PayAsUGoTxDAOImpl extends AbstractBaseDAOImpl implements PayAsUGoTx
         PayAsUGoTx payAsUGoTransaction = null;
         if (resultSet.size() > 0) {
             payAsUGoTransaction = new PayAsUGoTx();
+            CreditUsageFee cardUsageFee = new CreditUsageFee();
             Access access = new Access();
             Site site = new Site();
             Merchant merchant = new Merchant();
@@ -269,6 +271,7 @@ public class PayAsUGoTxDAOImpl extends AbstractBaseDAOImpl implements PayAsUGoTx
             merchant.setTxFeeFlat(this.getDoubleFromBigDecimal(row[40]));
             merchant.setTxFeePercentAmex(this.getDoubleFromBigDecimal(row[42]));
             merchant.setTxFeeFlatAmex(this.getDoubleFromBigDecimal(row[43]));
+            merchant.setMicroPaymentAccount(this.getBoolean(row[57]));
             payAsUGoTransaction.setCardType(this.getCardType(row[41]));
             payAsUGoTransaction.setUserId(this.getLongFromBigInteger(row[23]));
             site.addMerchant(merchant);
@@ -279,7 +282,16 @@ public class PayAsUGoTxDAOImpl extends AbstractBaseDAOImpl implements PayAsUGoTx
             payAsUGoTransaction.setCreatedBy(this.getString(row[47]));
             payAsUGoTransaction.setFirmAdminUserAccessId(this.getLongFromInteger(row[51]));
             payAsUGoTransaction.setCertified(this.getBoolean(row[52]));
-            List<PayAsUGoTxItem> payAsUGoTxItems =  new LinkedList<PayAsUGoTxItem>();
+            List<PayAsUGoTxItem> payAsUGoTxItems =  new LinkedList<PayAsUGoTxItem>();            
+            cardUsageFee.setFlatFee(this.getDoubleFromBigDecimal(row[58]));
+            cardUsageFee.setFlatFeeCutOff(this.getDoubleFromBigDecimal(row[59]));
+            cardUsageFee.setPercenteFee(this.getDoubleFromBigDecimal(row[60]));
+            cardUsageFee.setDowngradeFee(this.getDoubleFromBigDecimal(row[61]));
+            cardUsageFee.setAdditionalFee(this.getDoubleFromBigDecimal(row[62]));
+            cardUsageFee.setMicroTxFeeCutOff(this.getDoubleFromBigDecimal(row[63]));
+            site.setEnableMicroTxWeb(this.getBoolean(row[64]));
+            site.setEnableMicroTxOTC(this.getBoolean(row[65]));
+            site.setCardUsageFee(cardUsageFee);           
             while(resultListIterator.hasNext()) {
                 row = (Object[]) resultListIterator.next();
                 PayAsUGoTxItem payAsUGoTxItem = new PayAsUGoTxItem();

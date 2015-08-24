@@ -138,8 +138,8 @@ public class OTCTXServiceImpl implements OTCTXService {
 
         Assert.notNull(oTCTransaction.getSite(), "Original Transaction Reference Number Has No MerchantInfo");
         Site site = oTCTransaction.getSite();
-        Merchant merchant = null;
-        if (oTCTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
+        Merchant merchant = site.getMerchant();
+        if (oTCTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxOTC()) {
 		    merchant = site.getMicroMerchant();
 		} else {
 		    merchant = site.getMerchant();

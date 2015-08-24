@@ -620,7 +620,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
         Long originalWebTxId = payAsUGoTransaction.getId();
         Site site = payAsUGoTransaction.getSite();
         PayPalDTO paymentTxResponseDTO = null;
-        Merchant merchant = null;
+        Merchant merchant = site.getMerchant();
         if(payAsUGoTransaction.getTotalTxAmount() > 0.0) {        	
 			if (payAsUGoTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
 			    merchant = site.getMicroMerchant();
