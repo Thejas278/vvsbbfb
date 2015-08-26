@@ -6,7 +6,7 @@ import paypal.payflow.*;
 
 // This class uses the Payflow SDK Data Objects to do an Inquiry transaction.
 //
-// You perform an inquiry using a reference to an original transaction—either the PNREF
+// You perform an inquiry using a reference to an original transaction either the PNREF
 // value returned for the original transaction or the CUSTREF value that you specified for the original
 // transaction.
 //
