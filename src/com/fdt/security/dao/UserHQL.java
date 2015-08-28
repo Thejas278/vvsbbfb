@@ -16,6 +16,14 @@ public final class UserHQL {
     public static String FIND_USER_EVENT_BY_USER_NAME_REQ_TOKEN = "FROM UserEvent aue INNER JOIN aue.user au " +
                                                 "WHERE au.username = :username AND " +
                                                 " aue.token = :requestToken ";
+    
+    public static String DELETE_USER_EVENT_BY_USER_NAME_REQ_TOKEN =
+    		"DELETE FROM UserEvent aue " +
+    		"WHERE aue.token = :requestToken " +
+    		"AND aue.user IN (" +
+    			"SELECT au " +
+    			"FROM User au " +
+    			"WHERE au.username = :username)";
 
     public static String GET_ADMIN_USER_ACCESS_BY_USER_ID = 
     		"SELECT userAccess from UserAccess userAccess " + 

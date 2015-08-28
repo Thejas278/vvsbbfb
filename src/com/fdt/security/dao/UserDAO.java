@@ -40,6 +40,8 @@ public interface UserDAO {
     public void saveUserEvent(List<UserEvent> userEvents);
 
     public void deleteUserEvents(List<UserEvent> userEvents);
+    
+    public void deleteUserEvents(String userName, String requestToken);
 
     public UserEvent findUserEvent(String userName, String requestToken);
 
