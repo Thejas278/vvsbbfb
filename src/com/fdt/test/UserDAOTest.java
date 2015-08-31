@@ -1,5 +1,13 @@
 package com.fdt.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -7,40 +15,73 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import com.fdt.security.dao.UserDAO;
 import com.fdt.security.entity.User;
 import com.fdt.security.entity.UserAccess;
+import com.fdt.security.entity.UserEvent;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"file:C:\\Projects\\SDL\\2.9\\Enterprise\\ecom\\ecom\\WebContent\\WEB-INF\\conf\\spring\\applicationContext.xml"})
+@ContextConfiguration({ "file:WebContent/WEB-INF/conf/spring/applicationContext.xml" })
 public class UserDAOTest {
 
     @Autowired
     private UserDAO userDAO;
 
-    public UserDAOTest() {
-        System.setProperty("CONFIG_LOCATION", "file:C:\\Projects\\SDL\\2.9\\Enterprise\\ecom\\ecom\\WebContent\\WEB-INF\\conf");
+    public UserDAOTest() throws URISyntaxException {
+        Path selfPath = Paths.get(getClass().getResource("").toURI());
+        int webInfIndex = 1;
+        for (Path path : selfPath) {
+            if (path.toString().equals("WEB-INF")) {
+                break;
+            } else {
+                webInfIndex++;
+            }
+        }
+        System.setProperty("CONFIG_LOCATION", "file:/" + selfPath.subpath(0, webInfIndex).resolve("conf"));
     }
 
-
     @Test
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor= Throwable.class)
+    @Transactional
     public void testGetUserAccessForFirmLevelUsers() {
-    	Long adminUserId = 150L; // user name 'apatel@amcad.com'
-    	Long accessId = 36L; // access for Dallas 3-6 users
-    	List<UserAccess>  list = userDAO.getUserAccessForFirmLevelUsers(adminUserId, accessId);
-    	Assert.notEmpty(list);
+        Long adminUserId = 15251L;
+        Long accessId = 54L;
+        List<UserAccess> list = userDAO.getUserAccessForFirmLevelUsers(adminUserId, accessId);
+        assertFalse(list.isEmpty());
     }
-    
+
     @Test
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor= Throwable.class)
+    @Transactional
     public void testGetUserDetails() {
-    	String userName = "apatel@amcad.com";
-    	User user = userDAO.getUser(userName);
-    	Assert.notNull(user);
+        String userName = "admin@roam.comTMP1";
+        User user = userDAO.getUser(userName);
+        assertNotNull(user);
+    }
+
+    @Test
+    @Transactional
+    public void testUserEventDeleteByCriteria() {
+
+        String userName = "admin@roam.comTMP1";
+        User user = userDAO.getUser(userName);
+
+        UserEvent userEvent = new UserEvent();
+        userEvent.setUser(user);
+        userEvent.setCreatedBy("test");
+        userEvent.setCreatedDate(new Date());
+        userEvent.setModifiedBy("test");
+        userEvent.setModifiedDate(new Date());
+        userDAO.saveUserEvent(userEvent);
+
+        String token = userEvent.getToken();
+
+        UserEvent newUserEvent = userDAO.findUserEvent(userName, token);
+        assertNotNull(newUserEvent);
+
+        userDAO.deleteUserEvents(userName, token);
+
+        newUserEvent = userDAO.findUserEvent(userName, token);
+        assertNull(newUserEvent);
     }
 }
