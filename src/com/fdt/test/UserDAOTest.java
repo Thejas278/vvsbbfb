@@ -30,16 +30,11 @@ public class UserDAOTest {
     private UserDAO userDAO;
 
     public UserDAOTest() throws URISyntaxException {
-        Path selfPath = Paths.get(getClass().getResource("").toURI());
-        int webInfIndex = 1;
-        for (Path path : selfPath) {
-            if (path.toString().equals("WEB-INF")) {
-                break;
-            } else {
-                webInfIndex++;
-            }
+        Path path = Paths.get(getClass().getResource("").toURI());
+        while (!path.toString().endsWith("WEB-INF")) {
+            path = path.getParent();
         }
-        System.setProperty("CONFIG_LOCATION", "file:/" + selfPath.subpath(0, webInfIndex).resolve("conf"));
+        System.setProperty("CONFIG_LOCATION", "file:" + path.resolve("conf"));
     }
 
     @Test
