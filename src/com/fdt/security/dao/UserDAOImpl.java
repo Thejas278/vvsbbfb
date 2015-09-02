@@ -5,6 +5,7 @@ import static com.fdt.security.dao.UserHQL.FIND_USER_EVENT_BY_USER_NAME_REQ_TOKE
 import static com.fdt.security.dao.UserHQL.GET_ADMIN_USER_ACCESS_BY_USER_ID;
 import static com.fdt.security.dao.UserHQL.GET_FIRM_USER_ACCESS_BY_USERID_ACCESSIDS;
 import static com.fdt.security.dao.UserHQL.GET_USER_ACCESS_BY_USER_ID_ACCESS_IDS;
+import static com.fdt.security.dao.UserHQL.DELETE_USER_EVENT_BY_USER_NAME_REQ_TOKEN;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -311,6 +312,15 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
         }
         session.flush();
     }
+
+	@Override
+	public void deleteUserEvents(String userName, String requestToken) {
+		Session session = currentSession();
+		session.createQuery(DELETE_USER_EVENT_BY_USER_NAME_REQ_TOKEN)
+				.setParameter("username", userName)
+				.setParameter("requestToken", requestToken).executeUpdate();
+		session.flush();
+	}
 
     @Override
     public UserEvent findUserEvent(String userName, String requestToken) {

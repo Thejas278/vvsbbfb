@@ -540,9 +540,7 @@ public class UserServiceImpl implements UserService {
             user.setModifiedDate(new Date());
             user.setModifiedBy(userName);
             this.userDAO.saveUser(user);
-            List<UserEvent> userEvents = new ArrayList<UserEvent>();
-            userEvents.add(userEvent);
-            this.userDAO.deleteUserEvents(userEvents);
+            this.userDAO.deleteUserEvents(userName, requestToken);
         }
     }
 
