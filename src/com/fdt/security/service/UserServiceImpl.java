@@ -281,7 +281,7 @@ public class UserServiceImpl implements UserService {
 	        this.sendUserMail(newFirmUser, nodeConfig.getFromEmailAddress(), nodeConfig.getUserActivationSubject(),
 	        	emailTemplateFile, controllerURL, password);
         } else {
-            subService.sendUserAddedToFirmEmail(newFirmUser, firmLevelSubscribedAccess, site);
+            subService.sendUserAddedToFirmEmails(adminUser, newFirmUser, firmLevelSubscribedAccess, site);
         }
         response.setStatus(ServiceResponseDTO.SUCCESS);
         if(userExists){

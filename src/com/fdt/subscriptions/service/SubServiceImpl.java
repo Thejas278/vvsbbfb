@@ -1561,7 +1561,7 @@ public class SubServiceImpl implements SubService {
         List<AccessDetailDTO> accessDetails = this.subDAO.getSubDetailsByAccessId(accessId);
         Site site = accessDetails.get(0).getSite();
 
-        sendUserAddedToFirmEmail(firmUser, adminUserAccess.getAccess(), site);
+        sendUserAddedToFirmEmails(adminUser, firmUser, adminUserAccess.getAccess(), site);
     }
 
 
@@ -1875,7 +1875,7 @@ public class SubServiceImpl implements SubService {
     }
 
     @Override
-    public void sendUserAddedToFirmEmail(User newFirmUser, Access newAccess, Site site) {
+    public void sendUserAddedToFirmEmails(User adminFirmUser, User newFirmUser, Access newAccess, Site site) {
 
         Map<String, Object> emailData = new HashMap<String, Object>();
         emailData.put("user", newFirmUser);
@@ -1889,6 +1889,19 @@ public class SubServiceImpl implements SubService {
         emailProducer.sendMailUsingTemplate(siteConfig.getFromEmailAddress(), newFirmUser.getUsername(),
                 siteConfig.getAddSubscriptionSub(),
                 siteConfig.getEmailTemplateFolder() + siteConfig.getPaymentConfirmationTemplate(), emailData);
+
+        emailData = new HashMap<String, Object>();
+        emailData.put("isUserAddedToFirmAdminEmail", "true");
+        emailData.put("newlyAddedFirmUser", newFirmUser);
+        emailData.put("user", adminFirmUser);
+        emailData.put("firmUserSubscription", site.getName() + " - " + newAccess.getDescription());
+        emailData.put("serverUrl", this.ecomServerURL);
+        emailData.put("currentDate", new Date());
+
+        emailProducer.sendMailUsingTemplate(siteConfig.getFromEmailAddress(), adminFirmUser.getUsername(),
+                siteConfig.getAddSubscriptionSub(),
+                siteConfig.getEmailTemplateFolder() + siteConfig.getPaymentConfirmationTemplate(), emailData);
+
     }
 
     private String getMessage(String messageKey) {

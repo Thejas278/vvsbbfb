@@ -261,6 +261,6 @@ public interface SubService {
     public void ChangeFirmSubscriptionAdministrator(String newAdminUserName, Long accessId,
     		String comments, String modifiedBy) throws UserNameNotFoundException, SDLBusinessException;
 
-    public void sendUserAddedToFirmEmail(User newFirmUser, Access newAccess, Site site); 
+    public void sendUserAddedToFirmEmails(User adminFirmUser, User newFirmUser, Access newAccess, Site site); 
 
 }
