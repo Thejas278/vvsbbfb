@@ -8,11 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fdt.common.exception.SDLBusinessException;
 import com.fdt.ecom.dto.UserAccessDetailDTO;
 import com.fdt.ecom.entity.CreditCard;
+import com.fdt.ecom.entity.Site;
 import com.fdt.ecom.exception.AccessUnAuthorizedException;
 import com.fdt.paymentgateway.dto.PayPalDTO;
 import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
 import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
 import com.fdt.recurtx.dto.UpgradeDowngradeDTO;
+import com.fdt.security.entity.Access;
 import com.fdt.security.entity.User;
 import com.fdt.security.exception.MaxUsersExceededException;
 import com.fdt.security.exception.UserNameNotFoundException;
@@ -257,6 +259,8 @@ public interface SubService {
      * @param modifiedBy
      */
     public void ChangeFirmSubscriptionAdministrator(String newAdminUserName, Long accessId,
-    		String comments, String modifiedBy) throws UserNameNotFoundException, SDLBusinessException; 
+    		String comments, String modifiedBy) throws UserNameNotFoundException, SDLBusinessException;
+
+    public void sendUserAddedToFirmEmails(User adminFirmUser, User newFirmUser, Access newAccess, Site site); 
 
 }

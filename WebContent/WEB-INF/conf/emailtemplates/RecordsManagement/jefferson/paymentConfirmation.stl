@@ -119,6 +119,17 @@ td {padding-right:10px;padding-left:10px;}
 													</div>
 												</td>
 											</tr>
+                    <#elseif isUserAddedToFirmAdminEmail?has_content>
+                      <#if firmUserSubscription?has_content && newlyAddedFirmUser?has_content>
+                        <tr>
+                          <td>
+                          </br>
+                            <div style="text-align:left;margin:20px;color: #527838;">
+                              A new user ${newlyAddedFirmUser.getFirstName()?lower_case?cap_first} ${newlyAddedFirmUser.getLastName()?lower_case?cap_first} has been added to your firm level subscription ${firmUserSubscription}.
+                            </div>
+                          </td>
+                        </tr>
+                      </#if>
 										<#else>
 											<#if firmUserSubscription?has_content>
 												<tr>

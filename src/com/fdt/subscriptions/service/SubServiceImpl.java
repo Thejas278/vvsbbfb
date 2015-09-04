@@ -1554,6 +1554,14 @@ public class SubServiceImpl implements SubService {
         // Set the firm admin access id
         userAccess.setFirmAdminUserAccessId(adminUserAccess.getId());
         this.userDAO.saveUserAcess(userAccess);
+
+        // Send Email about Subscription added
+
+        // Retrieve the site from database.
+        List<AccessDetailDTO> accessDetails = this.subDAO.getSubDetailsByAccessId(accessId);
+        Site site = accessDetails.get(0).getSite();
+
+        sendUserAddedToFirmEmails(adminUser, firmUser, adminUserAccess.getAccess(), site);
     }
 
 
@@ -1864,6 +1872,36 @@ public class SubServiceImpl implements SubService {
 
         // Also update the user account information
         this.userDAO.updateFirmCreditCardInUserAccount(currentAdminUserAccess.getId(), ccInfo.getId());
+    }
+
+    @Override
+    public void sendUserAddedToFirmEmails(User adminFirmUser, User newFirmUser, Access newAccess, Site site) {
+
+        Map<String, Object> emailData = new HashMap<String, Object>();
+        emailData.put("user", newFirmUser);
+        emailData.put("firmUserSubscription", site.getName() + " - " + newAccess.getDescription());
+        emailData.put("serverUrl", this.ecomServerURL);
+        emailData.put("currentDate", new Date());
+
+        SiteConfiguration siteConfig = this.eComDAO.getSiteConfiguration(site.getId());
+        Assert.notNull(siteConfig, "siteConfig Cannot be Null");
+
+        emailProducer.sendMailUsingTemplate(siteConfig.getFromEmailAddress(), newFirmUser.getUsername(),
+                siteConfig.getAddSubscriptionSub(),
+                siteConfig.getEmailTemplateFolder() + siteConfig.getPaymentConfirmationTemplate(), emailData);
+
+        emailData = new HashMap<String, Object>();
+        emailData.put("isUserAddedToFirmAdminEmail", "true");
+        emailData.put("newlyAddedFirmUser", newFirmUser);
+        emailData.put("user", adminFirmUser);
+        emailData.put("firmUserSubscription", site.getName() + " - " + newAccess.getDescription());
+        emailData.put("serverUrl", this.ecomServerURL);
+        emailData.put("currentDate", new Date());
+
+        emailProducer.sendMailUsingTemplate(siteConfig.getFromEmailAddress(), adminFirmUser.getUsername(),
+                siteConfig.getAddSubscriptionSub(),
+                siteConfig.getEmailTemplateFolder() + siteConfig.getPaymentConfirmationTemplate(), emailData);
+
     }
 
     private String getMessage(String messageKey) {

@@ -27,7 +27,6 @@ import com.fdt.ecom.dao.EComDAO;
 import com.fdt.ecom.entity.CreditCard;
 import com.fdt.ecom.entity.NodeConfiguration;
 import com.fdt.ecom.entity.Site;
-import com.fdt.ecom.entity.SiteConfiguration;
 import com.fdt.ecom.entity.Term;
 import com.fdt.ecom.entity.UserTerm;
 import com.fdt.email.EmailProducer;
@@ -51,6 +50,7 @@ import com.fdt.security.exception.UserNotActiveException;
 import com.fdt.security.service.validator.FirmUserSubscriptionValidator;
 import com.fdt.subscriptions.dao.SubDAO;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
+import com.fdt.subscriptions.service.SubService;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -74,6 +74,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private EmailProducer emailProducer;
+    
+    @Autowired
+    private SubService subService ;
 
     @Autowired
     private FirmUserSubscriptionValidator firmUserValidator;
@@ -278,18 +281,7 @@ public class UserServiceImpl implements UserService {
 	        this.sendUserMail(newFirmUser, nodeConfig.getFromEmailAddress(), nodeConfig.getUserActivationSubject(),
 	        	emailTemplateFile, controllerURL, password);
         } else {
-        	// Send Email about Subscription added
-            Map<String, Object> emailData = new HashMap<String, Object>();
-            emailData.put("user", newFirmUser);
-            emailData.put("firmUserSubscription", site.getName() + " - " + firmLevelSubscribedAccess.getDescription());
-            emailData.put("serverUrl", this.ecomServerURL);
-            emailData.put("currentDate", new Date());
-            // Retrieve Site Configuration from database
-            SiteConfiguration siteConfig = this.eComDAO.getSiteConfiguration(site.getId());
-            Assert.notNull(siteConfig, "siteConfig Cannot be Null");
-            this.emailProducer.sendMailUsingTemplate(siteConfig.getFromEmailAddress(), newFirmUser.getUsername(),
-                siteConfig.getAddSubscriptionSub(), siteConfig.getEmailTemplateFolder()
-                    + siteConfig.getPaymentConfirmationTemplate(), emailData);
+            subService.sendUserAddedToFirmEmails(adminUser, newFirmUser, firmLevelSubscribedAccess, site);
         }
         response.setStatus(ServiceResponseDTO.SUCCESS);
         if(userExists){
@@ -301,7 +293,6 @@ public class UserServiceImpl implements UserService {
         }
         return response;
     }
-
 
     /**
      *  This method adds the access to the user.
@@ -766,7 +757,6 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
-
 
     private void sendResetPasswordMail(User user, String nodeName, String controllerURL)
             throws UserNameNotFoundException {
