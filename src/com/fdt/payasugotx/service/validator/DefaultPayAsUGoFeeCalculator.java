@@ -19,6 +19,7 @@ import com.fdt.ecom.entity.NonRecurringFee;
 import com.fdt.ecom.entity.ShoppingCartItem;
 import com.fdt.security.dto.FirmUserDTO;
 import com.fdt.security.entity.Access;
+import com.fdt.security.entity.User;
 
 public class DefaultPayAsUGoFeeCalculator extends AbstractPayAsUGoFeeCalculator {
 
@@ -72,8 +73,8 @@ public class DefaultPayAsUGoFeeCalculator extends AbstractPayAsUGoFeeCalculator 
             
             // Lets check if this is a firm level access, if so then check if there is a NoOfDocuments limit
             Access access = shoppingCartItem.getAccess();
-            if(access.isGovernmentAccess()){
-            	calculateFee = false;
+            if (access.isGovernmentAccess() || (isCertifiedDocument(shoppingCartItem) && userHasGovernmentAccess(shoppingCartItem))) {
+                calculateFee = false;
             } else if(access.isFirmLevelAccess() && access.getMaxDocumentsAllowed() > 0){
                
            		// See if we already have retrieved firm users from database
@@ -266,7 +267,16 @@ public class DefaultPayAsUGoFeeCalculator extends AbstractPayAsUGoFeeCalculator 
         }
         return fee;
     }
-    
+
+    private boolean userHasGovernmentAccess(ShoppingCartItem shoppingCartItem) {
+        List<Access> accessList = userDAO.getAccessByUserName(shoppingCartItem.getUser().getUsername());
+        return accessList.stream().anyMatch(a -> a.isGovernmentAccess() && a.isAuthorized() && a.isActive());
+    }
+
+    private boolean isCertifiedDocument(ShoppingCartItem shoppingCartItem) {
+        return shoppingCartItem.isCertified();
+    }
+
     private String getMessage(String messageKey, Object[] object) {
         return this.messages.getMessage(messageKey, object, new Locale("en"));
     }

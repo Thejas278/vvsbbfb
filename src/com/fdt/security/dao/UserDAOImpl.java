@@ -6,6 +6,7 @@ import static com.fdt.security.dao.UserHQL.GET_ADMIN_USER_ACCESS_BY_USER_ID;
 import static com.fdt.security.dao.UserHQL.GET_FIRM_USER_ACCESS_BY_USERID_ACCESSIDS;
 import static com.fdt.security.dao.UserHQL.GET_USER_ACCESS_BY_USER_ID_ACCESS_IDS;
 import static com.fdt.security.dao.UserHQL.DELETE_USER_EVENT_BY_USER_NAME_REQ_TOKEN;
+import static com.fdt.security.dao.UserHQL.GET_ACCESS_BY_USER_ID;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -990,6 +991,20 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             }
         }
         return userAccessList;
+    }
+
+    /**
+     * Query access list by user name
+     *
+     * @param userName
+     * @return
+     */
+    public List<Access> getAccessByUserName(String userName) {
+        Session session = currentSession();
+        Query query = session.createQuery(GET_ACCESS_BY_USER_ID).setParameter("userName", userName);
+        @SuppressWarnings("unchecked")
+        List<Access> accessList = query.list();
+        return accessList;
     }
 
     public CreditCard getFirmCreditCardDetails(String username) {

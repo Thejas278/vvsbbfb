@@ -137,6 +137,8 @@ public interface UserDAO {
      */
     public List<UserAccess> getUserAccessForFirmLevelUsers(Long adminUserId, Long accessId);
 
+    public List<Access> getAccessByUserName(String userName);
+    
     public int authorize(List<Long> userAccessIds, boolean isAuthorized, String modifiedBy, boolean isActive,
     		boolean isFirmAccessAdmin);
     
