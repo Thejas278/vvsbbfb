@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fdt.security.dao.UserDAO;
+import com.fdt.security.entity.Access;
 import com.fdt.security.entity.User;
 import com.fdt.security.entity.UserAccess;
 import com.fdt.security.entity.UserEvent;
@@ -78,5 +79,13 @@ public class UserDAOTest {
 
         newUserEvent = userDAO.findUserEvent(userName, token);
         assertNull(newUserEvent);
+    }
+    
+    @Test
+    @Transactional
+    public void testGetAccessF() {
+        String userName = "jonandrewmille.r@gmail.com";
+        List<Access> accessList = userDAO.getAccessByUserName(userName);
+        assertNotNull(accessList);
     }
 }

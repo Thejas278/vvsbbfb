@@ -30,7 +30,11 @@ public final class UserHQL {
     		"WHERE " + 
 			"user.username =:userName AND " +
 			"userAccess.isFirmAccessAdmin = true"; 
-
+    
+    public static String GET_ACCESS_BY_USER_ID = 
+            "SELECT userAccess.access " +
+            "FROM UserAccess userAccess " + 
+            "WHERE userAccess.user.username =:userName";
 
     public static String GET_FIRM_USER_ACCESS_BY_USERID_ACCESSIDS = 
     		"SELECT userAccess from UserAccess userAccess " + 
