@@ -111,6 +111,8 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
                 subscriptionDTO.setFirmAdminUserAccessId((this.getLongFromInteger(row[27])));
                 subscriptionDTO.setGovernmentAccess(this.getBoolean(row[28]));
                 subscriptionDTO.setMaxDocumentsAllowed(this.getInteger(row[29]));
+                subscriptionDTO.setSubAdminFirmName(this.getString(row[30]));
+                subscriptionDTO.setOverriddenUntillDate(this.getDate(row[31]));
                 subscriptionDTOs.add(subscriptionDTO);
                 subscriptionDTO.getSubscriptionType();
            }
