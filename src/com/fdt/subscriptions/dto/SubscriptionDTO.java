@@ -99,6 +99,8 @@ public class SubscriptionDTO extends AbstractBaseDTO {
 
     private String machineName = null;
     
+    private String subAdminFirmName = null;
+    
     private Date overriddenUntillDate = null;
 
     // Flag for Firm Level Admin User
@@ -378,6 +380,13 @@ public class SubscriptionDTO extends AbstractBaseDTO {
 	}
 
 
+	public String getSubAdminFirmName() {
+		return subAdminFirmName;
+	}
+
+	public void setSubAdminFirmName(String subAdminFirmName) {
+		this.subAdminFirmName = subAdminFirmName;
+	}
 
 	public Long getFirmAdminUserAccessId() {
 		return firmAdminUserAccessId;

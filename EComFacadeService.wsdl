@@ -595,6 +595,7 @@
           <xs:element minOccurs="0" name="period" type="xs:string"/>
           <xs:element minOccurs="0" name="siteId" type="xs:long"/>
           <xs:element minOccurs="0" name="siteName" type="xs:string"/>
+          <xs:element minOccurs="0" name="subAdminFirmName" type="xs:string"/>
           <xs:element minOccurs="0" name="subscription" type="xs:string"/>
           <xs:element minOccurs="0" name="subscriptionFee" type="xs:double"/>
           <xs:element minOccurs="0" name="term" type="xs:long"/>
