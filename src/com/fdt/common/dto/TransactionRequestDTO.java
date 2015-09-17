@@ -24,7 +24,7 @@ public class TransactionRequestDTO implements Serializable {
 
 	private String comments;
 
-
+	private String transactionType;
 
 	/**
 	 * Pagination Variables
@@ -98,11 +98,20 @@ public class TransactionRequestDTO implements Serializable {
 		this.comments = comments;
 	}
 
+	public String getTransactionType() {
+	    return transactionType;
+	}
+
+	public void setTransactionType(String transactionType) {
+	    this.transactionType = transactionType;
+	}
+
 	@Override
 	public String toString() {
 		return "TransactionRequestDTO [userName=" + userName + ", nodeName="
 				+ nodeName + ", fromDate=" + fromDate + ", toDate=" + toDate
-				+ ", comments=" + comments + ", startingFrom=" + startingFrom
+				+ ", comments=" + comments + ", transactionType=" + transactionType
+				+ ", startingFrom=" + startingFrom
 				+ ", numberOfRecords=" + numberOfRecords + "]";
 	}
 

@@ -17,7 +17,7 @@ public interface PayAsUGoTxDAO {
     		Date fromDate, Date toDate) ;
 
 	public PageRecordsDTO getPayAsUGoTransactionsByNodePerPage(String firmUserName, String nodeName, String comments,
-			 Date fromDate, Date toDate, int startingFrom, int numberOfRecords);
+			 Date fromDate, Date toDate, String transactionType, int startingFrom, int numberOfRecords);
 
 
 
