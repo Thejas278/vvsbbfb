@@ -162,6 +162,7 @@ public class SubServiceImpl implements SubService {
             AccessDetailDTO accessDetailDTO = accessDetailMap.get(newAccessId);
             if(accessDetailDTO.getSite().getAccess().get(0).isFirmLevelAccess() && accessDetailDTO.getSubFee().getFee() == 0.0){
             	userAccess.setFirmAccessAdmin(true);
+            	userAccess.setActive(true);
             }
             if (accessDetailDTO.getSite().getAccess().get(0).getAccessType() != AccessType.RECURRING_SUBSCRIPTION) {
                 userAccess.setActive(true);
