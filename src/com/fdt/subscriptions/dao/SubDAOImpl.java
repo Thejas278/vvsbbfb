@@ -836,7 +836,7 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
                   .setParameter("isActive", enableDisable)
                   .setParameter("isAuthorized", enableDisableUserAccessAuthorizedFlag)
                   .setParameter("isAccessOverriden", false)
-                  .setParameter("isFirmAccessAdminFlag", isFirmAccessAdminFlag)
+                  .setParameter("isFirmAccessAdmin", isFirmAccessAdminFlag)
                   .executeUpdate();
         return recordsModified;
     }
