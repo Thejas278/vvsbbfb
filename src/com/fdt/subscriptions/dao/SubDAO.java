@@ -62,7 +62,7 @@ public interface SubDAO {
     public List<RecurTxSchedulerDTO> getCancelledSubscriptions();
 
     public int updateUserAccessWithAccessId(List<Long> existingUserAccessIds, Long accessId, boolean isEnable,
-            boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments);
+            boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments, boolean isFirmAccessAdmin);
     
 
     public int enableDisableCreditCard(Long userAccessId, boolean isActive, String modifiedBy);
