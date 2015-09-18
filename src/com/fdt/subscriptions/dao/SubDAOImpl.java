@@ -804,7 +804,7 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
     }
 
     public int updateUserAccessWithAccessId(List<Long> existingUserAccessIds, Long newAccessId, boolean isEnable,
-            boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments) {
+            boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments, boolean isFirmAccessAdmin) {
         Boolean enableDisable = Boolean.FALSE;
         if (isEnable) {
             enableDisable = Boolean.TRUE;
@@ -812,6 +812,10 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
         Boolean enableDisableUserAccessAuthorizedFlag = Boolean.FALSE;
         if (enableUserAccessAuthorizedFlag) {
             enableDisableUserAccessAuthorizedFlag = Boolean.TRUE;
+        }
+        Boolean isFirmAccessAdminFlag = Boolean.FALSE;
+        if (isFirmAccessAdmin) {
+        	isFirmAccessAdminFlag = Boolean.TRUE;
         }
         Session session = currentSession();
         int recordsModified = session.createQuery("Update UserAccess userAccess " +
@@ -821,7 +825,8 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
                   "userAccess.active = :isActive, " +
                   "userAccess.comments = :comments, " +
                   "userAccess.isAuthorized = :isAuthorized, " +
-                  "userAccess.accessOverriden = :isAccessOverriden " +
+                  "userAccess.accessOverriden = :isAccessOverriden, " +
+                  "userAccess.isFirmAccessAdmin = :isFirmAccessAdmin " +
                   "Where userAccess.id in (:existingUserAccessIds)")
                   .setParameter("accessId", newAccessId)
                   .setParameter("modifiedDate", new Date())
@@ -831,6 +836,7 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
                   .setParameter("isActive", enableDisable)
                   .setParameter("isAuthorized", enableDisableUserAccessAuthorizedFlag)
                   .setParameter("isAccessOverriden", false)
+                  .setParameter("isFirmAccessAdmin", isFirmAccessAdminFlag)
                   .executeUpdate();
         return recordsModified;
     }

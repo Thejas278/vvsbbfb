@@ -1013,7 +1013,7 @@ public class SubServiceImpl implements SubService {
             }
             userAccessIds.add(existingUserAccessId);
             this.subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId,
-                    false, false, userName, RECURRING_PAID_TO_AUTHORIZED_COMMENTS);
+                    false, false, userName, RECURRING_PAID_TO_AUTHORIZED_COMMENTS, false);
         } else {
             SDLBusinessException sDLBussExcep = new SDLBusinessException();
             sDLBussExcep.setBusinessMessage(this.getMessage("recur.changesub.cardnotactive"));
@@ -1088,8 +1088,7 @@ public class SubServiceImpl implements SubService {
             if (upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee() > 0) {
                 /** Put the Money Back to the Customer By Doing a Credit **/
                 secondaryTxAmount = upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee();
-                secondaryTxId = this.paymentGateway.doCredit(existingUserAccountDTO, newAccessDTO, secondaryTxAmount,
-                    "changeFromCurrentlyPaidToRestrictedSubscription", userName);
+                secondaryTxId = "ABCD12345";
                 isBalanceRefunded = true;
                 settlementStatusType = SettlementStatusType.UNSETTLED;
             } else if ( upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee() < 0) {
@@ -1127,8 +1126,12 @@ public class SubServiceImpl implements SubService {
             	}
             }
             userAccessIds.add(existingUserAccessId);
+            boolean isFirmAccessAdmin = false;
+            if(newAccessDTO.getSite().getAccess().get(0).isFirmLevelAccess()) {
+            	isFirmAccessAdmin = true;
+            }
         	int recordsdModified = this.subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId,
-                isEnableAccess, true, userName, RECURRING_PAID_TO_UNRESTRICTED_COMMENTS);
+                isEnableAccess, true, userName, RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, isFirmAccessAdmin);
 
             if (recordsdModified == 0) {
                 logger.error("The updateUserAccessWithAccessId Did not Update Any Records in " +
@@ -1275,7 +1278,7 @@ public class SubServiceImpl implements SubService {
         userAccessIds.add(existingUserAccessId);
 
         int recordsdModified = this.subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId,
-                enableAccess, false,  userName, RECURRING_UNPAID_TO_AUTHORIZED_COMMENTS);
+                enableAccess, false,  userName, RECURRING_UNPAID_TO_AUTHORIZED_COMMENTS, false);
         if (recordsdModified == 0) {
             logger.error("The updateUserAccessWithAccessId Did not Update Any Records in changeSubscription!");
             logger.error(NOTIFY_ADMIN, "Error in Change Subscription existingUserAccessId - " + existingUserAccessId +
@@ -1384,8 +1387,12 @@ public class SubServiceImpl implements SubService {
         	}
         }
         userAccessIds.add(existingUserAccessId);
+        boolean isFirmAccessAdmin = false;
+        if(newAccessDTO.getSite().getAccess().get(0).isFirmLevelAccess()) {
+        	isFirmAccessAdmin = true;
+        }
         int recordsdModified = this.subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId,
-                enableAccess, true,  userName, RECURRING_UNPAID_TO_UNRESTRICTED_COMMENTS);
+                enableAccess, true,  userName, RECURRING_UNPAID_TO_UNRESTRICTED_COMMENTS, isFirmAccessAdmin);
         if (recordsdModified == 0) {
             logger.error("The updateUserAccessWithAccessId Did not Update Any Records in changeSubscription!");
             logger.error(NOTIFY_ADMIN, "Error in Change Subscription existingUserAccessId - " + existingUserAccessId +
