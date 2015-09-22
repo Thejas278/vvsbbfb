@@ -1088,7 +1088,8 @@ public class SubServiceImpl implements SubService {
             if (upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee() > 0) {
                 /** Put the Money Back to the Customer By Doing a Credit **/
                 secondaryTxAmount = upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee();
-                secondaryTxId = "ABCD12345";
+                secondaryTxId = this.paymentGateway.doCredit(existingUserAccountDTO, newAccessDTO, secondaryTxAmount,
+                    "changeFromCurrentlyPaidToRestrictedSubscription", userName);
                 isBalanceRefunded = true;
                 settlementStatusType = SettlementStatusType.UNSETTLED;
             } else if ( upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee() < 0) {
