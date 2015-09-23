@@ -553,7 +553,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
      */
     @Transactional(readOnly = true)
     public PageRecordsDTO getPayAsUGoTxByNodePerPage(String userName, String nodeName, String comments,
-    		Date fromDate, Date toDate, int startingFrom, int numberOfRecords) {
+    		Date fromDate, Date toDate, String transactionType, int startingFrom, int numberOfRecords) {
         Assert.hasLength(userName, "User Name Cannot be Null/Empty");
         Assert.hasLength(nodeName, "Node Name Cannot be Null/Empty");
 		if(toDate != null){
@@ -561,7 +561,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
 			toDate.setTime(toDate.getTime() + (24 * 60 * 60 * 1000));
 		}
         return this.payAsUGoSubDAO.getPayAsUGoTransactionsByNodePerPage(userName, nodeName, comments, fromDate, toDate,
-        		startingFrom, numberOfRecords);
+        		transactionType, startingFrom, numberOfRecords);
     }
 
     /** This Method Returns All The Information About PayAsUGotransaction Made By The User.

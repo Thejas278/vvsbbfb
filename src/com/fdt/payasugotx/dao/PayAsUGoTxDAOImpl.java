@@ -91,7 +91,7 @@ public class PayAsUGoTxDAOImpl extends AbstractBaseDAOImpl implements PayAsUGoTx
 
 
     public PageRecordsDTO getPayAsUGoTransactionsByNodePerPage(String firmUserName, String nodeName, String comments,
-    		Date fromDate, Date toDate, int startingFrom, int numberOfRecords) {
+    		Date fromDate, Date toDate, String transactionType, int startingFrom, int numberOfRecords) {
         Session session = currentSession();
 
         // Let's get the count first
@@ -110,6 +110,11 @@ public class PayAsUGoTxDAOImpl extends AbstractBaseDAOImpl implements PayAsUGoTx
 		}
 		if(toDate != null){
 			countCriteria.add(Restrictions.le("transactionDate", toDate));
+		}
+		if (transactionType.equals("charges")) {
+		    countCriteria.add(Restrictions.eq("transactionType", "CHARGE"));
+		} else if (transactionType.equals("refunds")) {
+		    countCriteria.add(Restrictions.eq("transactionType", "REFUND"));
 		}
 
         Integer recordCount = ((Number)countCriteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
@@ -132,6 +137,11 @@ public class PayAsUGoTxDAOImpl extends AbstractBaseDAOImpl implements PayAsUGoTx
 		}
 		if(toDate != null){
 			criteria.add(Restrictions.le("transactionDate", toDate));
+		}
+		if (transactionType.equals("charges")) {
+		    criteria.add(Restrictions.eq("transactionType", "CHARGE"));
+		} else if (transactionType.equals("refunds")) {
+		    criteria.add(Restrictions.eq("transactionType", "REFUND"));
 		}
 		criteria.addOrder( Property.forName("subscription").asc() )
        		.addOrder( Property.forName("userName").asc() )

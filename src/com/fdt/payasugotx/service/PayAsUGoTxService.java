@@ -89,7 +89,7 @@ public interface PayAsUGoTxService {
      * @return The List Of PayAsUGoTransactions.
      */
     public PageRecordsDTO getPayAsUGoTxByNodePerPage(String userName, String nodeName, String comments, Date fromDate,
-    		Date toDate, int startingFrom, int numberOfRecords);
+    		Date toDate, String transactionType, int startingFrom, int numberOfRecords);
 
     /** This Method Returns All The Information About PayAsUGotransaction Made By The User.
      * @param userName EmailId of the User Logged In.

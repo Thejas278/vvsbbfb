@@ -27,7 +27,7 @@ public class PayAsUGoTxView implements Serializable {
 
     @Id
 	@Column(name="ID")
-    private Long payAsUGoTxItemId = null;
+    private String payAsUGoTxItemId = null;
 
     @Column(name="PAYASUGO_TRANSACTION_ID")
     private Long payAsUGoTxId = null;
@@ -272,11 +272,11 @@ public class PayAsUGoTxView implements Serializable {
 
 	}
 
-	public Long getPayAsUGoTxItemId() {
+	public String getPayAsUGoTxItemId() {
 		return payAsUGoTxItemId;
 	}
 
-	public void setPayAsUGoTxItemId(Long payAsUGoTxItemId) {
+	public void setPayAsUGoTxItemId(String payAsUGoTxItemId) {
 		this.payAsUGoTxItemId = payAsUGoTxItemId;
 	}
 

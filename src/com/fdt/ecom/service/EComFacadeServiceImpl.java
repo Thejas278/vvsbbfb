@@ -463,8 +463,8 @@ public class EComFacadeServiceImpl implements EComFacadeService {
     public PageRecordsDTO getPayAsUGoTransactionsByNodePerPage(TransactionRequestDTO request) {
         try {
             return this.payAsUGoSubService.getPayAsUGoTxByNodePerPage(request.getUserName(), request.getNodeName(),
-            		request.getComments(), request.getFromDate(), request.getToDate(), request.getStartingFrom(),
-            		request.getNumberOfRecords());
+            		request.getComments(), request.getFromDate(), request.getToDate(), request.getTransactionType(),
+            		request.getStartingFrom(), request.getNumberOfRecords());
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in getPayAsUGoTransactionsByNode for userName {} "
             		+ "nodeName{}, fromDate{}, toDate{}, startingFrom{}, numberOfRecords{}", request.getUserName(),
