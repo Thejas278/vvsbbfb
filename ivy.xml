@@ -1,0 +1,264 @@
+<!-- Ivy module file for ECom -->
+<!-- The dependency list is alphabetized and grouped by organization -->
+
+<ivy-module version="2.0">
+
+    <info organisation="com.granicus.rm" module="ecom"/>
+
+    <configurations defaultconf="compile" defaultconfmapping="*->default">
+        <conf name="default"/>
+        <conf name="wsdlgen"/>
+        <conf name="compile" extends="default"/>
+    </configurations>
+
+    <dependencies>
+
+        <dependency org="cglib" name="cglib" rev="3.1"/>
+
+        <!-- Logback dependencies -->
+        <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3"/>
+        <dependency org="ch.qos.logback" name="logback-core" rev="1.1.3"/>
+        <!-- End Logback dependencies -->
+
+        <!-- Atomikos dependencies -->
+        <dependency org="com.atomikos" name="transactions" rev="3.9.3"/>
+        <dependency org="com.atomikos" name="transactions-api" rev="3.9.3"/>
+        <dependency org="com.atomikos" name="transactions-hibernate3" rev="3.9.3"/>
+        <dependency org="com.atomikos" name="transactions-jdbc" rev="3.9.3"/>
+        <dependency org="com.atomikos" name="transactions-jms" rev="3.9.3"/>
+        <dependency org="com.atomikos" name="transactions-jta" rev="3.9.3"/>
+        <dependency org="com.atomikos" name="atomikos-util" rev="3.9.3"/>
+        <!-- End Atomikos dependencies -->
+
+        <!-- Jackson dependencies -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.6.2"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.6.2"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.6.2"/>
+        <dependency org="com.fasterxml.jackson.jaxrs" name="jackson-jaxrs-json-provider" rev="2.6.2"/>
+        <!-- End Jackson dependencies -->
+
+        <dependency org="com.google.guava" name="guava" rev="18.0"/>
+        <dependency org="com.ibm.icu" name="icu4j" rev="55.1"/>
+        <dependency org="com.jcraft" name="jsch" rev="0.1.53"/>
+        <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.8"/>
+
+        <!-- Apache Commons dependencies -->
+        <dependency org="commons-lang" name="commons-lang" rev="2.6"/>
+        <dependency org="commons-io" name="commons-io" rev="2.4"/>
+        <dependency org="commons-collections" name="commons-collections" rev="3.2.1"/>
+        <dependency org="commons-codec" name="commons-codec" rev="1.10"/>
+        <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4"/>
+        <dependency org="commons-logging" name="commons-logging" rev="1.2"/>
+        <dependency org="commons-pool" name="commons-pool" rev="1.6"/>
+        <!-- End Apache Commons dependencies -->
+
+        <dependency org="dom4j" name="dom4j" rev="1.6.1">
+            <exclude module="xml-apis"/>
+        </dependency>
+
+        <!-- Java X dependencies -->
+        <dependency org="javax.activation" name="activation" rev="1.1.1"/>
+        <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0"/>
+        <dependency org="javax.ws.rs" name="javax.ws.rs-api" rev="2.0.1"/>
+        <dependency org="javax.annotation" name="javax.annotation-api" rev="1.2"/>
+        <dependency org="javax.transaction" name="jta" rev="1.1"/>
+        <dependency org="javax.mail" name="javax.mail-api" rev="1.5.4"/>
+        <dependency org="javax.validation" name="validation-api" rev="1.1.0.Final"/>
+        <!-- End Java X dependencies -->
+
+        <dependency org="joda-time" name="joda-time" rev="2.8.2"/>
+        <dependency org="junit" name="junit" rev="4.12"/>
+        <dependency org="net.sf.ehcache" name="ehcache" rev="2.10.0"/>
+
+        <dependency org="org.antlr" name="antlr" rev="3.5.2"/>
+
+        <!-- Apache dependencies -->
+        <dependency org="org.apache.axis2" name="axis2-kernel" rev="1.6.3">
+            <!--
+              Axis 2 dependencies in Maven are really problematic. We choose to exclude nearly
+              all of them and instead include the dependencies ourselves in the proper config
+            -->
+            <exclude module="XmlSchema"/>
+            <exclude module="woden-api"/>
+            <exclude module="woden-impl-dom"/>
+            <exclude module="commons-fileupload"/>
+            <exclude module="geronimo-jta_1.1_spec"/>
+            <exclude module="geronimo-ws-metadata_2.0_spec"/>
+            <exclude module="wsdl4j"/>
+            <exclude module="jsr311-api"/>
+            <exclude module="neethi"/>
+        </dependency>
+        <dependency org="org.apache.axis2" name="axis2-adb" rev="1.6.3">
+            <exclude module="axis2-kernel"/>
+        </dependency>
+        <dependency org="org.apache.axis2" name="axis2-transport-local" rev="1.6.3">
+            <exclude module="axis2-kernel"/>
+        </dependency>
+        <dependency org="org.apache.axis2" name="axis2-transport-http" rev="1.6.3">
+            <exclude module="axis2-kernel"/>
+        </dependency>
+
+        <dependency org="org.apache.cxf" name="cxf-core" rev="3.1.3"/>
+        <dependency org="org.apache.cxf" name="cxf-rt-bindings-soap" rev="3.1.3"/>
+        <dependency org="org.apache.cxf" name="cxf-rt-databinding-jaxb" rev="3.1.3"/>
+        <dependency org="org.apache.cxf" name="cxf-rt-frontend-jaxws" rev="3.1.3">
+            <exclude module="cxf-rt-ws-addr"/>
+            <exclude module="cxf-rt-bindings-xml"/>
+        </dependency>
+        <dependency org="org.apache.cxf" name="cxf-rt-frontend-jaxrs" rev="3.1.3"/>
+        <dependency org="org.apache.cxf" name="cxf-rt-frontend-simple" rev="3.1.3"/>
+        <dependency org="org.apache.cxf" name="cxf-rt-rs-service-description" rev="3.1.3"/>
+        <dependency org="org.apache.cxf" name="cxf-rt-transports-http" rev="3.1.3"/>
+        <dependency org="org.apache.cxf" name="cxf-rt-ws-security" rev="3.1.3">
+            <exclude module="cxf-rt-security-saml"/>
+            <exclude module="wss4j-policy"/>
+            <exclude module="wss4j-ws-security-dom"/>
+            <exclude module="wss4j-ws-security-policy-stax"/>
+            <exclude module="wss4j-ws-security-stax"/>
+        </dependency>
+        <dependency org="org.apache.cxf" name="cxf-rt-wsdl" rev="3.1.3"/>
+
+        <dependency org="org.apache.geronimo.specs" name="geronimo-jta_1.1_spec" rev="1.1.1"/>
+        <dependency org="org.apache.geronimo.specs" name="geronimo-jms_1.1_spec" rev="1.1.1"/>
+        <dependency org="org.apache.geronimo.specs" name="geronimo-j2ee-management_1.1_spec" rev="1.0.1"/>
+
+        <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5.1"/>
+        <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.3"/>
+        <dependency org="org.apache.httpcomponents" name="httpcore-nio" rev="4.4.3"/>
+        <dependency org="org.apache.httpcomponents" name="httpasyncclient" rev="4.1"/>
+
+        <dependency org="org.apache.neethi" name="neethi" rev="3.0.3"/>
+
+        <dependency org="org.apache.santuario" name="xmlsec" rev="2.0.5"/>
+
+        <dependency org="org.apache.ws.commons.axiom" name="axiom-api" rev="1.2.15"/>
+        <dependency org="org.apache.ws.commons.axiom" name="axiom-impl" rev="1.2.15"/>
+
+        <dependency org="org.apache.ws.security" name="wss4j" rev="1.6.18">
+            <exclude module="opensaml"/>
+        </dependency>
+
+        <dependency org="org.apache.ws.xmlschema" name="xmlschema-core" rev="2.2.1"/>
+
+        <dependency org="org.apache.wss4j" name="wss4j-ws-security-common" rev="2.1.3">
+            <exclude module="opensaml-saml-impl"/>
+            <exclude module="opensaml-xacml-impl"/>
+            <exclude module="opensaml-xacml-saml-impl"/>
+        </dependency>
+        <dependency org="org.apache.wss4j" name="wss4j-ws-security-dom" rev="2.1.3">
+            <exclude module="opensaml-saml-impl"/>
+            <exclude module="opensaml-xacml-impl"/>
+            <exclude module="opensaml-xacml-saml-impl"/>
+        </dependency>
+        <!-- End Apache dependencies -->
+
+        <!-- AspectJ dependencies -->
+        <dependency org="org.aspectj" name="aspectjrt" rev="1.8.7"/>
+        <dependency org="org.aspectj" name="aspectjweaver" rev="1.8.7"/>
+        <!-- End AspectJ dependencies -->
+
+        <!-- Bouncycastle dependencies -->
+        <dependency org="org.bouncycastle" name="bcpg-jdk15on" rev="1.52"/>
+        <dependency org="org.bouncycastle" name="bcprov-jdk15on" rev="1.52"/>
+        <!-- End Bouncycastle dependencies -->
+
+        <!-- Codehaus dependencies -->
+        <dependency org="org.codehaus.woodstox" name="woodstox-core-asl" rev="4.4.1">
+            <exclude module="stax-api"/>
+        </dependency>
+        <dependency org="org.codehaus.woodstox" name="stax2-api" rev="3.1.4"/>
+
+        <dependency org="org.codehaus.janino" name="commons-compiler" rev="2.7.8"/>
+        <dependency org="org.codehaus.janino" name="janino" rev="2.7.8"/>
+        <!-- End Codehaus dependencies -->
+
+        <dependency org="org.javassist" name="javassist" rev="3.20.0-GA"/>
+        <dependency org="org.jboss.logging" name="jboss-logging" rev="3.3.0.Final"/>
+
+        <!-- Open SAML dependencies -->
+        <dependency org="org.opensaml" name="xmltooling" rev="1.4.4">
+            <exclude module="not-yet-commons-ssl"/>
+        </dependency>
+        <dependency org="org.opensaml" name="opensaml" rev="2.6.4">
+            <exclude module="velocity"/>
+        </dependency>
+         <!-- End Open SAML dependencies -->
+
+        <!-- SLF4J dependencies -->
+        <dependency org="org.slf4j" name="log4j-over-slf4j" rev="1.7.12"/>
+        <dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.7.12"/>
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.7.12"/>
+        <!-- End SLF4J dependencies -->
+
+        <!-- Spring dependencies -->
+        <dependency org="org.springframework" name="spring-aop" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-aspects" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-beans" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-context" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-context-support" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-core" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-expression" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-instrument" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-jdbc" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-jms" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-messaging" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-orm" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-oxm" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-test" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-tx" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-web" rev="4.2.1.RELEASE"/>
+        <dependency org="org.springframework" name="spring-webmvc" rev="4.2.1.RELEASE"/>
+
+        <dependency org="org.springframework.security" name="spring-security-aspects" rev="3.2.8.RELEASE"/>
+        <dependency org="org.springframework.security" name="spring-security-config" rev="3.2.8.RELEASE"/>
+        <dependency org="org.springframework.security" name="spring-security-web" rev="3.2.8.RELEASE"/>
+        <dependency org="org.springframework.security" name="spring-security-core" rev="3.2.8.RELEASE"/>
+        <!-- End Spring dependencies -->
+
+        <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3"/>
+
+        <!-- Hibernate dependencies -->
+        <dependency org="org.hibernate" name="hibernate-core" rev="4.3.11.Final">
+            <exclude module="jboss-transaction-api_1.2_spec"/>
+            <exclude module="jboss-logging-annotations"/>
+            <exclude module="dom4j"/>
+            <exclude module="antlr"/>
+        </dependency>
+        <dependency org="org.hibernate" name="hibernate-validator" rev="5.2.2.Final"/>
+        <dependency org="org.hibernate.common" name="hibernate-commons-annotations" rev="4.0.5.Final">
+            <exclude module="jboss-logging-annotations"/>
+        </dependency>
+        <dependency org="org.hibernate.javax.persistence" name="hibernate-jpa-2.1-api" rev="1.0.0.Final"/>
+        <!-- End Hibernate dependencies -->
+
+        <!-- Jascypt dependencies -->
+        <dependency org="org.jasypt" name="jasypt" rev="1.9.2"/>
+        <dependency org="org.jasypt" name="jasypt-spring31" rev="1.9.2"/>
+        <dependency org="org.jasypt" name="jasypt-springsecurity3" rev="1.9.2"/>
+        <dependency org="org.jasypt" name="jasypt-hibernate4" rev="1.9.2"/>
+        <!-- End Jasypt dependencies -->
+
+        <!-- ASM dependencies -->
+        <dependency org="org.ow2.asm" name="asm" rev="5.0.4"/>
+        <!-- End ASM dependencies -->
+
+        <!-- Quartz dependencies -->
+        <dependency org="org.quartz-scheduler" name="quartz" rev="2.2.1"/>
+        <!-- End Quartz dependencies -->
+
+        <dependency org="wsdl4j" name="wsdl4j" rev="1.6.3"/>
+        <dependency org="xmlpull" name="xmlpull" rev="1.1.3.4d_b4_min"/>
+        <dependency org="xpp3" name="xpp3_min" rev="1.1.4c"/>
+
+        <!-- WSDL generation configuration -->
+        <dependency org="org.apache.cxf" name="cxf-tools-wsdlto-core" rev="3.1.3" conf="wsdlgen->default"/>
+        <dependency org="org.apache.cxf" name="cxf-tools-wsdlto-frontend-jaxws" rev="3.1.3" conf="wsdlgen->default"/>
+        <dependency org="org.apache.cxf" name="cxf-tools-wsdlto-databinding-jaxb" rev="3.1.3" conf="wsdlgen->default"/>
+        <dependency org="org.apache.cxf.xjc-utils" name="cxf-xjc-runtime" rev="3.0.5" conf="wsdlgen->default"/>
+        <dependency org="javax.xml.bind" name="jaxb-api" rev="2.2.12" conf="wsdlgen->default"/>
+        <dependency org="com.sun.xml.bind" name="jaxb-xjc" rev="2.2.11" conf="wsdlgen->default"/>
+        <dependency org="com.sun.xml.bind" name="jaxb-impl" rev="2.2.11" conf="wsdlgen->default"/>
+        <!-- End WSDL generation configuration -->
+
+    </dependencies>
+</ivy-module>

@@ -7,31 +7,51 @@
     <property name="dist"                value="${basedir}/dist"/>
     <property name="java.src"            value="${basedir}/src"/>
     <property name="java.clientStub.src" value="${dist}/ecomWSClient"/>
-    <property name="wsdl"                value="${wsdl}"/>
-    <property name="WSlib"               value="${basedir}/WSJars"/>
     <property name="webcontent"          value="${basedir}/WebContent/"/>
     <property name="webcontent.web-inf"  value="${webcontent}/WEB-INF/"/>
     <property name="webcontent.lib"      value="${webcontent.web-inf}/lib/"/>
     <property name="server-conf"         value="${webcontent.web-inf}/conf/spring/properties/server.properties"/>
     <property name="atomikos-conf"       value="${basedir}/resources/jta.properties"/>
 
-    <target name="clean">
-         <delete dir="${dist}"/>
-     </target>
-
-    <target name="init" depends="clean">
-        <mkdir dir="${dist}" />
-        <mkdir dir="${dist}/build/classes"/>
-        <mkdir dir="${java.clientStub.src}" />
-    </target>
-
-    <path id="xmltask.lib.path">
+    <path id="ant.lib.path">
         <fileset dir="ant-lib" includes="*.jar"/>
     </path>
 
-    <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask" classpathref="xmltask.lib.path"/>
+    <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask" classpathref="ant.lib.path"/>
+    <taskdef name="ivy-configure" classname="org.apache.ivy.ant.IvyConfigure" classpathref="ant.lib.path"/>
+    <taskdef name="ivy-resolve" classname="org.apache.ivy.ant.IvyResolve" classpathref="ant.lib.path"/>
+    <taskdef name="ivy-retrieve" classname="org.apache.ivy.ant.IvyRetrieve" classpathref="ant.lib.path"/>
+    <taskdef name="ivy-publish" classname="org.apache.ivy.ant.IvyPublish" classpathref="ant.lib.path"/>
+    <taskdef name="ivy-report" classname="org.apache.ivy.ant.IvyReport" classpathref="ant.lib.path"/>
 
-    <target name="ConfUpdate" depends="init">
+    <target name="clean">
+        <delete dir="${dist}"/>
+        <delete dir="${webcontent.lib}"/>
+     </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${dist}/build/classes"/>
+        <mkdir dir="${dist}/staging/lib"/>
+        <mkdir dir="${java.clientStub.src}"/>
+        <mkdir dir="${webcontent.lib}"/>
+    </target>
+
+    <target name="resolve-dependencies" depends="init" description="Copy private dependencies from lib and retrieve Ivy dependencies">
+        <copy todir="${webcontent.lib}">
+            <fileset dir="${basedir}/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        <ivy-retrieve conf="compile" pattern="${webcontent.lib}/[artifact]-[revision].[ext]"/>
+        <ivy-retrieve conf="wsdlgen" pattern="${dist}/staging/lib/[artifact]-[revision].[ext]"/>
+    </target>
+
+    <target name="report-dependencies" depends="resolve-dependencies" description="Generates an Ivy report">
+        <ivy-report todir="${dist}"/>
+    </target>
+
+    <target name="conf-update" depends="init">
         <propertyfile file="${server-conf}">
             <entry key="jdbc.url" value="${jdbc.url}" />
             <entry key="jdbc.username" value="${jdbc.username}"/>
@@ -87,21 +107,20 @@
 
     <path id="cxf.classpath">
       <fileset dir="${webcontent.lib}">
-         <include name="**/*.jar" />
-          <include name="${webcontent.web-inf}/lib/cxf-2.7.0.jar" />
+         <include name="*.jar" />
       </fileset>
-        <fileset dir="${WSlib}">
-           <include name="**/*.jar" />
+        <fileset dir="${dist}/staging/lib">
+           <include name="*.jar" />
         </fileset>
     </path>
 
-    <target name="compile" depends="ConfUpdate">
+    <target name="compile" depends="conf-update,resolve-dependencies">
         <javac destdir="${dist}/build/classes" debug="true" srcdir="${java.src}" encoding="utf-8">
             <classpath refid="compile.classpath"/>
         </javac>
     </target>
 
-    <target name="cxfWSDLToJavaEcom"  depends="init">
+    <target name="cxfWSDLToJavaEcom" depends="resolve-dependencies">
         <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
             <arg value="-client"/>
             <arg value="-b"/>
@@ -109,7 +128,7 @@
             <arg value="-d"/>
             <arg value="${java.clientStub.src}"/>
             <arg value="-compile" />
-            <arg value="${EComFacadeServiceWSDL}"/>
+            <arg value="${basedir}/EComFacadeService.wsdl"/>
             <classpath>
                 <path refid="cxf.classpath"/>
             </classpath>
@@ -129,35 +148,35 @@
         </jar>
         <jar jarfile="${dist}/ecomclient.jar" compress="true">
             <fileset dir="${dist}/build/classes">
-                <include name="com/fdt/achtx/dto/**" /> 
-                <include name="com/fdt/achtx/entity/**" /> 
-                <include name="com/fdt/alerts/dto/**" /> 
-                <include name="com/fdt/alerts/entity/**" /> 
+                <include name="com/fdt/achtx/dto/**" />
+                <include name="com/fdt/achtx/entity/**" />
+                <include name="com/fdt/alerts/dto/**" />
+                <include name="com/fdt/alerts/entity/**" />
                 <include name="com/fdt/alerts/service/AlertFacadeService.class" />
                 <include name="com/fdt/alerts/service/AlertFacadeServiceImpl.class" />
-                <include name="com/fdt/common/dto/**" /> 
-                <include name="com/fdt/common/entity/**" /> 
-                <include name="com/fdt/common/exception/**" /> 
-                <include name="com/fdt/ecom/dto/**" /> 
-                <include name="com/fdt/ecom/entity/**" /> 
-                <include name="com/fdt/ecom/exception/**" /> 
-                <include name="com/fdt/ecom/service/EComFacadeService.class" /> 
-                <include name="com/fdt/ecom/service/EComAdminFacadeService.class" /> 
-                <include name="com/fdt/otctx/dto/**" /> 
-                <include name="com/fdt/otctx/entity/**" /> 
+                <include name="com/fdt/common/dto/**" />
+                <include name="com/fdt/common/entity/**" />
+                <include name="com/fdt/common/exception/**" />
+                <include name="com/fdt/ecom/dto/**" />
+                <include name="com/fdt/ecom/entity/**" />
+                <include name="com/fdt/ecom/exception/**" />
+                <include name="com/fdt/ecom/service/EComFacadeService.class" />
+                <include name="com/fdt/ecom/service/EComAdminFacadeService.class" />
+                <include name="com/fdt/otctx/dto/**" />
+                <include name="com/fdt/otctx/entity/**" />
                 <include name="com/fdt/otctx/exception/**" />
-                <include name="com/fdt/payasugotx/dto/**" /> 
-                <include name="com/fdt/payasugotx/entity/**" /> 
-                <include name="com/fdt/paymentgateway/dto/**" /> 
-                <include name="com/fdt/paymentgateway/exception/**" />            	
-                <include name="com/fdt/subscriptions/entity/**" /> 
-                <include name="com/fdt/subscriptions/dto/**" /> 
-                <include name="com/fdt/recurtx/dto/**" /> 
-                <include name="com/fdt/recurtx/entity/**" /> 
+                <include name="com/fdt/payasugotx/dto/**" />
+                <include name="com/fdt/payasugotx/entity/**" />
+                <include name="com/fdt/paymentgateway/dto/**" />
+                <include name="com/fdt/paymentgateway/exception/**" />
+                <include name="com/fdt/subscriptions/entity/**" />
+                <include name="com/fdt/subscriptions/dto/**" />
+                <include name="com/fdt/recurtx/dto/**" />
+                <include name="com/fdt/recurtx/entity/**" />
                 <include name="com/fdt/recurtx/exception/**" />
-                <include name="com/fdt/webtx/dto/**" /> 
+                <include name="com/fdt/webtx/dto/**" />
                 <include name="com/fdt/webtx/entity/**" />
-                <include name="com/fdt/security/entity/**" /> 
+                <include name="com/fdt/security/entity/**" />
                 <include name="com/fdt/security/exception/**" />
                 <exclude name="com/fdt/security/service/**" />
                 <include name="com/fdt/security/dto/**" />
