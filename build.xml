@@ -43,7 +43,7 @@
                 <include name="*.jar"/>
             </fileset>
         </copy>
-        <ivy-retrieve conf="compile" pattern="${webcontent.lib}/[artifact]-[revision].[ext]"/>
+        <ivy-retrieve conf="ecom" pattern="${webcontent.lib}/[artifact]-[revision].[ext]"/>
         <ivy-retrieve conf="wsdlgen" pattern="${dist}/staging/lib/[artifact]-[revision].[ext]"/>
     </target>
 
