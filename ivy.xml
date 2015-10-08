@@ -58,7 +58,10 @@
         <dependency org="com.jcraft" name="jsch" rev="0.1.53" conf="ecom->default"/>
         <dependency org="com.jhlabs" name="filters" rev="2.0.235-1" conf="ecomadmin->default"/>
         <dependency org="com.keypoint" name="png-encoder" rev="1.5" conf="ecomadmin->default"/>
+
         <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.8" conf="ecom->default"/>
+            <exclude module="xpp3_min"/>
+        </dependency>
 
         <dependency org="com.sun.xml.bind" name="jaxb-xjc" rev="2.2.11" conf="ecomadmin->default;wsdlgen->default"/>
         <dependency org="com.sun.xml.bind" name="jaxb-impl" rev="2.2.11" conf="ecomadmin->default;wsdlgen->default"/>
@@ -318,8 +321,7 @@
         <dependency org="wsdl4j" name="wsdl4j" rev="1.6.3"/>
         <dependency org="xalan" name="serializer" rev="2.7.2" conf="ecomadmin->default"/>
         <dependency org="xml-apis" name="xml-apis" rev="1.3.04"/>
-        <dependency org="xmlpull" name="xmlpull" rev="1.1.3.4d_b4_min" conf="ecom->default"/>
-        <dependency org="xpp3" name="xpp3_min" rev="1.1.4c" conf="ecom->default"/>
+        <dependency org="xpp3" name="xpp3" rev="1.1.4c" conf="ecom->default"/>
 
     </dependencies>
 </ivy-module>
