@@ -59,7 +59,7 @@
         <dependency org="com.jhlabs" name="filters" rev="2.0.235-1" conf="ecomadmin->default"/>
         <dependency org="com.keypoint" name="png-encoder" rev="1.5" conf="ecomadmin->default"/>
 
-        <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.8" conf="ecom->default"/>
+        <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.8" conf="ecom->default">
             <exclude module="xpp3_min"/>
         </dependency>
 
