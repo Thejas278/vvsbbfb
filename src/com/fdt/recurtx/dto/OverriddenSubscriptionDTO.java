@@ -2,7 +2,7 @@ package com.fdt.recurtx.dto;
 
 import java.util.Date;
 
-public class ExpiredOverriddenSubscriptionDTO {
+public class OverriddenSubscriptionDTO {
 
 	private Long  userAccessId;
 	
@@ -23,6 +23,10 @@ public class ExpiredOverriddenSubscriptionDTO {
 	private String expiredOverriddenSubscriptionNotificationSubject;
 	
 	private String expiredOverriddenSubscriptionNotificationTemplate;
+	
+	private String overriddenSubscriptionWarningSubject;
+	
+	private String overriddenSubscriptionWarningTemplate;
 	
 	private String fromEmailAddress;
 	
@@ -125,6 +129,20 @@ public class ExpiredOverriddenSubscriptionDTO {
 			String expiredOverriddenSubscriptionNotificationTemplate) {
 		this.expiredOverriddenSubscriptionNotificationTemplate = expiredOverriddenSubscriptionNotificationTemplate;
 	}
-	
-	
+
+    public String getOverriddenSubscriptionWarningSubject() {
+        return overriddenSubscriptionWarningSubject;
+    }
+
+    public void setOverriddenSubscriptionWarningSubject(String overriddenSubscriptionWarningSubject) {
+        this.overriddenSubscriptionWarningSubject = overriddenSubscriptionWarningSubject;
+    }
+
+    public String getOverriddenSubscriptionWarningTemplate() {
+        return overriddenSubscriptionWarningTemplate;
+    }
+
+    public void setOverriddenSubscriptionWarningTemplate(String overriddenSubscriptionWarningTemplate) {
+        this.overriddenSubscriptionWarningTemplate = overriddenSubscriptionWarningTemplate;
+    }
 }

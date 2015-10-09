@@ -2,10 +2,9 @@ package com.fdt.recurtx.dao;
 
 import java.util.List;
 
-import com.fdt.recurtx.dto.ExpiredOverriddenSubscriptionDTO;
+import com.fdt.recurtx.dto.OverriddenSubscriptionDTO;
 import com.fdt.recurtx.dto.RecurTxSchedulerDTO;
 import com.fdt.recurtx.entity.RecurTx;
-import com.fdt.security.entity.UserAccess;
 
 public interface RecurTxDAO {
 
@@ -29,10 +28,14 @@ public interface RecurTxDAO {
 
     public List<RecurTx> getRecurTxByUser(String userName);
 
-	public void archiveRecurTransactions(String archivedBy, String archiveComments);
+    public void archiveRecurTransactions(String archivedBy, String archiveComments);
 
-	public List<ExpiredOverriddenSubscriptionDTO> getExpiredOverriddenSubscriptions();
+    public List<OverriddenSubscriptionDTO> getExpiredOverriddenSubscriptions();
 
-	public void disableOverriddenSubscription(ExpiredOverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO);
+    public void disableOverriddenSubscription(OverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO);
+
+    public List<OverriddenSubscriptionDTO> getExpiringOverriddenSubscriptions();
+
+    public void updateIsOverriddenSubscriptionWarningSent(Long userAccessId, boolean isWarningSent);
 
 }

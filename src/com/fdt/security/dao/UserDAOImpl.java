@@ -404,6 +404,7 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
 
     public int enableDisableUserAccesses(List<Long> userAccessIds, boolean isEnable, String modifiedBy, String comments,
             boolean isAccessOverridden, String endDate) {
+
         Boolean enableDisable = Boolean.FALSE;
         if (isEnable) {
             enableDisable = Boolean.TRUE;
@@ -413,31 +414,42 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             isAccessOverriddenObj = Boolean.TRUE;
         }
         Date overriddenUntillDate = null;
-        if(!StringUtils.isBlank(endDate)){
-        	overriddenUntillDate = DateTimeFormat.forPattern("MM/dd/yyyy").parseDateTime(endDate).withTime(23,59,59,1).toDate();
-		}
-        Session session = currentSession();
-        int recordsModified = session.createQuery("Update UserAccess useraccess " +
-                                "Set useraccess.active = :isEnabled , " +
-                                "useraccess.modifiedDate = :modifiedDate, " +
-                                "useraccess.modifiedBy = :modifiedBy, " +
-                                "useraccess.comments = :comments, " +
-                                "useraccess.overriddenUntillDate = :overriddenUntillDate, " +
-                                "useraccess.accessOverriden = :accessOverriden " +
-                                "where useraccess.id  in (:userAccessIds)")
-                                .setParameter("isEnabled", enableDisable)
-                                .setParameterList("userAccessIds", userAccessIds)
-                                .setParameter("modifiedDate", new Date())
-                                .setParameter("modifiedBy", modifiedBy)
-                                .setParameter("comments", comments)
-                                .setParameter("overriddenUntillDate", overriddenUntillDate)
-                                .setParameter("accessOverriden", isAccessOverriddenObj)
-                                .executeUpdate();
-        return recordsModified;
+        if (!StringUtils.isBlank(endDate)){
+            overriddenUntillDate = DateTimeFormat.forPattern("MM/dd/yyyy").parseDateTime(endDate).withTime(23,59,59,1).toDate();
+        }
+
+        StringBuilder updateQueryStrBldr = new StringBuilder();
+        updateQueryStrBldr.append("Update UserAccess useraccess ");
+        updateQueryStrBldr.append("Set useraccess.active = :isEnabled, ");
+        updateQueryStrBldr.append("useraccess.modifiedDate = :modifiedDate, ");
+        updateQueryStrBldr.append("useraccess.modifiedBy = :modifiedBy, ");
+        updateQueryStrBldr.append("useraccess.comments = :comments, ");
+        updateQueryStrBldr.append("useraccess.overriddenUntillDate = :overriddenUntillDate, ");
+        updateQueryStrBldr.append("useraccess.accessOverriden = :accessOverriden ");
+        if (isAccessOverridden) {
+            updateQueryStrBldr.append(", useraccess.isOverriddenSubWarningSent = :isOverriddenSubWarningSent ");
+        }
+        updateQueryStrBldr.append("where useraccess.id  in (:userAccessIds)");
+
+        Query updateQuery = currentSession().createQuery(updateQueryStrBldr.toString());
+        updateQuery = updateQuery.setParameter("isEnabled", enableDisable)
+            .setParameterList("userAccessIds", userAccessIds)
+            .setParameter("modifiedDate", new Date())
+            .setParameter("modifiedBy", modifiedBy)
+            .setParameter("comments", comments)
+            .setParameter("overriddenUntillDate", overriddenUntillDate)
+            .setParameter("accessOverriden", isAccessOverriddenObj);
+
+        if (isAccessOverridden) {
+            updateQuery = updateQuery.setParameter("isOverriddenSubWarningSent", Boolean.FALSE);
+        }
+
+        return updateQuery.executeUpdate();
     }
 
     public int enableDisableFirmLevelUserAccess(Long userAccessId, boolean isEnable, String modifiedBy, String comments,
             boolean isAccessOverridden, boolean isFirmAccessAdmin) {
+
         Boolean enableDisable = Boolean.FALSE;
         if (isEnable) {
             enableDisable = Boolean.TRUE;
@@ -446,30 +458,38 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
         if (isAccessOverridden) {
             isAccessOverriddenObj = Boolean.TRUE;
         }
-
         Boolean isFirmAccessAdminObj = Boolean.FALSE;
         if (isFirmAccessAdmin) {
-        	isFirmAccessAdminObj = Boolean.TRUE;
+            isFirmAccessAdminObj = Boolean.TRUE;
         }
 
-        Session session = currentSession();
-        int recordsModified = session.createQuery("Update UserAccess useraccess " +
-                                "Set useraccess.active = :isEnabled , " +
-                                "useraccess.modifiedDate = :modifiedDate, " +
-                                "useraccess.modifiedBy = :modifiedBy, " +
-                                "useraccess.comments = :comments, " +
-                                "useraccess.accessOverriden = :accessOverriden, " +
-                                "useraccess.isFirmAccessAdmin = :isFirmAccessAdmin " +
-                                "where useraccess.id = :userAccessId")
-                                .setParameter("isEnabled", enableDisable)
-                                .setParameter("userAccessId", userAccessId)
-                                .setParameter("modifiedDate", new Date())
-                                .setParameter("modifiedBy", modifiedBy)
-                                .setParameter("comments", comments)
-                                .setParameter("accessOverriden", isAccessOverriddenObj)
-                                .setParameter("isFirmAccessAdmin", isFirmAccessAdminObj)
-                                .executeUpdate();
-        return recordsModified;
+        StringBuilder updateQueryStrBldr = new StringBuilder();
+        updateQueryStrBldr.append("Update UserAccess useraccess ");
+        updateQueryStrBldr.append("Set useraccess.active = :isEnabled, ");
+        updateQueryStrBldr.append("useraccess.modifiedDate = :modifiedDate, ");
+        updateQueryStrBldr.append("useraccess.modifiedBy = :modifiedBy, ");
+        updateQueryStrBldr.append("useraccess.comments = :comments, ");
+        updateQueryStrBldr.append("useraccess.accessOverriden = :accessOverriden, ");
+        updateQueryStrBldr.append("useraccess.isFirmAccessAdmin = :isFirmAccessAdmin ");
+        if (isAccessOverridden) {
+            updateQueryStrBldr.append(", useraccess.isOverriddenSubWarningSent = :isOverriddenSubWarningSent ");
+        }
+        updateQueryStrBldr.append("where useraccess.id  in (:userAccessIds)");
+
+        Query updateQuery = currentSession().createQuery(updateQueryStrBldr.toString());
+        updateQuery = updateQuery.setParameter("isEnabled", enableDisable)
+            .setParameter("userAccessId", userAccessId)
+            .setParameter("modifiedDate", new Date())
+            .setParameter("modifiedBy", modifiedBy)
+            .setParameter("comments", comments)
+            .setParameter("accessOverriden", isAccessOverriddenObj)
+            .setParameter("isFirmAccessAdmin", isFirmAccessAdminObj);
+
+        if (isAccessOverridden) {
+            updateQuery = updateQuery.setParameter("isOverriddenSubWarningSent", Boolean.FALSE);
+        }
+
+        return updateQuery.executeUpdate();
     }
 
     public int updateFirmUserAccess(Long userAccessId, Long userId,

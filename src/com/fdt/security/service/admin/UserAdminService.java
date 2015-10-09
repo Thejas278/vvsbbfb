@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fdt.common.dto.PageRecordsDTO;
 import com.fdt.common.exception.SDLBusinessException;
+import com.fdt.recurtx.dto.OverriddenSubscriptionDTO;
 import com.fdt.security.dto.FirmUserDTO;
 import com.fdt.security.dto.SearchCriteriaDTO;
 import com.fdt.security.entity.User;
@@ -48,6 +49,11 @@ public interface UserAdminService {
      * @param user
      */
     public void notifyInactiveUsers(User user);
+
+    /**
+     * @param overriddenSubscriptionDTO
+     */
+    public void warnExpiringOverriddenSubscription(OverriddenSubscriptionDTO overriddenSubscriptionDTO);
     
 
     /**

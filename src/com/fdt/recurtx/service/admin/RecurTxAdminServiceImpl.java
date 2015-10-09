@@ -47,7 +47,7 @@ import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
 import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
 import com.fdt.paymentgateway.service.PaymentGatewayService;
 import com.fdt.recurtx.dao.RecurTxDAO;
-import com.fdt.recurtx.dto.ExpiredOverriddenSubscriptionDTO;
+import com.fdt.recurtx.dto.OverriddenSubscriptionDTO;
 import com.fdt.recurtx.dto.RecurTxSchedulerDTO;
 import com.fdt.recurtx.entity.RecurTx;
 import com.fdt.security.dao.UserDAO;
@@ -413,12 +413,12 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
     }
     
     @Transactional(readOnly = true)
-	public List<ExpiredOverriddenSubscriptionDTO> getExpiredOverriddenSubscriptions() {
+	public List<OverriddenSubscriptionDTO> getExpiredOverriddenSubscriptions() {
 		return this.recurTxDAO.getExpiredOverriddenSubscriptions();
 	}
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor= Throwable.class)
-	public void disableOverriddenSubscription(ExpiredOverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO) {
+	public void disableOverriddenSubscription(OverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO) {
     	this.recurTxDAO.disableOverriddenSubscription(expiredOverriddenSubscriptionDTO);
     	Map<String, Object> emailData = new HashMap<String, Object>();
         emailData.put("customerName", expiredOverriddenSubscriptionDTO.getFirstName() + " " + expiredOverriddenSubscriptionDTO.getLastName());
@@ -431,6 +431,12 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
                         emailData);
 		
 	}
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OverriddenSubscriptionDTO> getExpiringOverriddenSubscriptions() {
+        return this.recurTxDAO.getExpiringOverriddenSubscriptions();
+    }
 
     private void disableUserAccountAndSendFailedPaymentEmail(RecurTxSchedulerDTO payPalSchedulerDTO,
     		RecurTx recurTransaction,

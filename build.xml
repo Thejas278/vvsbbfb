@@ -49,7 +49,8 @@
             <entry key="scheduler.ecom.chargerecurringprofiles" value="${scheduler.ecom.chargerecurringprofiles}"/>
             <entry key="scheduler.ecom.notifyinactiveusers" value="${scheduler.ecom.notifyinactiveusers}"/> 
             <entry key="scheduler.ecom.archivetransactions" value="${scheduler.ecom.archivetransactions}"/> 
-            <entry key="scheduler.ecom.disableoverriddensubscriptions" value="${scheduler.ecom.disableoverriddensubscriptions}"/> 
+            <entry key="scheduler.ecom.disableoverriddensubscriptions" value="${scheduler.ecom.disableoverriddensubscriptions}"/>
+            <entry key="scheduler.ecom.warnexpiringoverriddensubscriptions" value="${scheduler.ecom.warnexpiringoverriddensubscriptions}"/>
             <entry key="activemq.emailqueue" value="${activemq.emailqueue}"/>
             <entry key="emailservice.emailserver" value="${emailservice.emailserver}"/>
             <entry key="emailservice.emailport" value="${emailservice.emailport}"/>
