@@ -11,7 +11,7 @@ import com.fdt.common.entity.AbstractBaseEntity;
 @Table(name = "SITE_CONFIGURATION")
 public class SiteConfiguration extends AbstractBaseEntity {
 
-    private static final long serialVersionUID = -3810507506871620564L;
+    private static final long serialVersionUID = -8264284771862145562L;
 
     @Column(name = "SITE_ID", nullable = false)
     private Long siteId = null;
@@ -90,6 +90,12 @@ public class SiteConfiguration extends AbstractBaseEntity {
 
     @Column(name = "EXPIRED_OVERRIDDEN_SUBSCRIPTION_NOTIFICATION_TEMPLATE", nullable = false)
     private String expiredOverriddenSubscriptionNotificationTemplate = null;
+    
+    @Column(name = "OVERRIDDEN_SUBSCRIPTION_WARNING_SUB")
+    private String overriddenSubscriptionWarningSub = null;
+
+    @Column(name = "OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE", nullable = false)
+    private String overriddenSubscriptionWarningTemplate = null;
     
     public String getExpiredOverriddenSubscriptionNotificationSubject() {
 		return expiredOverriddenSubscriptionNotificationSubject;
@@ -311,6 +317,22 @@ public class SiteConfiguration extends AbstractBaseEntity {
 	public void setAddSubscriptionSub(String addSubscriptionSub) {
 		this.addSubscriptionSub = addSubscriptionSub;
 	}
+	
+    public String getOverriddenSubscriptionWarningSub() {
+        return overriddenSubscriptionWarningSub;
+    }
+
+    public void setOverriddenSubscriptionWarningSub(String overriddenSubscriptionWarningSub) {
+        this.overriddenSubscriptionWarningSub = overriddenSubscriptionWarningSub;
+    }
+
+    public String getOverriddenSubscriptionWarningTemplate() {
+        return overriddenSubscriptionWarningTemplate;
+    }
+
+    public void setOverriddenSubscriptionWarningTemplate(String overriddenSubscriptionWarningTemplate) {
+        this.overriddenSubscriptionWarningTemplate = overriddenSubscriptionWarningTemplate;
+    }
 
 	@Override
 	public String toString() {

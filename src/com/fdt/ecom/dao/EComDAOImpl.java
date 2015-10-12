@@ -431,6 +431,8 @@ public class EComDAOImpl extends AbstractBaseDAOImpl implements EComDAO {
             siteConfiguration.setAddSubscriptionSub(this.getString(row[30]));
             siteConfiguration.setExpiredOverriddenSubscriptionNotificationSubject(this.getString(row[31]));
             siteConfiguration.setExpiredOverriddenSubscriptionNotificationTemplate(this.getString(row[32]));
+            siteConfiguration.setOverriddenSubscriptionWarningSub(this.getString(row[33]));
+            siteConfiguration.setOverriddenSubscriptionWarningTemplate(this.getString(row[34]));
         }
         return siteConfiguration;
     }

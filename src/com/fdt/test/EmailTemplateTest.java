@@ -1,25 +1,36 @@
 package com.fdt.test;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fdt.ecom.dao.EComDAO;
+import com.fdt.ecom.entity.Site;
+import com.fdt.ecom.entity.SiteConfiguration;
+import com.fdt.email.EMailUtil;
 import com.fdt.email.EmailProducer;
 import com.fdt.security.dao.UserDAO;
 import com.fdt.security.entity.User;
+import com.fdt.security.service.admin.UserAdminService;
 import com.fdt.subscriptions.dao.SubDAO;
 import com.fdt.subscriptions.dto.SubscriptionDTO;
+
+import freemarker.template.TemplateException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "file:WebContent/WEB-INF/conf/spring/applicationContext.xml" })
@@ -27,12 +38,24 @@ public class EmailTemplateTest {
 
     @Autowired
     private UserDAO userDAO;
-    
+
     @Autowired
     private SubDAO subDAO;
-    
+
+    @Autowired
+    private EComDAO eComDAO;
+
+    @Autowired
+    private UserAdminService userAdminService;
+
     @Autowired
     private EmailProducer emailProducer;
+
+    @Autowired
+    private EMailUtil eMailUtil;
+
+    @Value("${ecommerce.serverurl}")
+    private String ecomServerURL = null;
 
     public EmailTemplateTest() throws URISyntaxException {
         Path path = Paths.get(getClass().getResource("").toURI());
@@ -47,33 +70,41 @@ public class EmailTemplateTest {
     public void testSendOverriddenSubWarning() {
 
         String fromEmailAddress = "SUPPORTRMS@granicus.com";
-        String templateFolder = "RecordsManagement/arlington/";
-        String template = "overriddenSubWarning.stl";
-        String subject = "Expiration Warning - Roam Arlington Records Management";
         String emailId = "jon.miller@granicus.com";
 
-        /*
         User user = userDAO.getUser(emailId);
         List<SubscriptionDTO> subscriptions = subDAO.getUserSubs(emailId, null, null, true, false);
-        */
 
-        User user = new User();
-        user.setFirstName("Jon");
-        user.setLastName("Miller");
+        List<Site> sites = eComDAO.getSites();
+        for (Site site : sites) {
 
-        SubscriptionDTO dto = new SubscriptionDTO();
-        dto.setSiteName("ARLINGTON");
-        dto.setSubscription("Arlington Image Access");
+            Long siteId = site.getId();
+            String subscriptionSite = site.getDescription();
 
-        String subscriptionSite = "ARLINGTON";
+            SiteConfiguration siteConfig = eComDAO.getSiteConfiguration(siteId);
 
-        Map<String, Object> emailData = new HashMap<>();
-        emailData.put("user", new User());
-        emailData.put("currentDate", new Date());
-        emailData.put("subscriptionSite", subscriptionSite);
-        emailData.put("subscriptions", Arrays.asList(dto));
+            if (siteConfig != null) {
+                String templateFolder = siteConfig.getEmailTemplateFolder();
+                String subject = siteConfig.getOverriddenSubscriptionWarningSub();
+                String template = siteConfig.getOverriddenSubscriptionWarningTemplate();
+    
+                Map<String, Object> emailData = new HashMap<>();
+                emailData.put("user", user);
+                emailData.put("currentDate", new Date());
+                emailData.put("expireDate", new Date());
+                emailData.put("subscriptionSite", subscriptionSite);
+                emailData.put("subscriptions", subscriptions);
+                emailData.put("fromEmailAddress", fromEmailAddress);
+                emailData.put("serverUrl", this.ecomServerURL);
+    
+                try {
+                    eMailUtil.sendMailUsingTemplate(fromEmailAddress, emailId, subject,
+                            templateFolder + template, emailData);
+                } catch (MessagingException | IOException | TemplateException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-        emailProducer.sendMailUsingTemplate(fromEmailAddress, emailId, subject, templateFolder
-                + template, emailData);
     }
 }
