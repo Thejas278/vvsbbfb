@@ -742,50 +742,58 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
     }
 
     public List<User> getInactiveUsers() {
+
         List<User> userList = new LinkedList<User>();
         Session session = currentSession();
-        Query sqlQuery =  session.getNamedQuery("GET_INACTIVE_USERS");
+        Query sqlQuery = session.getNamedQuery("GET_INACTIVE_USERS");
+
+        @SuppressWarnings("unchecked")
         List<Object> resultSet = sqlQuery.list();
+
         List<UserAccess> userAccessList = null;
         Long userId = null;
-        if(resultSet.size() > 0){
-        	Map<Long, User> uniqueUsers =  new HashMap<Long, User>();
-            ListIterator<Object> resultSetIterator = (ListIterator<Object>) resultSet.listIterator();
-            while(resultSetIterator.hasNext()) {
-            	User user = null;
-            	Object[] row = (Object[]) resultSetIterator.next();
-            	userId = this.getLongFromBigInteger(row[0]);
-            	if(uniqueUsers.get(userId) == null) {
-            		 user = new User();
-            		 userAccessList = new LinkedList<UserAccess>();
-            		 user.setUserAccessList(userAccessList);
-                     user.setId(userId);
-                     user.setUsername(this.getString(row[1]));
-                     user.setFirstName(this.getString(row[2]));
-                     user.setLastName(this.getString(row[3]));
-                     user.setRegisteredNode(this.getString(row[4]));
-                     user.setCreatedBy(this.getString(row[5]));
-                     user.setCurrentLoginTime(this.getDate(row[6]));
-                     user.setCreatedDate(this.getDate(row[7]));
-                     user.setAccountDeletionDate(this.getDate(row[8]));
-                     user.setFirmName(this.getString(row[9]));
-                     user.setFirmNumber(this.getString(row[10]));
-                     user.setBarNumber(this.getString(row[11]));
-                     userList.add(user);
-                     uniqueUsers.put(userId, user);
-            	} else {
-            		user = uniqueUsers.get(userId);
-            		userAccessList = user.getUserAccessList();
-            	}
-            	UserAccess userAccess = new UserAccess();
-            	Access access = new Access();
-            	userAccess.setAccess(access);
-            	userAccess.setAccessOverriden(this.getBoolean(row[12]));
-            	access.setCode(this.getString(row[13]));
-            	access.setDescription(this.getString(row[14]));
-            	userAccessList.add(userAccess);
-           }
+
+        Map<Long, User> uniqueUsers = new HashMap<Long, User>();
+
+        for (Object result : resultSet) {
+            User user = null;
+            Object[] row = (Object[]) result;
+            userId = this.getLongFromBigInteger(row[0]);
+            if (!uniqueUsers.containsKey(userId)) {
+                user = new User();
+                userAccessList = new LinkedList<UserAccess>();
+                user.setUserAccessList(userAccessList);
+                user.setId(userId);
+                user.setUsername(this.getString(row[1]));
+                user.setFirstName(this.getString(row[2]));
+                user.setLastName(this.getString(row[3]));
+                user.setRegisteredNode(this.getString(row[4]));
+                user.setCreatedBy(this.getString(row[5]));
+                user.setCurrentLoginTime(this.getDate(row[6]));
+                user.setCreatedDate(this.getDate(row[7]));
+                user.setAccountDeletionDate(this.getDate(row[8]));
+                user.setFirmName(this.getString(row[9]));
+                user.setFirmNumber(this.getString(row[10]));
+                user.setBarNumber(this.getString(row[11]));
+                userList.add(user);
+                uniqueUsers.put(userId, user);
+            } else {
+                user = uniqueUsers.get(userId);
+                userAccessList = user.getUserAccessList();
+            }
+            UserAccess userAccess = new UserAccess();
+            Access access = new Access();
+            userAccess.setAccess(access);
+            userAccess.setAccessOverriden(this.getBoolean(row[12]));
+            access.setCode(this.getString(row[13]));
+            access.setDescription(this.getString(row[14]));
+            Site site = new Site();
+            site.setName(this.getString(row[15]));
+            site.setDescription(this.getString(row[16]));
+            access.setSite(site);
+            userAccessList.add(userAccess);
         }
+
         return userList;
     }
 

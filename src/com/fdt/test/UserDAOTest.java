@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fdt.ecom.entity.Site;
 import com.fdt.security.dao.UserDAO;
 import com.fdt.security.entity.Access;
 import com.fdt.security.entity.User;
@@ -87,5 +88,18 @@ public class UserDAOTest {
         String userName = "jonandrewmille.r@gmail.com";
         List<Access> accessList = userDAO.getAccessByUserName(userName);
         assertNotNull(accessList);
+    }
+
+    @Test
+    @Transactional
+    public void testGetInactiveUsers() {
+        List<User> inactiveUsers = userDAO.getInactiveUsers();
+        assertNotNull(inactiveUsers);
+
+        assertFalse(inactiveUsers.isEmpty());
+
+        Site site = inactiveUsers.get(0).getUserAccessList().get(0).getAccess().getSite();
+        assertNotNull(site.getName());
+        assertNotNull(site.getDescription());
     }
 }

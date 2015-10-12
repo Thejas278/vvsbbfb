@@ -105,33 +105,59 @@ body, td { font-family: Georgia, 'Times New Roman', Times, serif; }
                                 </tr>
                                 <tr>
                                   <td class="w580" width="580">
-                                    ${currentDate?string("MMMM dd, yyyy")}<br /><br />
-                                    <#assign isAccountDeletionDateAlreadyPassed =(currentDate?date > accountDeletionDate?date)>
-                                    <#if isAccountDeletionDateAlreadyPassed?has_content && isAccountDeletionDateAlreadyPassed>
-                                      <p align="left" class="article-title">
-                                        Hello ${firstName?lower_case?cap_first} ${lastName?lower_case?cap_first},  <br />
-                                        Your account has been deleted because of inactivity. <br /> <br />
-                                        You registered for the following subscription(s): <br />
-                                        <#assign userAccessList = user.getUserAccessList()>
-                                          <#list userAccessList as userAccess>
-                                            <#assign access = userAccess.getAccess()>
-                                            ${access.getDescription()} <br />
-                                          </#list>
-                                      </p>
-                                    <#else>
-                                      <p align="left" class="article-title">
-                                        Hello ${firstName?lower_case?cap_first} ${lastName?lower_case?cap_first},  <br />
-                                        Your account will be deleted on ${accountDeletionDate?string("MM/dd/yyyy")} because of inactivity.
-                                        Please login to the system to avoid being removed from the system. <br /> <br />
-                                        You have registered for the following subscription(s): <br />
-                                        <#assign userAccessList = user.getUserAccessList()>
-                                        <#list userAccessList as userAccess>
+                                    ${currentDate?string("MMMM dd, yyyy")}
+                                    <br/><br/>
+                                    <p align="left" class="article-title">
+                                      Hello ${user.getFirstName()?lower_case?cap_first} ${user.getLastName()?lower_case?cap_first},
+                                    </p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580" height="15"></td>
+                                </tr>
+                                <#assign isAccountDeletionDateAlreadyPassed =(currentDate?date > accountDeletionDate?date)>
+                                <#if isAccountDeletionDateAlreadyPassed?has_content && isAccountDeletionDateAlreadyPassed>
+                                  <tr>
+                                    <td class="w580" width="580">
+                                      <div style="text-align:left;margin-bottom:15px;">
+                                        Your account has been deleted because of inactivity.
+                                      </div>
+                                      <div style="text-align:left;margin-bottom:15px;">
+                                        You have registered for the following subscription(s):
+                                      </div>
+                                      <#assign userAccessList = user.getUserAccessList()>
+                                      <#list userAccessList as userAccess>
+                                        <div style="text-align:left;">
                                           <#assign access = userAccess.getAccess()>
-                                          ${access.getDescription()} <br />
-                                        </#list>
-                                      </p>
-                                    </#if>
-                                   </td>
+                                          <#assign site = access.getSite()>
+                                          ${site.getDescription()},
+                                          ${access.getDescription()}
+                                        </div>
+                                      </#list>
+                                    </td>
+                                  </tr>
+                                <#else>
+                                  <tr>
+                                    <td class="w580" width="580">
+                                      <div style="text-align:left;margin-bottom:15px;">
+                                        Your account will be deleted on ${accountDeletionDate?string("MM/dd/yyyy")} because of inactivity.
+                                        Please login to the system to avoid being removed from the system.
+                                      </div>
+                                      <div style="text-align:left;margin-bottom:15px;">
+                                        You have registered for the following subscription(s):
+                                      </div>
+                                      <#assign userAccessList = user.getUserAccessList()>
+                                      <#list userAccessList as userAccess>
+                                        <div style="text-align:left;">
+                                          <#assign access = userAccess.getAccess()>
+                                          <#assign site = access.getSite()>
+                                          ${site.getDescription()},
+                                          ${access.getDescription()}
+                                        </div>
+                                      </#list>
+                                    </td>
+                                  </tr>
+                                </#if>
                                 </tr>
                                 <tr>
                                   <td class="w580" width="580" height="30"></td>
