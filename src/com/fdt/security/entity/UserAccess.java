@@ -102,6 +102,10 @@ public class UserAccess extends AbstractBaseEntity  {
     @Column(name = "OVERRIDDEN_UNTILL_DATE")
     private Date overriddenUntillDate = null;
 
+    @Column(name = "IS_OVERRIDDEN_SUB_WARNING_SENT")
+    @Type(type="yes_no")
+    private boolean isOverriddenSubWarningSent = false;
+
     @Column(name = "AUTHORIZED_BY")
     protected String authorizedBy = null;
 
@@ -235,6 +239,14 @@ public class UserAccess extends AbstractBaseEntity  {
 		this.overriddenUntillDate = overriddenUntillDate;
 	}
 
+    public boolean isOverriddenSubWarningSent() {
+        return isOverriddenSubWarningSent;
+    }
+
+    public void setOverriddenSubWarningSent(boolean isOverriddenSubWarningSent) {
+        this.isOverriddenSubWarningSent = isOverriddenSubWarningSent;
+    }
+
 	@Override
     public String toString() {
         return "UserAccess ["  
@@ -253,6 +265,7 @@ public class UserAccess extends AbstractBaseEntity  {
         		+ ", modifiedBy=" + modifiedBy
         		+ ", modifiedDate=" + modifiedDate
         		+ ", active=" + active
+        		+ ", isOverriddenSubWarningSent=" + isOverriddenSubWarningSent
                 + "]";
     }
 

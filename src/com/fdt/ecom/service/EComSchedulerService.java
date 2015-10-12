@@ -20,7 +20,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import com.fdt.achtx.service.ACHTxService;
 import com.fdt.otctx.service.OTCTXService;
 import com.fdt.payasugotx.service.PayAsUGoTxService;
-import com.fdt.recurtx.dto.ExpiredOverriddenSubscriptionDTO;
+import com.fdt.recurtx.dto.OverriddenSubscriptionDTO;
 import com.fdt.recurtx.dto.RecurTxSchedulerDTO;
 import com.fdt.recurtx.service.RecurTxService;
 import com.fdt.recurtx.service.admin.RecurTxAdminService;
@@ -98,8 +98,8 @@ public class EComSchedulerService {
             return;
         }
         logger.info("Starting Scheduler Service To  Disable Overridden Subscriptions");
-        List <ExpiredOverriddenSubscriptionDTO> expiredOverriddenSubscriptionDTOList = recurTXAdminService.getExpiredOverriddenSubscriptions();
-        for (final ExpiredOverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO : expiredOverriddenSubscriptionDTOList) {
+        List <OverriddenSubscriptionDTO> expiredOverriddenSubscriptionDTOList = recurTXAdminService.getExpiredOverriddenSubscriptions();
+        for (final OverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO : expiredOverriddenSubscriptionDTOList) {
             /** Start of Transaction **/
             transactionTemplate.execute(new TransactionCallback<Void>() {
                 public Void doInTransaction(TransactionStatus txStatus) {
@@ -115,6 +115,20 @@ public class EComSchedulerService {
             /** End of of Transaction **/
         }
         logger.info("Ending Scheduler Service For Disabling Expired Overridden Subscriptions");
+    }
+
+    @Scheduled(cron= "${scheduler.ecom.warnexpiringoverriddensubscriptions}")
+    public void warnExpiringOverriddenSubscriptions() {
+        if (!this.isSchedulerEnabled()) {
+            logger.info("Skiping Scheduler Service For Warning Expiring Overridden Subscriptions");
+            return;
+        }
+        logger.info("Starting Scheduler Service For Warning Expiring Overridden Subscriptions");
+        List <OverriddenSubscriptionDTO> dtoList = recurTXAdminService.getExpiringOverriddenSubscriptions();
+        for (OverriddenSubscriptionDTO dto : dtoList) {
+            userAdminService.warnExpiringOverriddenSubscription(dto);
+        }
+        logger.info("Ending Scheduler Service For Warning Expiring Overridden Subscriptions");
     }
 
     @Scheduled(cron= "${scheduler.ecom.cancelrecurringprofile}")

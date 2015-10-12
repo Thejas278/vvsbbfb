@@ -1,9 +1,11 @@
 package com.fdt.security.service.admin;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +24,16 @@ import com.fdt.common.exception.SDLBusinessException;
 import com.fdt.ecom.dao.EComDAO;
 import com.fdt.ecom.entity.NodeConfiguration;
 import com.fdt.email.EmailProducer;
+import com.fdt.recurtx.dao.RecurTxDAO;
+import com.fdt.recurtx.dto.OverriddenSubscriptionDTO;
 import com.fdt.security.dao.UserAdminDAO;
 import com.fdt.security.dao.UserDAO;
 import com.fdt.security.dto.FirmUserDTO;
 import com.fdt.security.dto.SearchCriteriaDTO;
+import com.fdt.security.entity.Access;
 import com.fdt.security.entity.User;
 import com.fdt.security.exception.UserNameNotFoundException;
+import com.fdt.subscriptions.dao.SubDAO;
 import com.fdt.subscriptions.dto.SubscriptionDTO;
 
 @Service("userAdminService")
@@ -40,6 +46,12 @@ public class UserAdminServiceImpl implements UserAdminService {
 
     @Autowired
     private UserAdminDAO userAdminDAO;
+
+    @Autowired
+    private SubDAO subDAO;
+
+    @Autowired
+    private RecurTxDAO recurTxDAO;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -156,6 +168,45 @@ public class UserAdminServiceImpl implements UserAdminService {
         this.userDAO.updateisEmailNotificationSent(user.getUsername(), true);
     }
 
+    /**
+     * This method is called by the Scheduler. It will send a warning to a user that their overridden
+     * subscription is about to expire. Then it will mark in the database that the user already received
+     * their warning so that they don't get multiple ones.
+     * 
+     * @param overriddenSubscriptionDTO
+     */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    public void warnExpiringOverriddenSubscription(OverriddenSubscriptionDTO overriddenSubscriptionDTO) {
+
+        String fromEmailAddress = overriddenSubscriptionDTO.getFromEmailAddress();
+        String templateFolder = overriddenSubscriptionDTO.getEmailTemplateFolder();
+        String template = overriddenSubscriptionDTO.getOverriddenSubscriptionWarningTemplate();
+        String subject = overriddenSubscriptionDTO.getOverriddenSubscriptionWarningSubject();
+        String emailId = overriddenSubscriptionDTO.getEmailId();
+        Date expireDate = overriddenSubscriptionDTO.getOverriddenUntillDate();
+        Long accessId = overriddenSubscriptionDTO.getAccessId();
+
+        User user = userDAO.getUser(emailId);
+        List<SubscriptionDTO> subscriptions = subDAO.getUserSubs(emailId, null, null, true, false);
+
+        Optional<SubscriptionDTO> subscription = subscriptions.stream().filter(s -> s.getAccessId().equals(accessId)).findFirst();
+        String subscriptionSite = null;
+        if (subscription.isPresent()) {
+            subscriptionSite = subscription.get().getSiteName();
+        } else {
+            throw new RuntimeException("No subscription found matching the user's overridden subscription");
+        }
+
+        Map<String, Object> emailData = new HashMap<>();
+        emailData.put("user", user);
+        emailData.put("expireDate", expireDate);
+        emailData.put("subscriptionSite", subscriptionSite);
+        emailData.put("subscriptions", subscriptions);
+
+        emailProducer.sendMailUsingTemplate(fromEmailAddress, emailId, subject, templateFolder
+                + template, emailData);
+        recurTxDAO.updateIsOverriddenSubscriptionWarningSent(overriddenSubscriptionDTO.getUserAccessId(), true);
+    }
 
     private String getMessage(String messageKey, Object[] object) {
         return this.messages.getMessage(messageKey, object, new Locale("en"));

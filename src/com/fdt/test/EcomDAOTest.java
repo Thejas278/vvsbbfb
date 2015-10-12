@@ -37,3 +37,4 @@ public class EcomDAOTest {
     	// Did not throw an exception : Good, it works !
     }
 }
+

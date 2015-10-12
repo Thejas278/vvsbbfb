@@ -18,7 +18,7 @@ import com.fdt.common.dao.AbstractBaseDAOImpl;
 import com.fdt.ecom.entity.CreditCard;
 import com.fdt.ecom.entity.Merchant;
 import com.fdt.ecom.entity.Site;
-import com.fdt.recurtx.dto.ExpiredOverriddenSubscriptionDTO;
+import com.fdt.recurtx.dto.OverriddenSubscriptionDTO;
 import com.fdt.recurtx.dto.RecurTxSchedulerDTO;
 import com.fdt.recurtx.entity.RecurTx;
 import com.fdt.security.entity.Access;
@@ -469,8 +469,8 @@ public class RecurTxDAOImpl extends AbstractBaseDAOImpl implements RecurTxDAO {
 
 	}
 
-	public List<ExpiredOverriddenSubscriptionDTO> getExpiredOverriddenSubscriptions() {
-		List<ExpiredOverriddenSubscriptionDTO> expiredOverriddenSubscriptionDTOList = new LinkedList<ExpiredOverriddenSubscriptionDTO>();
+	public List<OverriddenSubscriptionDTO> getExpiredOverriddenSubscriptions() {
+		List<OverriddenSubscriptionDTO> expiredOverriddenSubscriptionDTOList = new LinkedList<OverriddenSubscriptionDTO>();
         Session session = currentSession();
         Query sqlQuery =  session.getNamedQuery("GET_EXPIRED_OVERRIDDEN_SUBSCRIPTIONS");
         List<Object> resultSet = sqlQuery.list();
@@ -478,7 +478,7 @@ public class RecurTxDAOImpl extends AbstractBaseDAOImpl implements RecurTxDAO {
             ListIterator<Object> resultSetIterator = (ListIterator<Object>) resultSet.listIterator();
             while(resultSetIterator.hasNext()) {
             	Object[] row = (Object[]) resultSetIterator.next();
-            	ExpiredOverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO = new ExpiredOverriddenSubscriptionDTO();
+            	OverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO = new OverriddenSubscriptionDTO();
             	expiredOverriddenSubscriptionDTO.setUserAccessId(this.getLongFromInteger(row[0]));
             	expiredOverriddenSubscriptionDTO.setAccessId(this.getLongFromInteger(row[1]));
             	expiredOverriddenSubscriptionDTO.setUserId(this.getLongFromBigInteger(row[2]));
@@ -497,7 +497,7 @@ public class RecurTxDAOImpl extends AbstractBaseDAOImpl implements RecurTxDAO {
         return expiredOverriddenSubscriptionDTOList;
 	}
 
-	public void disableOverriddenSubscription(ExpiredOverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO) {
+	public void disableOverriddenSubscription(OverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO) {
 		Session session = currentSession();
         session.createQuery("Update UserAccess useraccess " +
                                 "Set useraccess.accessOverriden = :accessOverriden, " +
@@ -512,4 +512,47 @@ public class RecurTxDAOImpl extends AbstractBaseDAOImpl implements RecurTxDAO {
                                 .setParameter("userAccessId", expiredOverriddenSubscriptionDTO.getUserAccessId())
                                 .executeUpdate();   
 	}
+
+    @Override
+    public List<OverriddenSubscriptionDTO> getExpiringOverriddenSubscriptions() {
+
+        List<OverriddenSubscriptionDTO> result = new LinkedList<>();
+
+        Query sqlQuery = currentSession().getNamedQuery("GET_EXPIRING_OVERRIDDEN_SUBSCRIPTIONS");
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultSet = sqlQuery.list();
+
+        for (Object[] row : resultSet) {
+            OverriddenSubscriptionDTO dto = new OverriddenSubscriptionDTO();
+            dto.setUserAccessId(this.getLongFromInteger(row[0]));
+            dto.setAccessId(this.getLongFromInteger(row[1]));
+            dto.setUserId(this.getLongFromBigInteger(row[2]));
+            dto.setOverriddenUntillDate(this.getDate(row[3]));
+            dto.setEmailId(this.getString(row[4]));
+            dto.setFirstName(this.getString(row[5]));
+            dto.setLastName(this.getString(row[6]));
+            dto.setAccessDescription(this.getString(row[7]));
+            dto.setOverriddenSubscriptionWarningSubject(this.getString(row[8]));
+            dto.setOverriddenSubscriptionWarningTemplate(this.getString(row[9]));
+            dto.setFromEmailAddress(this.getString(row[10]));
+            dto.setEmailTemplateFolder(this.getString(row[11]));
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void updateIsOverriddenSubscriptionWarningSent(Long userAccessId, boolean isWarningSent) {
+
+        StringBuilder updateQueryStringBldr = new StringBuilder();
+        updateQueryStringBldr.append("UPDATE UserAccess userAccess ");
+        updateQueryStringBldr.append("SET userAccess.isOverriddenSubWarningSent = :isOverriddenSubWarningSent ");
+        updateQueryStringBldr.append("WHERE userAccess.id = :userAccessId ");
+
+        currentSession().createQuery(updateQueryStringBldr.toString())
+             .setParameter("isOverriddenSubWarningSent", isWarningSent)
+             .setParameter("userAccessId", userAccessId)
+             .executeUpdate();
+    }
 }

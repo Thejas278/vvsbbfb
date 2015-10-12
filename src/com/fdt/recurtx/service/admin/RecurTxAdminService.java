@@ -6,7 +6,7 @@ import com.fdt.common.exception.SDLBusinessException;
 import com.fdt.paymentgateway.dto.PayPalDTO;
 import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
 import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
-import com.fdt.recurtx.dto.ExpiredOverriddenSubscriptionDTO;
+import com.fdt.recurtx.dto.OverriddenSubscriptionDTO;
 import com.fdt.recurtx.dto.RecurTxSchedulerDTO;
 import com.fdt.recurtx.entity.RecurTx;
 import com.fdt.security.entity.UserAccess;
@@ -82,7 +82,9 @@ public interface RecurTxAdminService {
 	 */
 	public List<RecurTx> getRecurTxByUserAndSite(String userName, Long siteId);
 
-	public List<ExpiredOverriddenSubscriptionDTO> getExpiredOverriddenSubscriptions();
+	public List<OverriddenSubscriptionDTO> getExpiredOverriddenSubscriptions();
 
-	public void disableOverriddenSubscription(ExpiredOverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO);
+	public void disableOverriddenSubscription(OverriddenSubscriptionDTO expiredOverriddenSubscriptionDTO);
+
+    public List<OverriddenSubscriptionDTO> getExpiringOverriddenSubscriptions();
 }
