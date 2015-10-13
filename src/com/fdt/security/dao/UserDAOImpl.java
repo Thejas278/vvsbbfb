@@ -474,7 +474,7 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
         if (isAccessOverridden) {
             updateQueryStrBldr.append(", useraccess.isOverriddenSubWarningSent = :isOverriddenSubWarningSent ");
         }
-        updateQueryStrBldr.append("where useraccess.id  in (:userAccessIds)");
+        updateQueryStrBldr.append("where useraccess.id = :userAccessId");
 
         Query updateQuery = currentSession().createQuery(updateQueryStrBldr.toString());
         updateQuery = updateQuery.setParameter("isEnabled", enableDisable)
