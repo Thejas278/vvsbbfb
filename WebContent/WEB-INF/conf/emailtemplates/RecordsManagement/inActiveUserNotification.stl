@@ -20,14 +20,14 @@ img { height: auto; line-height: 100%; outline: none; text-decoration: none; dis
 br, strong br, b br, em br, i br { line-height:100%; }
 h1, h2, h3, h4, h5, h6 { line-height: 100% !important; -webkit-font-smoothing: antialiased; }
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { color: blue !important; }
-h1 a:active, h2 a:active,  h3 a:active, h4 a:active, h5 a:active, h6 a:active {	color: red !important; }
+h1 a:active, h2 a:active,  h3 a:active, h4 a:active, h5 a:active, h6 a:active {   color: red !important; }
 /* Preferably not the same color as the normal header link color.  There is limited support for psuedo classes in email clients, this was added just for good measure. */
 h1 a:visited, h2 a:visited,  h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited { color: purple !important; }
 /* Preferably not the same color as the normal header link color. There is limited support for psuedo classes in email clients, this was added just for good measure. */
 table td, table tr { border-collapse: collapse; }
 .yshortcuts, .yshortcuts a, .yshortcuts a:link,.yshortcuts a:visited, .yshortcuts a:hover, .yshortcuts a span {
 color: black; text-decoration: none !important; border-bottom: none !important; background: none !important;
-}	/* Body text color for the New Yahoo.  This example sets the font of Yahoo's Shortcuts to black. */
+}   /* Body text color for the New Yahoo.  This example sets the font of Yahoo's Shortcuts to black. */
 
 /* Webkit Elements */
 /* Fonts and Content */
@@ -37,7 +37,6 @@ body, td { font-family: Georgia, 'Times New Roman', Times, serif; }
 .article-title { font-size: 18px; line-height:24px; color: #526f92; font-weight:bold; margin-top:0px; margin-bottom:18px; font-family: Georgia, 'Times New Roman', Times, serif; }
 .article-content { font-size: 13px; line-height: 18px; color: #444444; margin-top: 0px; margin-bottom: 18px; font-family: Georgia, 'Times New Roman', Times, serif; }
 .center {text-align:center;}
-
 
 </style>
 <!--[if gte mso 9]>
@@ -50,119 +49,170 @@ body, td { font-family: Georgia, 'Times New Roman', Times, serif; }
 </style>
 <![endif]-->
 </head>
+
 <body>
-	<table width="100%" cellpadding="0" cellspacing="0" border="0" id="background-table">
-	<tbody>
-		<tr>
-		<td align="center">
-        	<table class="w640" style="margin:0 10px;" width="640" cellpadding="0" cellspacing="0" border="0">
-            	<tbody>
-            	<tr><td class="w640" width="640" height="30"></td></tr>
-                <tr>
-    	            <td id="header" class="w640" width="640" align="center" bgcolor="#b4bf8a">
-    				<table class="w640" width="640" cellpadding="0" cellspacing="0" border="0">
-						<tbody><tr><td class="w30" width="30"></td><td class="w580" width="580" height="30"></td><td class="w30" width="30"></td></tr>
-						<tr>
-							<td class="w30" width="30"></td>
-							<td class="w580" width="580">
-								<div align="center" id="headline">
-									<p>
-										<img src="${serverUrl}resources/images/logos/granicus.png" style="max-width:600px;" />
-									</p>
-								</div>
-							</td>
-							<td class="w30" width="30"></td>
-						</tr>
-						</tbody>
-					</table>
-					</td>
-                </tr>
-                <tr><td class="w640" width="640" height="30" bgcolor="#ffffff"></td></tr>
-                <tr id="simple-content-row"><td class="w640" width="640" bgcolor="#ffffff">
-				<table class="w640" width="640" cellpadding="0" cellspacing="0" border="0">
-					<tbody><tr>
-						<td class="w30" width="30"></td>
-						<td class="w580" width="580">
-								<layout label="Text with full-width image">
-									<table class="w580" width="580" cellpadding="0" cellspacing="0" border="0">
-										<tbody>
-										<tr>
-											<td class="w580" width="580">
-
-											</td>
-										</tr>
-										<tr><td class="w580" width="580" height="30"></td></tr>
-										<tr>
-											<td class="w580" width="580">
-												${currentDate?string("MMMM dd, yyyy")}<br /><br />
-												<#assign isAccountDeletionDateAlreadyPassed =(currentDate?date > accountDeletionDate?date)>
-												<#if isAccountDeletionDateAlreadyPassed?has_content && isAccountDeletionDateAlreadyPassed>
-													<p align="left" class="article-title">
-														Hello ${firstName?lower_case?cap_first} ${lastName?lower_case?cap_first},  <br />
-														Your account has been deleted because of inactivity. <br /> <br />
-														You registered for the following subscription(s): <br />
-														<#assign userAccessList = user.getUserAccessList()>
-														<#list userAccessList as userAccess>
-															<#assign access = userAccess.getAccess()>
-															${access.getDescription()} <br />
-														</#list>
-													</p>
-												<#else>
-													<p align="left" class="article-title">
-														Hello ${firstName?lower_case?cap_first} ${lastName?lower_case?cap_first},  <br />
-														Your account will be deleted on ${accountDeletionDate?string("MM/dd/yyyy")} because of inactivity. Please login to the system to avoid being removed from the system. <br /> <br />
-														You have registered for the following subscription(s): <br />
-														<#assign userAccessList = user.getUserAccessList()>
-														<#list userAccessList as userAccess>
-															<#assign access = userAccess.getAccess()>
-															${access.getDescription()} <br />
-														</#list>
-													</p>
-												 </#if>
-											</td>
-										</tr>
-										<tr><td class="w580" width="580" height="30"></td></tr>
-										<tr>
-											<td class="w580" width="580">
-
-											</td>
-										</tr>
-										<tr><td class="w580" width="580" height="30"></td></tr>
-										<tr><td class="w580" width="580" height="30"></td></tr>
-										<tr>
-											<td class="w580 center" width="580" height="30">
-												**Please do not reply to this automated email.**
-											</td>
-										</tr>
-										<tr>
-											<td class="w580 center" width="580" height="30">
-											<#if !(isAccountDeletionDateAlreadyPassed?has_content && isAccountDeletionDateAlreadyPassed)>
-												Add ${fromEmailAddress} to your address book to ensure that you receive account changes and payment confirmation emails in your inbox.
-											</#if>
-											</td>
-										</tr>
-										<tr><td class="w580" width="580" height="30"></td></tr>
-										<tr>
-											<td class="w580 center" width="580" height="30"><p>Granicus <br>
-											  <br>
-											  www.granicus.com</p>
-											  <p> 707 17th Street | Suite 4000 | Denver, CO 80202 | 866-793-6505<br>
-										    (c)${currentDate?string("yyyy")} Granicus Inc</p></td>
-										</tr>
-										</tbody>
-									</table>
-								</layout>
-						</td>
-						<td class="w30" width="30"></td>
-					</tr>
-				</tbody>
-				</table>
-				</td>
-			</tr>
-            </tbody></table>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" id="background-table">
+    <tbody>
+      <tr>
+        <td align="center">
+          <table class="w640" style="margin:0 10px;" width="640" cellpadding="0" cellspacing="0" border="0">
+            <tbody>
+              <tr>
+                <td class="w640" width="640" height="30"></td>
+              </tr>
+              <tr>
+                <td id="header" class="w640" width="640" align="center" bgcolor="#b4bf8a">
+                  <table class="w640" width="640" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td class="w30" width="30"></td>
+                        <td class="w580" width="580" height="30"></td>
+                        <td class="w30" width="30"></td>
+                      </tr>
+                      <tr>
+                        <td class="w30" width="30"></td>
+                        <td class="w580" width="580">
+                          <div align="center" id="headline">
+                            <p>
+                              <img src="${serverUrl}resources/images/logos/granicus.png" style="max-width:600px;" />
+                            </p>
+                          </div>
+                        </td>
+                        <td class="w30" width="30"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td class="w640" width="640" height="30" bgcolor="#ffffff"></td>
+              </tr>
+              <tr id="simple-content-row">
+                <td class="w640" width="640" bgcolor="#ffffff">
+                  <table class="w640" width="640" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td class="w30" width="30"></td>
+                        <td class="w580" width="580">
+                          <layout label="Text with full-width image">
+                            <table class="w580" width="580" cellpadding="0" cellspacing="0" border="0">
+                              <tbody>
+                                <tr>
+                                  <td class="w580" width="580"></td>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580" height="30"></td>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580">
+                                    ${currentDate?string("MMMM dd, yyyy")}
+                                    <br/><br/>
+                                    <p align="left" class="article-title">
+                                      Hello ${user.getFirstName()?lower_case?cap_first} ${user.getLastName()?lower_case?cap_first},
+                                    </p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580" height="15"></td>
+                                </tr>
+                                <#assign isAccountDeletionDateAlreadyPassed =(currentDate?date > accountDeletionDate?date)>
+                                <#if isAccountDeletionDateAlreadyPassed?has_content && isAccountDeletionDateAlreadyPassed>
+                                  <tr>
+                                    <td class="w580" width="580">
+                                      <div style="text-align:left;margin-bottom:15px;">
+                                        Your account has been deleted because of inactivity.
+                                      </div>
+                                      <div style="text-align:left;margin-bottom:15px;">
+                                        You have registered for the following subscription(s):
+                                      </div>
+                                      <#assign userAccessList = user.getUserAccessList()>
+                                      <#list userAccessList as userAccess>
+                                        <div style="text-align:left;">
+                                          <#assign access = userAccess.getAccess()>
+                                          <#assign site = access.getSite()>
+                                          ${site.getDescription()},
+                                          ${access.getDescription()}
+                                        </div>
+                                      </#list>
+                                    </td>
+                                  </tr>
+                                <#else>
+                                  <tr>
+                                    <td class="w580" width="580">
+                                      <div style="text-align:left;margin-bottom:15px;">
+                                        Your account will be deleted on ${accountDeletionDate?string("MM/dd/yyyy")} because of inactivity.
+                                        Please login to the system to avoid being removed from the system.
+                                      </div>
+                                      <div style="text-align:left;margin-bottom:15px;">
+                                        You have registered for the following subscription(s):
+                                      </div>
+                                      <#assign userAccessList = user.getUserAccessList()>
+                                      <#list userAccessList as userAccess>
+                                        <div style="text-align:left;">
+                                          <#assign access = userAccess.getAccess()>
+                                          <#assign site = access.getSite()>
+                                          ${site.getDescription()},
+                                          ${access.getDescription()}
+                                        </div>
+                                      </#list>
+                                    </td>
+                                  </tr>
+                                </#if>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580" height="30"></td>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580"></td>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580" height="30"></td>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580" height="30"></td>
+                                </tr>
+                                <tr>
+                                  <td class="w580 center" width="580" height="30">
+                                    **Please do not reply to this automated email.**
+                                  </td>
+                                </tr>
+                                <tr>
+                                   <td class="w580 center" width="580" height="30">
+                                     <#if !(isAccountDeletionDateAlreadyPassed?has_content && isAccountDeletionDateAlreadyPassed)>
+                                        Add ${fromEmailAddress} to your address book to ensure that you receive account changes and payment confirmation emails in your inbox.
+                                     </#if>
+                                   </td>
+                                </tr>
+                                <tr>
+                                  <td class="w580" width="580" height="30"></td>
+                                </tr>
+                                <tr>
+                                  <td class="w580 center" width="580" height="30">
+                                    <p>
+                                      Granicus <br><br>
+                                      www.granicus.com
+                                    </p>
+                                    <p>
+                                      707 17th Street | Suite 4000 | Denver, CO 80202 | 866-793-6505<br>
+                                      (c)${currentDate?string("yyyy")} Granicus Inc
+                                    </p>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </layout>
+                        </td>
+                        <td class="w30" width="30"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </td>
-	</tr>
-</tbody>
-</table>
+      </tr>
+    </tbody>
+  </table>
 </body>
 </html>
