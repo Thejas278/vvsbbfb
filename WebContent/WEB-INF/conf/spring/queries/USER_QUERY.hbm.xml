@@ -254,6 +254,7 @@
     USERS.ACTIVE = 'Y' AND
     AA.GUEST_FLG = 'N' AND
     AA.ACTIVE = 'Y' AND
+    AUA.IS_DELETED = 'N' AND
     IS_EMAIL_NOTIFICATION_SENT = 'N' AND
     USERS.EMAIL_ID NOT LIKE '%admin@roam.com%' AND
     USERS.EMAIL_ID NOT LIKE '%admin@amcad.com%'
