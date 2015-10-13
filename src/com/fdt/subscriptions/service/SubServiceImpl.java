@@ -1127,11 +1127,13 @@ public class SubServiceImpl implements SubService {
                 List<Long> userAccessIds = firmUsers.stream()
                         .map(dto -> dto.getUserAccessId())
                         .collect(Collectors.toList());
-                // Note: Firm users new subscriptions are set to inactive initially
                 if (isNewAccessAFirmAccess) {
-                    subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, false, true, userName,
+                    subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, true, true, userName,
                             RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, false);
                 } else {
+                    // New subscription is not a firm level subscription so we need to
+                    //   - Set individual users subs to inactive intially
+                    //   - Clear the firmAccessAdmin ID flag
                     subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, false, true, userName,
                             RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, false, null);
                 }
