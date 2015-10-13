@@ -35,6 +35,7 @@ import com.fdt.recurtx.entity.UserAccount;
 import com.fdt.security.entity.Access;
 import com.fdt.security.entity.User;
 import com.fdt.security.entity.UserAccess;
+import com.fdt.security.entity.enums.AccessType;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
 import com.fdt.subscriptions.dto.SubscriptionDTO;
 import com.fdt.subscriptions.entity.SubscriptionFee;
@@ -438,6 +439,7 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
             access.setId(this.getLongFromInteger(row[35]));
             access.setFirmLevelAccess(this.getBoolean(row[36]));
             access.setGovernmentAccess(this.getBoolean(row[37]));
+            access.setAccessType(this.getAccessType(row[39]));
             access.addUserAccess(userAccess);
         }
         return userAccessDetailDTO;
