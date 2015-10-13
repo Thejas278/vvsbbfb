@@ -218,7 +218,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
                     if (totalTxAmount < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
                         merchant = site.getMicroMerchant();
                     } else {
-                        merchant = site.getMerchant();
+                        merchant = site.getNormalMerchant();
                     }
 
                     totalTxAmount = new BigDecimal(totalTxAmount).setScale(2, RoundingMode.HALF_DOWN).doubleValue();
@@ -620,12 +620,12 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
         Long originalWebTxId = payAsUGoTransaction.getId();
         Site site = payAsUGoTransaction.getSite();
         PayPalDTO paymentTxResponseDTO = null;
-        Merchant merchant = site.getMerchant();
+        Merchant merchant = site.getNormalMerchant();
         if(payAsUGoTransaction.getTotalTxAmount() > 0.0) {        	
 			if (payAsUGoTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
 			    merchant = site.getMicroMerchant();
 			} else {
-			    merchant = site.getMerchant();
+			    merchant = site.getNormalMerchant();
 			}
 			TxDTO txDTO = new TxDTO();
 			txDTO.setMerchant(merchant);
@@ -642,7 +642,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
         payAsUGoTransaction.setOrigTxRefNum(payAsUGoTransaction.getTxRefNum());
         payAsUGoTransaction.setTxRefNum(paymentTxResponseDTO.getTxRefNum());
         payAsUGoTransaction.setModifiedDate(new Date());
-        payAsUGoTransaction.setMerchantId(payAsUGoTransaction.getSite().getMerchant().getId());
+        payAsUGoTransaction.setMerchantId(merchant.getId());
         payAsUGoTransaction.setCreatedDate(new Date());
         payAsUGoTransaction.setTransactionType(TransactionType.REFUND);
         payAsUGoTransaction.setModifiedBy(modUserId);

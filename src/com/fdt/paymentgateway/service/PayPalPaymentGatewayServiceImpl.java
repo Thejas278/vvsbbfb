@@ -112,7 +112,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
         Assert.state(amtToCharge > 0.0, "Amount To be chaged must be greater than zero!");
 
         if(isRecurring) {
-        	merchant = site.getMerchant();
+        	merchant = site.getNormalMerchant();
         	userInfo = this.getMerchantInfo(merchant);
         	type = "RECURRING";
         } else {
@@ -122,8 +122,8 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
 	        	merchant = site.getMicroMerchant();
 	            userInfo = this.getMerchantInfo(merchant);
 	        } else {
-	        	merchant = site.getMerchant();
-	            userInfo = this.getMerchantInfo(site.getMerchant());
+	        	merchant = site.getNormalMerchant();
+	            userInfo = this.getMerchantInfo(site.getNormalMerchant());
 	        }
         }
 
@@ -173,7 +173,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
         Assert.state(amtToCharge > 0.0, "Amount To be chaged must be greater than zero!");
 
         if(isRecurring) {
-        	merchant = site.getMerchant();
+        	merchant = site.getNormalMerchant();
         	userInfo = this.getMerchantInfo(merchant);
         	type = "RECURRING";
         } else {
@@ -183,8 +183,8 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
 	        	merchant = site.getMicroMerchant();
 	            userInfo = this.getMerchantInfo(merchant);
 	        } else {
-	        	merchant = site.getMerchant();
-	            userInfo = this.getMerchantInfo(site.getMerchant());
+	        	merchant = site.getNormalMerchant();
+	            userInfo = this.getMerchantInfo(site.getNormalMerchant());
 	        }
         }
 
@@ -234,7 +234,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
         Assert.state(amtToCharge > 0.0, "Amount To be chaged must be greater than zero!");
 
         if(isRecurring) {
-        	merchant = site.getMerchant();
+        	merchant = site.getNormalMerchant();
         	userInfo = this.getMerchantInfo(merchant);
         	type = "RECURRING";
         } else {
@@ -244,8 +244,8 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
 	        	merchant = site.getMicroMerchant();
 	            userInfo = this.getMerchantInfo(merchant);
 	        } else {
-	        	merchant = site.getMerchant();
-	            userInfo = this.getMerchantInfo(site.getMerchant());
+	        	merchant = site.getNormalMerchant();
+	            userInfo = this.getMerchantInfo(site.getNormalMerchant());
 	        }
         }
 
@@ -287,7 +287,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
         UserInfo userInfo = null;
         PayPalDTO payPalDTO = null;
         Merchant merchant = null;
-        merchant = site.getMerchant();
+        merchant = site.getNormalMerchant();
         userInfo = this.getMerchantInfo(merchant);
         CaptureTransaction captureTransaction = null;
         if(captureTxAmount !=null) {
@@ -339,7 +339,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
         Assert.state(amtToCharge > 0.0, "Amount To be chaged must be greater than zero!");
 
         if(isRecurring) {
-        	merchant = site.getMerchant();
+        	merchant = site.getNormalMerchant();
         	userInfo = this.getMerchantInfo(merchant);
         	type = "RECURRING";
         } else {
@@ -349,8 +349,8 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
 	        	merchant = site.getMicroMerchant();
 	            userInfo = this.getMerchantInfo(merchant);
 	        } else {
-	        	merchant = site.getMerchant();
-	            userInfo = this.getMerchantInfo(site.getMerchant());
+	        	merchant = site.getNormalMerchant();
+	            userInfo = this.getMerchantInfo(site.getNormalMerchant());
 	        }
         }
 
@@ -409,7 +409,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
             if (amtToCharge < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxOTC()) {
                 userInfo = this.getMerchantInfo(site.getMicroMerchant());
             } else {
-                userInfo = this.getMerchantInfo(site.getMerchant());
+                userInfo = this.getMerchantInfo(site.getNormalMerchant());
             }
             Invoice invoice = this.getInvoiceForSale(site, amtToCharge, "OTC");
 
@@ -522,7 +522,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
         String txRefNumber = null;
         Site site = existingUserAccountDTO.getSite();
         CreditCard creditCard = existingUserAccountDTO.getUserAccount().getCreditCard();
-        UserInfo user = this.getMerchantInfo(site.getMerchant());
+        UserInfo user = this.getMerchantInfo(site.getNormalMerchant());
         Invoice invoice = new Invoice();
         BillTo bill = new BillTo();
         CardTender card = this.getCardTender(creditCard);
@@ -625,7 +625,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
                 throws PaymentGatewayUserException, PaymentGatewaySystemException {
         PayflowConnectionData connection = new PayflowConnectionData();
         PayPalDTO referenceCreditDTO =  null;
-        UserInfo user = this.getMerchantInfo(site.getMerchant());
+        UserInfo user = this.getMerchantInfo(site.getNormalMerchant());
         Invoice invoice = new Invoice();
         invoice.setComment1(site.getName() + " " + refCreditType);
         invoice.setComment2(originalTxRefNumber);

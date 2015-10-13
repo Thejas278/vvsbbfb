@@ -233,7 +233,7 @@ public class Site extends AbstractBaseEntity {
     }
 
 
-	public Merchant getMerchant() {
+	public Merchant getNormalMerchant() {
         if (this.merchantList != null) {
             for (Merchant merchant : this.merchantList) {
                 if (!merchant.isMicroPaymentAccount()) {

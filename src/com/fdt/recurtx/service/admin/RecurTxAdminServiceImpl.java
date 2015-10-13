@@ -145,7 +145,7 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
         CreditCard creditCard = this.userDAO.getCreditCardDetails(recurTransaction.getUserId());
         Assert.notNull(recurTransaction.getSite(), "Original Transaction Reference Number Has No MerchantInfo");
         if (recurTransaction != null) {
-            refundTxRefNum = this.paymentGateway.doCredit(creditCard, recurTransaction.getSite().getMerchant(),
+            refundTxRefNum = this.paymentGateway.doCredit(creditCard, recurTransaction.getSite().getNormalMerchant(),
                 recurTransaction.getTotalTxAmount(), txRefNumber, "doReferenceCreditRecurringTx", modUserId);
             paymentTxResponseDTO = new PayPalDTO();
             paymentTxResponseDTO.setTxAmount(recurTransaction.getTotalTxAmount());
@@ -153,7 +153,7 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
             recurTransaction.setOrigTxRefNum(recurTransaction.getTxRefNum());
             recurTransaction.setTxRefNum(refundTxRefNum);
             recurTransaction.setModifiedDate(new Date());
-            recurTransaction.setMerchantId(recurTransaction.getSite().getMerchant().getId());
+            recurTransaction.setMerchantId(recurTransaction.getSite().getNormalMerchant().getId());
             recurTransaction.setTransactionDate(SystemUtil.changeTimeZone(new Date(),
                     TimeZone.getTimeZone(recurTransaction.getSite().getTimeZone())));
             recurTransaction.setCreatedDate(new Date());
@@ -295,18 +295,18 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
         String userName = payPalSchedulerDTO.getUserName();
         String paymentPeriod = payPalSchedulerDTO.getPaymentPeriod();
         Long userAccountId = payPalSchedulerDTO.getUserAccountId();
-        Long merchantId = site.getMerchant().getId();
+        Long merchantId = site.getNormalMerchant().getId();
         String cardNumber = payPalSchedulerDTO.getAccountNumber();
         String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
         CardType cardType = CreditCardUtil.getCardType(cardNumber);
         Double txFeePercent = null;
         Double txFeeFlat = null;
         if (cardType == CardType.AMEX) {
-            txFeePercent = site.getMerchant().getTxFeePercentAmex();
-            txFeeFlat = site.getMerchant().getTxFeeFlatAmex();
+            txFeePercent = site.getNormalMerchant().getTxFeePercentAmex();
+            txFeeFlat = site.getNormalMerchant().getTxFeeFlatAmex();
         } else {
-            txFeePercent = site.getMerchant().getTxFeePercent();
-            txFeeFlat = site.getMerchant().getTxFeeFlat();
+            txFeePercent = site.getNormalMerchant().getTxFeePercent();
+            txFeeFlat = site.getNormalMerchant().getTxFeeFlat();
         }
         Double clientShare = payPalSchedulerDTO.getClientShare();
         PayPalDTO paymentTxResponseDTO = null;

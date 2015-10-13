@@ -162,10 +162,10 @@ public class ExternalServiceImpl implements ExternalService {
 				return null;
 			} else if(webTx.getSite() == null) {
 				return null;
-			} else if (webTx.getSite().getMerchant() == null){
+			} else if (webTx.getSite().getNormalMerchant() == null){
 				return null;
 			}
-			Merchant merchant = webTx.getSite().getMerchant();
+			Merchant merchant = webTx.getSite().getNormalMerchant();
 			merchant.setPartner("MERCHANT_PARTNER");
 			merchant.setVendorName("MERCHANT_VENDOR");
 			merchant.setPassword("MERCHANT_PASSWORD");
@@ -189,10 +189,10 @@ public class ExternalServiceImpl implements ExternalService {
 				return null;
 			} else if(webTx.getSite() == null) {
 				return null;
-			} else if (webTx.getSite().getMerchant() == null){
+			} else if (webTx.getSite().getNormalMerchant() == null){
 				return null;
 			}
-            Merchant merchant = webTx.getSite().getMerchant();
+            Merchant merchant = webTx.getSite().getNormalMerchant();
 			merchant.setPartner("MERCHANT_PARTNER");
 			merchant.setVendorName("MERCHANT_VENDOR");
 			merchant.setPassword("MERCHANT_PASSWORD");

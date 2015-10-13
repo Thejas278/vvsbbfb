@@ -735,11 +735,11 @@ public class SubServiceImpl implements SubService {
                     recurTransaction.setTotalTxAmount(subscribedAccess.getSubscriptionFee().getFee());
                     CardType cardType = CreditCardUtil.getCardType(creditCard.getNumber());
                     if (cardType == CardType.AMEX) {
-                        recurTransaction.setTxFeePercent(userAccess.getAccess().getSite().getMerchant().getTxFeePercentAmex());
-                        recurTransaction.setTxFeeFlat(userAccess.getAccess().getSite().getMerchant().getTxFeeFlatAmex());
+                        recurTransaction.setTxFeePercent(userAccess.getAccess().getSite().getNormalMerchant().getTxFeePercentAmex());
+                        recurTransaction.setTxFeeFlat(userAccess.getAccess().getSite().getNormalMerchant().getTxFeeFlatAmex());
                     } else {
-                        recurTransaction.setTxFeePercent(userAccess.getAccess().getSite().getMerchant().getTxFeePercent());
-                        recurTransaction.setTxFeeFlat(userAccess.getAccess().getSite().getMerchant().getTxFeeFlat());
+                        recurTransaction.setTxFeePercent(userAccess.getAccess().getSite().getNormalMerchant().getTxFeePercent());
+                        recurTransaction.setTxFeeFlat(userAccess.getAccess().getSite().getNormalMerchant().getTxFeeFlat());
                     }
                     Double clientShare = subscribedAccess.getClientShare();
                     Double amtToChargeAfterTransactionFee = subscribedAccess.getSubscriptionFee().getFee() - ((subscribedAccess.getSubscriptionFee().getFee()*recurTransaction.getTxFeePercent()/100) + recurTransaction.getTxFeeFlat());
@@ -762,7 +762,7 @@ public class SubServiceImpl implements SubService {
                     recurTransaction.setModifiedBy(userName);
                     recurTransaction.setCreatedBy(userName);
                     recurTransaction.setActive(true);
-                    recurTransaction.setMerchantId(userAccess.getAccess().getSite().getMerchant().getId());
+                    recurTransaction.setMerchantId(userAccess.getAccess().getSite().getNormalMerchant().getId());
                     recurTransaction.setMachineName(machineName);
                     recurTransaction.setModifiedDate(new Date());
                     recurTransaction.setCreatedDate(new Date());
@@ -1042,12 +1042,12 @@ public class SubServiceImpl implements SubService {
                     .getTimeZone())));
             recurTransactionRefund.setCreatedBy(userName);
             recurTransactionRefund.setActive(true);
-            recurTransactionRefund.setMerchantId(existingUserAccountDTO.getSite().getMerchant().getId());
+            recurTransactionRefund.setMerchantId(existingUserAccountDTO.getSite().getNormalMerchant().getId());
             recurTransactionRefund.setTxFeeFlat(0.0d);
             if (cardType == CardType.AMEX) {
                 recurTransactionRefund.setTxFeePercent(0.0d);
             } else {
-                recurTransactionRefund.setTxFeePercent(0 - existingUserAccountDTO.getSite().getMerchant().getTxFeePercent());
+                recurTransactionRefund.setTxFeePercent(0 - existingUserAccountDTO.getSite().getNormalMerchant().getTxFeePercent());
             }
             recurTransactionRefund.setClientShare(existingUserAccountDTO.getSite().getAccess().get(0).getClientShare());
             recurTransactionRefund.setMachineName(machineName);
@@ -1163,13 +1163,13 @@ public class SubServiceImpl implements SubService {
                     TimeZone.getTimeZone(upgradeDowngradeDTO.getExistingUserAccountDetail().getSite().getTimeZone())));
                 recurTransactionPrimary.setCreatedBy(userName);
                 recurTransactionPrimary.setActive(true);
-                recurTransactionPrimary.setMerchantId(existingUserAccountDTO.getSite().getMerchant().getId());
+                recurTransactionPrimary.setMerchantId(existingUserAccountDTO.getSite().getNormalMerchant().getId());
                 if (cardType == CardType.AMEX) {
-                    recurTransactionPrimary.setTxFeePercent(newAccessDTO.getSite().getMerchant().getTxFeePercentAmex());
-                    recurTransactionPrimary.setTxFeeFlat(newAccessDTO.getSite().getMerchant().getTxFeeFlatAmex());
+                    recurTransactionPrimary.setTxFeePercent(newAccessDTO.getSite().getNormalMerchant().getTxFeePercentAmex());
+                    recurTransactionPrimary.setTxFeeFlat(newAccessDTO.getSite().getNormalMerchant().getTxFeeFlatAmex());
                 } else {
-                    recurTransactionPrimary.setTxFeePercent(newAccessDTO.getSite().getMerchant().getTxFeePercent());
-                    recurTransactionPrimary.setTxFeeFlat(newAccessDTO.getSite().getMerchant().getTxFeeFlat());
+                    recurTransactionPrimary.setTxFeePercent(newAccessDTO.getSite().getNormalMerchant().getTxFeePercent());
+                    recurTransactionPrimary.setTxFeeFlat(newAccessDTO.getSite().getNormalMerchant().getTxFeeFlat());
                 }
                 recurTransactionPrimary.setMachineName(machineName);
                 Double amtToChargeAfterTransactionFee = upgradeDowngradeDTO.getNewBalance() - (upgradeDowngradeDTO.getNewBalance()*recurTransactionPrimary.getTxFeePercent()/100) + recurTransactionPrimary.getTxFeeFlat();
@@ -1223,23 +1223,23 @@ public class SubServiceImpl implements SubService {
                         TimeZone.getTimeZone(upgradeDowngradeDTO.getExistingUserAccountDetail().getSite().getTimeZone())));
                     recurTransactionSecondary.setCreatedBy(userName);
                     recurTransactionSecondary.setActive(true);
-                    recurTransactionSecondary.setMerchantId(existingUserAccountDTO.getSite().getMerchant().getId());
+                    recurTransactionSecondary.setMerchantId(existingUserAccountDTO.getSite().getNormalMerchant().getId());
                     if (isBalanceRefunded) {
                         recurTransactionSecondary.setTxFeeFlat(0.0d);
                         if (recurTransactionSecondary.getCardType() == CardType.AMEX) {
                             recurTransactionSecondary.setTxFeePercent(0.0d);
                         } else {
-                            recurTransactionSecondary.setTxFeePercent(0 - existingUserAccountDTO.getSite().getMerchant()
+                            recurTransactionSecondary.setTxFeePercent(0 - existingUserAccountDTO.getSite().getNormalMerchant()
                                 .getTxFeePercent());
                         }
                     } else {
                         if (cardType == CardType.AMEX) {
-                            recurTransactionSecondary.setTxFeePercent(newAccessDTO.getSite().getMerchant()
+                            recurTransactionSecondary.setTxFeePercent(newAccessDTO.getSite().getNormalMerchant()
                                 .getTxFeePercentAmex());
-                            recurTransactionSecondary.setTxFeeFlat(newAccessDTO.getSite().getMerchant().getTxFeeFlatAmex());
+                            recurTransactionSecondary.setTxFeeFlat(newAccessDTO.getSite().getNormalMerchant().getTxFeeFlatAmex());
                         } else {
-                            recurTransactionSecondary.setTxFeePercent(newAccessDTO.getSite().getMerchant().getTxFeePercent());
-                            recurTransactionSecondary.setTxFeeFlat(newAccessDTO.getSite().getMerchant().getTxFeeFlat());
+                            recurTransactionSecondary.setTxFeePercent(newAccessDTO.getSite().getNormalMerchant().getTxFeePercent());
+                            recurTransactionSecondary.setTxFeeFlat(newAccessDTO.getSite().getNormalMerchant().getTxFeeFlat());
                         }
                     }
                     recurTransactionSecondary.setMachineName(machineName);
@@ -1350,11 +1350,11 @@ public class SubServiceImpl implements SubService {
             recurTransactionCharge.setActive(true);
 
             if (cardType == CardType.AMEX) {
-                recurTransactionCharge.setTxFeePercent(newAccessDTO.getSite().getMerchant().getTxFeePercentAmex());
-                recurTransactionCharge.setTxFeeFlat(newAccessDTO.getSite().getMerchant().getTxFeeFlatAmex());
+                recurTransactionCharge.setTxFeePercent(newAccessDTO.getSite().getNormalMerchant().getTxFeePercentAmex());
+                recurTransactionCharge.setTxFeeFlat(newAccessDTO.getSite().getNormalMerchant().getTxFeeFlatAmex());
             } else {
-                recurTransactionCharge.setTxFeePercent(newAccessDTO.getSite().getMerchant().getTxFeePercent());
-                recurTransactionCharge.setTxFeeFlat(newAccessDTO.getSite().getMerchant().getTxFeeFlat());
+                recurTransactionCharge.setTxFeePercent(newAccessDTO.getSite().getNormalMerchant().getTxFeePercent());
+                recurTransactionCharge.setTxFeeFlat(newAccessDTO.getSite().getNormalMerchant().getTxFeeFlat());
             }
             Double amtToChargeAfterTransactionFee = site.getAccess().get(0).getSubscriptionFee().getFee() - (site.getAccess().get(0).getSubscriptionFee().getFee()*recurTransactionCharge.getTxFeePercent()/100) + recurTransactionCharge.getTxFeeFlat();
             Double graniusShare = amtToChargeAfterTransactionFee * (1.0d - newAccessDTO.getSite().getAccess().get(0).getClientShare());

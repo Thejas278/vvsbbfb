@@ -138,11 +138,11 @@ public class OTCTXServiceImpl implements OTCTXService {
 
         Assert.notNull(oTCTransaction.getSite(), "Original Transaction Reference Number Has No MerchantInfo");
         Site site = oTCTransaction.getSite();
-        Merchant merchant = site.getMerchant();
+        Merchant merchant = site.getNormalMerchant();
         if (oTCTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxOTC()) {
 		    merchant = site.getMicroMerchant();
 		} else {
-		    merchant = site.getMerchant();
+		    merchant = site.getNormalMerchant();
 		}
         TxDTO txDTO = new TxDTO();
         txDTO.setMerchant(merchant);
@@ -223,7 +223,7 @@ public class OTCTXServiceImpl implements OTCTXService {
             if (oTCResponseDTO.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxOTC()) {
                 merchant = site.getMicroMerchant();
             } else {
-                merchant = site.getMerchant();
+                merchant = site.getNormalMerchant();
             }
             oTCResponseDTO.setMerchant(merchant);
             try {
@@ -305,7 +305,7 @@ public class OTCTXServiceImpl implements OTCTXService {
                     && site.isEnableMicroTxOTC()) {
                 merchant = site.getMicroMerchant();
             } else {
-                merchant = site.getMerchant();
+                merchant = site.getNormalMerchant();
             }
             oTCResponseDTO.setMerchant(merchant);
             //Read Track 1 Data first
@@ -555,11 +555,11 @@ public class OTCTXServiceImpl implements OTCTXService {
                 }
             } else {
             	if (oTCTransaction.getCardType() == CardType.AMEX) {
-                    oTCTransaction.setTxFeePercent(site.getMerchant().getTxFeePercentAmex());
-                    oTCTransaction.setTxFeeFlat(site.getMerchant().getTxFeeFlatAmex());
+                    oTCTransaction.setTxFeePercent(site.getNormalMerchant().getTxFeePercentAmex());
+                    oTCTransaction.setTxFeeFlat(site.getNormalMerchant().getTxFeeFlatAmex());
                 } else {
-                    oTCTransaction.setTxFeePercent(site.getMerchant().getTxFeePercent());
-                    oTCTransaction.setTxFeeFlat(site.getMerchant().getTxFeeFlat());
+                    oTCTransaction.setTxFeePercent(site.getNormalMerchant().getTxFeePercent());
+                    oTCTransaction.setTxFeeFlat(site.getNormalMerchant().getTxFeeFlat());
                 }
             }
             oTCTransaction.setInvoiceNumber(oTCRequestDTO.getInvoiceNumber());

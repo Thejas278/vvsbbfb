@@ -40,7 +40,7 @@ public class ExternalServiceTestCase {
 		
 		PayAsUGoTx payAsUGoTx =this.payAsUGoSubService.getPayAsUGoTxByTxRefNum("EQCPA22A35CD", "JEFFERSON");
 		System.out.println(payAsUGoTx.getSite().getMicroMerchant());
-		System.out.println(payAsUGoTx.getSite().getMerchant());
+		System.out.println(payAsUGoTx.getSite().getNormalMerchant());
 		
 
 	}

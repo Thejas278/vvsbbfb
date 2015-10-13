@@ -160,7 +160,7 @@ public class WebTxServiceImpl implements WebTxService {
                     if (totalTxAmount < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxOTC()) {
                         merchant = site.getMicroMerchant();
                     } else {
-                        merchant = site.getMerchant();
+                        merchant = site.getNormalMerchant();
                     }
                     
                     String accountName = null;
@@ -399,11 +399,11 @@ public class WebTxServiceImpl implements WebTxService {
 
         Long originalWebTxId = webTransaction.getId();
         Site site = webTransaction.getSite();
-        Merchant merchant = site.getMerchant();
+        Merchant merchant = site.getNormalMerchant();
         if (webTransaction.getTotalTxAmount() < site.getCardUsageFee().getMicroTxFeeCutOff() && site.isEnableMicroTxWeb()) {
 		    merchant = site.getMicroMerchant();
 		} else {
-		    merchant = site.getMerchant();
+		    merchant = site.getNormalMerchant();
 		}
         TxDTO txDTO = new TxDTO();
         txDTO.setMerchant(merchant);
@@ -414,7 +414,7 @@ public class WebTxServiceImpl implements WebTxService {
         webTransaction.setOrigTxRefNum(webTransaction.getTxRefNum());
         webTransaction.setTxRefNum(paymentTxResponseDTO.getTxRefNum());
         webTransaction.setModifiedDate(new Date());
-        webTransaction.setMerchantId(webTransaction.getSite().getMerchant().getId());
+        webTransaction.setMerchantId(webTransaction.getSite().getNormalMerchant().getId());
         webTransaction.setCreatedDate(new Date());
         webTransaction.setTransactionType(TransactionType.REFUND);
         webTransaction.setModifiedBy(modUserId);
