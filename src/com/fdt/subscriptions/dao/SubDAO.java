@@ -63,7 +63,10 @@ public interface SubDAO {
 
     public int updateUserAccessWithAccessId(List<Long> existingUserAccessIds, Long accessId, boolean isEnable,
             boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments, boolean isFirmAccessAdmin);
-    
+
+    public int updateUserAccessWithAccessId(List<Long> existingUserAccessIds, Long accessId, boolean isEnable,
+            boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments, boolean isFirmAccessAdmin,
+            Long firmAdminUserAccessId);
 
     public int enableDisableCreditCard(Long userAccessId, boolean isActive, String modifiedBy);
 

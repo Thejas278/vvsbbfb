@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -803,8 +804,25 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
         session.flush();
     }
 
-    public int updateUserAccessWithAccessId(List<Long> existingUserAccessIds, Long newAccessId, boolean isEnable,
-            boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments, boolean isFirmAccessAdmin) {
+    public int updateUserAccessWithAccessId(List<Long> existingUserAccessIds, Long newAccessId,
+            boolean isEnable, boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments,
+            boolean isFirmAccessAdmin) {
+        return updateUserAccessWithAccessId(existingUserAccessIds, newAccessId, isEnable,
+                enableUserAccessAuthorizedFlag, modifiedBy, comments, isFirmAccessAdmin, false, null);
+    }
+
+    public int updateUserAccessWithAccessId(List<Long> existingUserAccessIds, Long newAccessId,
+            boolean isEnable, boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments,
+            boolean isFirmAccessAdmin, Long firmAdminUserAccessId) {
+        return updateUserAccessWithAccessId(existingUserAccessIds, newAccessId, isEnable,
+                enableUserAccessAuthorizedFlag, modifiedBy, comments, isFirmAccessAdmin, true,
+                firmAdminUserAccessId);
+    }
+
+    private int updateUserAccessWithAccessId(List<Long> existingUserAccessIds, Long newAccessId,
+            boolean isEnable, boolean enableUserAccessAuthorizedFlag, String modifiedBy, String comments,
+            boolean isFirmAccessAdmin, boolean updateFirmAdminUserAccessId, Long firmAdminUserAccessId) {
+
         Boolean enableDisable = Boolean.FALSE;
         if (isEnable) {
             enableDisable = Boolean.TRUE;
@@ -815,20 +833,27 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
         }
         Boolean isFirmAccessAdminFlag = Boolean.FALSE;
         if (isFirmAccessAdmin) {
-        	isFirmAccessAdminFlag = Boolean.TRUE;
+            isFirmAccessAdminFlag = Boolean.TRUE;
         }
-        Session session = currentSession();
-        int recordsModified = session.createQuery("Update UserAccess userAccess " +
-                  "Set userAccess.userAccessCompositePrimaryKey.accessId = :accessId, " +
-                  "userAccess.modifiedDate = :modifiedDate, " +
-                  "userAccess.modifiedBy = :modifiedBy, " +
-                  "userAccess.active = :isActive, " +
-                  "userAccess.comments = :comments, " +
-                  "userAccess.isAuthorized = :isAuthorized, " +
-                  "userAccess.accessOverriden = :isAccessOverriden, " +
-                  "userAccess.isFirmAccessAdmin = :isFirmAccessAdmin " +
-                  "Where userAccess.id in (:existingUserAccessIds)")
-                  .setParameter("accessId", newAccessId)
+
+        StringBuilder updateQueryBldr = new StringBuilder();
+        updateQueryBldr.append("UPDATE UserAccess userAccess ");
+        updateQueryBldr.append("SET userAccess.userAccessCompositePrimaryKey.accessId = :accessId, ");
+        updateQueryBldr.append("userAccess.modifiedDate = :modifiedDate, ");
+        updateQueryBldr.append("userAccess.modifiedBy = :modifiedBy, ");
+        updateQueryBldr.append("userAccess.active = :isActive, ");
+        updateQueryBldr.append("userAccess.comments = :comments, ");
+        updateQueryBldr.append("userAccess.isAuthorized = :isAuthorized, ");
+        updateQueryBldr.append("userAccess.accessOverriden = :isAccessOverriden, ");
+        updateQueryBldr.append("userAccess.isFirmAccessAdmin = :isFirmAccessAdmin ");
+        if (updateFirmAdminUserAccessId) {
+            updateQueryBldr.append(", userAccess.firmAdminUserAccessId = :firmAdminUserAccessId ");
+        }
+        updateQueryBldr.append("WHERE userAccess.id in (:existingUserAccessIds)");
+
+        Query updateQuery = currentSession().createQuery(updateQueryBldr.toString());
+
+        updateQuery = updateQuery.setParameter("accessId", newAccessId)
                   .setParameter("modifiedDate", new Date())
                   .setParameterList("existingUserAccessIds", existingUserAccessIds)
                   .setParameter("modifiedBy", modifiedBy)
@@ -836,9 +861,13 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
                   .setParameter("isActive", enableDisable)
                   .setParameter("isAuthorized", enableDisableUserAccessAuthorizedFlag)
                   .setParameter("isAccessOverriden", false)
-                  .setParameter("isFirmAccessAdmin", isFirmAccessAdminFlag)
-                  .executeUpdate();
-        return recordsModified;
+                  .setParameter("isFirmAccessAdmin", isFirmAccessAdminFlag);
+
+        if (updateFirmAdminUserAccessId) {
+            updateQuery = updateQuery.setParameter("firmAdminUserAccessId", firmAdminUserAccessId);
+        }
+
+        return updateQuery.executeUpdate();
     }
 
 

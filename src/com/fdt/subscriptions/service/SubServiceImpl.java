@@ -5,6 +5,7 @@ import static com.fdt.common.SystemConstants.NOTIFY_ADMIN;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
@@ -998,7 +1000,6 @@ public class SubServiceImpl implements SubService {
             // If user is firm access admin for this access then remove subscriptions for all the firm users.
             List<FirmUserDTO> firmUsers = new ArrayList<FirmUserDTO>();
             Access existingAccess = existingUserAccountDTO.getSite().getAccess().get(0);
-            Access newAccess = newAccessDTO.getSite().getAccess().get(0);
             UserAccess existingUserAccess = existingUserAccountDTO.getSite().getAccess().get(0).getUserAccessList().get(0);
             List<Long> userAccessIds = new ArrayList<Long>();
 
@@ -1115,26 +1116,36 @@ public class SubServiceImpl implements SubService {
             UserAccess existingUserAccess = existingUserAccountDTO.getSite().getAccess().get(0).getUserAccessList().get(0);
             Access existingAccess = existingUserAccountDTO.getSite().getAccess().get(0);
 
-            List<Long> userAccessIds = new ArrayList<Long>();
-            // Update firm level users if user is a firm access admin
-            if(existingUserAccess.isFirmAccessAdmin()){
-            	// Retrieve Firm Level Users and update user access for each of them
-            	List<FirmUserDTO> firmUsers = this.userDAO.getFirmUsers(userName, existingAccess.getId());
-            	if(!CollectionUtils.isEmpty(firmUsers)){
-	            	for(FirmUserDTO firmUser : firmUsers){
-	            		userAccessIds.add(firmUser.getUserAccessId());
-	            	}
-            	}
+            boolean isNewAccessAFirmAccess = false;
+            if (newAccessDTO.getSite().getAccess().get(0).isFirmLevelAccess()) {
+                isNewAccessAFirmAccess = true;
             }
-            userAccessIds.add(existingUserAccessId);
-            boolean isFirmAccessAdmin = false;
-            if(newAccessDTO.getSite().getAccess().get(0).isFirmLevelAccess()) {
-            	isFirmAccessAdmin = true;
-            }
-        	int recordsdModified = this.subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId,
-                isEnableAccess, true, userName, RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, isFirmAccessAdmin);
 
-            if (recordsdModified == 0) {
+            if (existingUserAccess.isFirmAccessAdmin()) {
+                // Retrieve firm users and update user access for each of them
+                List<FirmUserDTO> firmUsers = userDAO.getFirmUsers(userName, existingAccess.getId());
+                List<Long> userAccessIds = firmUsers.stream()
+                        .map(dto -> dto.getUserAccessId())
+                        .collect(Collectors.toList());
+                if (isNewAccessAFirmAccess) {
+                    subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, true, true, userName,
+                            RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, false);
+                } else {
+                    // New subscription is not a firm level subscription so we need to
+                    //   - Set individual users subs to inactive intially
+                    //   - Clear the firmAccessAdmin ID flag
+                    subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, false, true, userName,
+                            RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, false, null);
+                }
+            }
+
+
+            // Update the primary user (setting the new access as dictated above)
+            int recordsModified = subDAO.updateUserAccessWithAccessId(Arrays.asList(existingUserAccessId),
+                    newAccessId, isEnableAccess, true, userName, RECURRING_PAID_TO_UNRESTRICTED_COMMENTS,
+                    isNewAccessAFirmAccess);
+
+            if (recordsModified == 0) {
                 logger.error("The updateUserAccessWithAccessId Did not Update Any Records in " +
                     "changeFromRecurringToRecurringSubscription!");
                 logger.error(NOTIFY_ADMIN, "Error in Change Subscription existingUserAccessId - " + existingUserAccessId +
@@ -1450,41 +1461,6 @@ public class SubServiceImpl implements SubService {
         upgradeDowngradeDTO.setUnUsedBalance(unUsedBalance);
         upgradeDowngradeDTO.setNewBalance(newBalance);
         return upgradeDowngradeDTO;
-    }
-
-
-    /**
-     * This method is used for adding the user access while upgrading downgrading the recurring subscription
-     * @param firmUsers
-     * @param newAccess
-     * @param firmAdminUserAccessId
-     * @param adminUserName
-     */
-    private void addFirmUserAccessForUpgrade(List<FirmUserDTO>  firmUsers, Access newAccess,
-    				Long firmAdminUserAccessId, String adminUserName){
-    	List<UserAccess> userAccessList = new ArrayList<UserAccess>();
-    	for (FirmUserDTO firmUser : firmUsers) {
-			User user = new User();
-			user.setId(firmUser.getUserId());
-
-			Access access = new Access();
-            access.setId(newAccess.getId());
-
-            UserAccess userAccess = new UserAccess(user, access);
-            userAccess.setModifiedBy(adminUserName);
-            userAccess.setCreatedBy(adminUserName);
-            userAccess.setCreatedDate(new Date());
-            userAccess.setModifiedDate(new Date());
-            userAccess.setFirmAccessAdmin(false);
-            userAccess.setFirmAdminUserAccessId(firmAdminUserAccessId);
-            userAccessList.add(userAccess);
-            if (newAccess.getAccessType() != AccessType.RECURRING_SUBSCRIPTION) {
-                userAccess.setActive(true);
-            }
-            userAccess.setAuthorized(!access.isAuthorizationRequired());
-        }
-        this.userDAO.saveUserAcess(userAccessList);
-
     }
 
     /** This Method Is Used To Add A Firm Level Subscription For A User. It Checks For Whether That Type Of Subscription Already
