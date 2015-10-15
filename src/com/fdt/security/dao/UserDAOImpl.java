@@ -1139,40 +1139,49 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
     }
 
     public int authorize(List<Long> userAccessIds, boolean isAuthorized, String modifiedBy, boolean isActive,
-    		boolean isFirmAccessAdmin) {
+            boolean isFirmAccessAdmin, boolean isFreeAccess) {
+
         Boolean isAuthorizedObj = Boolean.FALSE;
         if (isAuthorized) {
             isAuthorizedObj = Boolean.TRUE;
         }
         Boolean isActiveObj = Boolean.FALSE;
         if (isActive) {
-        	isActiveObj = Boolean.TRUE;
+            isActiveObj = Boolean.TRUE;
         }
         Boolean isFirmAccessAdminObj = Boolean.FALSE;
         if (isFirmAccessAdmin) {
-        	isFirmAccessAdminObj = Boolean.TRUE;
+            isFirmAccessAdminObj = Boolean.TRUE;
         }
-        Session session = currentSession();
-        int recordsModified = session.createQuery("Update UserAccess useraccess " +
-                                "Set useraccess.isAuthorized = :isAuthorized, " +
-                                "useraccess.modifiedDate = :modifiedDate, " +
-                                "useraccess.authorizationDate = :modifiedDate, " +
-                                "useraccess.authorizedBy = :modifiedBy, " +
-                                "useraccess.modifiedBy = :modifiedBy, " +
-                                "useraccess.active = :isActive, " +
-                                "useraccess.isFirmAccessAdmin = :isFirmAccessAdmin " +
-                                "where useraccess.id in (:userAccessIds)")
-                                .setParameter("isAuthorized", isAuthorizedObj)
-                                .setParameter("modifiedDate", new Date())
-                                .setParameter("modifiedBy", modifiedBy)
-                                .setParameter("isActive", isActiveObj)
-                                .setParameter("isFirmAccessAdmin", isFirmAccessAdminObj)
-                                .setParameterList("userAccessIds", userAccessIds)
-                                .executeUpdate();
-        return recordsModified;
 
+        StringBuilder updateQueryStrBldr = new StringBuilder();
+        updateQueryStrBldr.append("UPDATE UserAccess useraccess ");
+        updateQueryStrBldr.append("SET useraccess.isAuthorized = :isAuthorized, ");
+        updateQueryStrBldr.append("useraccess.modifiedDate = :modifiedDate, ");
+        updateQueryStrBldr.append("useraccess.authorizationDate = :modifiedDate, ");
+        updateQueryStrBldr.append("useraccess.authorizedBy = :modifiedBy, ");
+        updateQueryStrBldr.append("useraccess.modifiedBy = :modifiedBy, ");
+        updateQueryStrBldr.append("useraccess.isFirmAccessAdmin = :isFirmAccessAdmin, ");
+        updateQueryStrBldr.append("useraccess.active = :isActive");
+        if (isFreeAccess) {
+            updateQueryStrBldr.append(", useraccess.accessOverriden = :accessOverriden ");
+        }
+        updateQueryStrBldr.append("where useraccess.id in (:userAccessIds)");
+
+        Query updateQuery = currentSession().createQuery(updateQueryStrBldr.toString());
+        updateQuery = updateQuery.setParameter("isAuthorized", isAuthorizedObj)
+                .setParameter("modifiedDate", new Date())
+                .setParameter("modifiedBy", modifiedBy)
+                .setParameter("isActive", isActiveObj)
+                .setParameter("isFirmAccessAdmin", isFirmAccessAdminObj)
+                .setParameterList("userAccessIds", userAccessIds);
+
+        if (isFreeAccess) {
+            updateQuery = updateQuery.setParameter("accessOverriden", Boolean.TRUE);
+        }
+
+        return updateQuery.executeUpdate();
     }
-
 
     public FirmUserDTO getUserByUserAccessId(Long userAccessId){
     	Session session = currentSession();

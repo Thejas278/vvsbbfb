@@ -488,35 +488,42 @@ public class SubServiceImpl implements SubService {
         return this.subDAO.getSubDetailsByAccessId(accessId);
     }
 
-    /** This Method Is Used For Authorizing A Subscription.
-     * @param userAccessId UserAccess Id Which Is Going To Be Authorized.
-     * @param isAuthorized Flag Used To Authorize The Subscription.
-     * @param modifiedBy E-Mail Id Of The Person Who Is Trying To Authorize The Subscription.
+    /**
+     * This method is used for authorizing a subscription.
+     * 
+     * @param userAccessId ID of the user access which is going to be authorized.
+     * @param isAuthorized flag used to authorize the subscription.
+     * @param modifiedBy email ID of the person who is trying to authorize the subscription.
      */
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor= Throwable.class)
-    public void authorize(Long userAccessId, boolean isAuthorized,     String modifiedBy) {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    public void authorize(Long userAccessId, boolean isAuthorized, String modifiedBy) {
+
         Assert.notNull(userAccessId, "userAccessId Cannot be Null/Empty");
         Assert.hasLength(modifiedBy, "modifiedBy Cannot be Null/Empty");
+
         Map<String, Object> emailData = new HashMap<String, Object>();
         UserAccessDetailDTO userAccessDetailDTO = this.getUserAccessDetails(userAccessId);
         UserAccess userAccess = userAccessDetailDTO.getAccess().getUserAccessList().get(0);
         boolean isActive = userAccess.isActive();
         List<Long> userAccessIds = new ArrayList<Long>();
-        //If it's a firm level access then, also authorize the firm level user accesses
+        
+        // If it's a firm level access then, also authorize the firm level user accesses
         List<FirmUserDTO> firmUsers = new ArrayList<FirmUserDTO>();
-        if(userAccess.isFirmAccessAdmin() && userAccessDetailDTO.getAccess().isFirmLevelAccess()){
-        	firmUsers = this.userDAO.getFirmUsers(userAccessDetailDTO.getUser().getUsername(),
-        			userAccessDetailDTO.getAccess().getId());
-        	for(FirmUserDTO firmUser : firmUsers){
-        		userAccessIds.add(firmUser.getUserAccessId());
-        	}
+        if (userAccess.isFirmAccessAdmin() && userAccessDetailDTO.getAccess().isFirmLevelAccess()) {
+            firmUsers = this.userDAO.getFirmUsers(userAccessDetailDTO.getUser().getUsername(),
+                    userAccessDetailDTO.getAccess().getId());
+            for (FirmUserDTO firmUser : firmUsers) {
+                userAccessIds.add(firmUser.getUserAccessId());
+            }
         }
         userAccessIds.add(userAccessId);
-        if(userAccessDetailDTO.getAccess().isGovernmentAccess()){
-        	this.userDAO.authorize(userAccessIds, isAuthorized, modifiedBy, isActive, true);
-        } else{
-        	this.userDAO.authorize(userAccessIds, isAuthorized, modifiedBy, isActive, false);
-        }
+
+        boolean isGovtAccess = userAccessDetailDTO.getAccess().isGovernmentAccess();
+
+        AccessType accessType = userAccessDetailDTO.getAccess().getAccessType();
+        boolean isFreeAccess = accessType == AccessType.FREE_SUBSCRIPTION;
+
+        userDAO.authorize(userAccessIds, isAuthorized, modifiedBy, isActive, isGovtAccess, isFreeAccess);
 
         // Now if the
         Assert.notNull(userAccessDetailDTO, "userAccessDetailDTO Cannot be Null/Empty");
