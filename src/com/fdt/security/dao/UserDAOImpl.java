@@ -1162,7 +1162,7 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
         updateQueryStrBldr.append("useraccess.authorizedBy = :modifiedBy, ");
         updateQueryStrBldr.append("useraccess.modifiedBy = :modifiedBy, ");
         updateQueryStrBldr.append("useraccess.isFirmAccessAdmin = :isFirmAccessAdmin, ");
-        updateQueryStrBldr.append("useraccess.active = :isActive");
+        updateQueryStrBldr.append("useraccess.active = :isActive ");
         if (isFreeAccess) {
             updateQueryStrBldr.append(", useraccess.accessOverriden = :accessOverriden ");
         }
