@@ -221,6 +221,8 @@ public class PayAsUGoTxDAOImpl extends AbstractBaseDAOImpl implements PayAsUGoTx
                 payAsUGoTxItem.setDownloadURL(this.getString(row[21]));
                 payAsUGoTxItem.setDocumentAvailable(this.getBoolean(row[22]));
                 payAsUGoTxItem.setCertifiedDocumentNumber(this.getString(row[25]));
+                payAsUGoTxItem.setLocationId(this.getLongFromInteger(row[29]));
+                payAsUGoTxItem.setLocationName(this.getString(row[30]));
                 payAsUGoTxItems.add(payAsUGoTxItem);
             }
             payAsUGoTransaction.setPayAsUGoTxItems(payAsUGoTxItems);
