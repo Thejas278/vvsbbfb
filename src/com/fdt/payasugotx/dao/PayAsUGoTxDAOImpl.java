@@ -1,10 +1,13 @@
 package com.fdt.payasugotx.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +16,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StaleStateException;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
@@ -90,75 +95,105 @@ public class PayAsUGoTxDAOImpl extends AbstractBaseDAOImpl implements PayAsUGoTx
     }
 
 
-    public PageRecordsDTO getPayAsUGoTransactionsByNodePerPage(String firmUserName, String nodeName, String comments,
-    		Date fromDate, Date toDate, String transactionType, int startingFrom, int numberOfRecords) {
+    public PageRecordsDTO getPayAsUGoTransactionsByNodePerPage(String firmUserName, String nodeName,
+            String comments, Date fromDate, Date toDate, String transactionType, int startingFrom,
+            int numberOfRecords) {
+
         Session session = currentSession();
 
         // Let's get the count first
         Criteria countCriteria = session.createCriteria(PayAsUGoTxView.class)
-        		.add(Restrictions.eq("firmUserName", firmUserName))
-        		.add(Restrictions.eq("nodeName", nodeName))
-        		.setReadOnly(true);
+                .add(Restrictions.eq("firmUserName", firmUserName))
+                .add(Restrictions.eq("nodeName", nodeName)).setReadOnly(true);
 
-        if(!StringUtils.isBlank(comments)) {
-			Criterion one = Restrictions.like("itemComments", "%".concat(comments).concat("%"));
-			Criterion two = Restrictions.like("transactionComments", "%".concat(comments).concat("%"));
-			countCriteria.add(Restrictions.or(one, two));
-		}
-		if(fromDate != null) {
-			countCriteria.add(Restrictions.ge("transactionDate", fromDate));
-		}
-		if(toDate != null){
-			countCriteria.add(Restrictions.le("transactionDate", toDate));
-		}
-		if (transactionType.equals("charges")) {
-		    countCriteria.add(Restrictions.eq("transactionType", "CHARGE"));
-		} else if (transactionType.equals("refunds")) {
-		    countCriteria.add(Restrictions.eq("transactionType", "REFUND"));
-		}
+        if (!StringUtils.isBlank(comments)) {
+            Criterion one = Restrictions.like("itemComments", "%".concat(comments).concat("%"));
+            Criterion two = Restrictions.like("transactionComments", "%".concat(comments).concat("%"));
+            countCriteria.add(Restrictions.or(one, two));
+        }
+        if (fromDate != null) {
+            countCriteria.add(Restrictions.ge("transactionDate", fromDate));
+        }
+        if (toDate != null) {
+            countCriteria.add(Restrictions.le("transactionDate", toDate));
+        }
+        if (transactionType.equals("charges")) {
+            countCriteria.add(Restrictions.eq("transactionType", "CHARGE"));
+        } else if (transactionType.equals("refunds")) {
+            countCriteria.add(Restrictions.eq("transactionType", "REFUND"));
+        }
 
-        Integer recordCount = ((Number)countCriteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        ProjectionList projList = Projections.projectionList();
+        projList.add(Projections.countDistinct("txRefNum"));
+
+        countCriteria.setProjection(projList);
+
+        Integer recordCount = ((Number)countCriteria.uniqueResult()).intValue();
 
         // Now get the actual page records
         Criteria criteria = session.createCriteria(PayAsUGoTxView.class)
-        		.add(Restrictions.eq("firmUserName", firmUserName))
-        		.add(Restrictions.eq("nodeName", nodeName))
-        		.setFirstResult(startingFrom)
-        		.setMaxResults(numberOfRecords);
+                .add(Restrictions.eq("firmUserName", firmUserName))
+                .add(Restrictions.eq("nodeName", nodeName))
+                .setFirstResult(startingFrom)
+                .setMaxResults(numberOfRecords);
 
-        if(!StringUtils.isBlank(comments)) {
-			Criterion one = Restrictions.like("itemComments", "%".concat(comments).concat("%"));
-			Criterion two = Restrictions.like("transactionComments", "%".concat(comments).concat("%"));
-			criteria.add(Restrictions.or(one, two));
-		}
+        if (!StringUtils.isBlank(comments)) {
+            Criterion one = Restrictions.like("itemComments", "%".concat(comments).concat("%"));
+            Criterion two = Restrictions.like("transactionComments", "%".concat(comments).concat("%"));
+            criteria.add(Restrictions.or(one, two));
+        }
+        if (fromDate != null) {
+            criteria.add(Restrictions.ge("transactionDate", fromDate));
+        }
+        if (toDate != null) {
+            criteria.add(Restrictions.le("transactionDate", toDate));
+        }
+        if (transactionType.equals("charges")) {
+            criteria.add(Restrictions.eq("transactionType", "CHARGE"));
+        } else if (transactionType.equals("refunds")) {
+            criteria.add(Restrictions.eq("transactionType", "REFUND"));
+        }
 
-		if(fromDate != null) {
-			criteria.add(Restrictions.ge("transactionDate", fromDate));
-		}
-		if(toDate != null){
-			criteria.add(Restrictions.le("transactionDate", toDate));
-		}
-		if (transactionType.equals("charges")) {
-		    criteria.add(Restrictions.eq("transactionType", "CHARGE"));
-		} else if (transactionType.equals("refunds")) {
-		    criteria.add(Restrictions.eq("transactionType", "REFUND"));
-		}
-		criteria.addOrder( Property.forName("subscription").asc() )
-       		.addOrder( Property.forName("userName").asc() )
-       		.addOrder( Property.forName("transactionDate").desc())
-       		.setReadOnly(true);
-		List<PayAsUGoTxView> payAsUGoTransactions = criteria.list();
-		List<PayAsUGoTxView> filteredpayAsUGoTransactions = criteria.list();
-		if(payAsUGoTransactions!=null && payAsUGoTransactions.size() > 0){
-			filteredpayAsUGoTransactions = new LinkedList<PayAsUGoTxView>();
-			for(PayAsUGoTxView payAsUGoTxView : payAsUGoTransactions) {
-				if(payAsUGoTxView.getTxRefNum()!= null & !isExists(payAsUGoTxView.getTxRefNum(), filteredpayAsUGoTransactions)){
-					filteredpayAsUGoTransactions.add(payAsUGoTxView);
-				}
-			}
-		}
+        projList = Projections.projectionList();
+        projList.add(Projections.min("payAsUGoTxItemId"));
+        projList.add(Projections.groupProperty("txRefNum"));
+        projList.add(Projections.groupProperty("siteDescription"));
+        projList.add(Projections.groupProperty("subscription"));
+        projList.add(Projections.groupProperty("userName"));
+        projList.add(Projections.groupProperty("transactionDate"));
+        criteria.setProjection(projList);
+
+        criteria.addOrder(Property.forName("siteDescription").asc())
+                .addOrder(Property.forName("subscription").asc())
+                .addOrder(Property.forName("userName").asc())
+                .addOrder(Property.forName("transactionDate").desc())
+                .setReadOnly(true);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> initialResults = criteria.list();
+
+        List<String> ids = initialResults.stream().map(
+                array -> String.valueOf(array[0])
+        ).collect(Collectors.toList());
+
+        List<PayAsUGoTxView> results = null;
+        if (!ids.isEmpty()) {
+            criteria = session.createCriteria(PayAsUGoTxView.class)
+                    .add(Restrictions.in("payAsUGoTxItemId", ids))
+                    .addOrder(Property.forName("siteDescription").asc())
+                    .addOrder(Property.forName("subscription").asc())
+                    .addOrder(Property.forName("userName").asc())
+                    .addOrder(Property.forName("transactionDate").desc())
+                    .setReadOnly(true);
+            @SuppressWarnings("unchecked")
+            List<PayAsUGoTxView> tempResults = criteria.list();
+            results = tempResults;
+        } else {
+            results = Collections.emptyList();
+        }
+
         PageRecordsDTO pageRecords = new PageRecordsDTO();
-        pageRecords.setRecords(filteredpayAsUGoTransactions);
+        pageRecords.setRecords(results);
         pageRecords.setRecordCount(recordCount);
         return pageRecords;
     }
