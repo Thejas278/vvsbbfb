@@ -130,8 +130,7 @@ body, td { font-family: Georgia, 'Times New Roman', Times, serif; }
                                         <div style="text-align:left;">
                                           <#assign access = userAccess.getAccess()>
                                           <#assign site = access.getSite()>
-                                          ${site.getDescription()},
-                                          ${access.getDescription()}
+                                          ${site.getDescription()} - ${access.getDescription()}
                                         </div>
                                       </#list>
                                     </td>
@@ -151,8 +150,7 @@ body, td { font-family: Georgia, 'Times New Roman', Times, serif; }
                                         <div style="text-align:left;">
                                           <#assign access = userAccess.getAccess()>
                                           <#assign site = access.getSite()>
-                                          ${site.getDescription()},
-                                          ${access.getDescription()}
+                                         ${site.getDescription()} - ${access.getDescription()}
                                         </div>
                                       </#list>
                                     </td>
