@@ -1,0 +1,162 @@
+ALTER TABLE SITE_CONFIGURATION
+ADD
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB varchar(250),
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE varchar(50)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Virginia Beach Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Virginia Beach'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Suffolk Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Suffolk'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Dallas Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Dallas'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Jefferson Probate Records',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Jefferson'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Collin Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Collin'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Mobile Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Mobile'
+    AND site.NAME = 'MOBILE'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Mobile CMS Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Mobile'
+      AND site.NAME = 'MOBILECMS'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Rockwall Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Rockwall'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam King George Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'King George'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Hanover Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Hanover'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam St. Charles Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'St. Charles'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Smith Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Smith'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - Roam Arlington Records Management',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY = 'Arlington'
+)
+GO
+
+UPDATE SITE_CONFIGURATION
+SET
+  OVERRIDDEN_SUBSCRIPTION_WARNING_SUB = 'Expiration Warning - eAccess - Arizona Court Case Documents',
+  OVERRIDDEN_SUBSCRIPTION_WARNING_TEMPLATE = 'overriddenSubWarning.stl'
+WHERE SITE_ID IN (
+  SELECT site.ID
+  FROM ECOMM_SITE site
+  WHERE site.COUNTY is null OR site.COUNTY = ''
+    AND site.STATE = 'AZ'
+)
+GO

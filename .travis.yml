@@ -1,0 +1,31 @@
+language: java
+jdk:
+  - oraclejdk8
+env:
+  global:
+    - secure: "IUKaxc42ZMvokp6ZFlXrXYOsUmHb/UZLVe+4TBZ+8RoXCyOwV8HMDcaeIyQU+3VUZhHgrZDxtn1gCINXMrK49QY6evvIOO4Xj/8oKT9Yos3VOIHQSolidpg3ywYaQhnxiJPjV/xoGinoyh6m6Z8ym/xsHM6L7//G+s6vttQPvOw=" #SECRET
+    - secure: "QlWswtK3XzE9unHhhLPzv82ZelSZ5NHb3/BAdrQuPFwP7JOW9w2EhaFqrbpBrbpvtBir9Y91CNxXRf9UlxsgT+n9Igg5k0+oIZGUU/HtXNoMsUKv6ikHE36NVzJ7Xto06UxrRSMVW0GF7F6l8Ul0bLQBc/+jgeGmvcD4qdeYMg8=" #ARTIFACTS_KEY
+    - secure: "kXzxy1SXQOPTbcVHi3qA+iX7j3qLjKsbXNaMvxTkVrE6yT4KgK3ISC6Vj31qG+d7+c8xQ9qs6SF+OIZc+E0KBnU+X17NOwZaxhd9s1P1/vPtrVx3ft6J1B0czajzxNNIXOUATvb5Xl1IXSd28IPxc+AWCfsOEEBb0XZGuThQY4Q=" #ARTIFACTS_SECRET
+    - ARTIFACTS_BUCKET=granicus-development-builds
+  matrix:
+    - ENV_NAME=node-1-test
+    - ENV_NAME=node-2-test
+    - ENV_NAME=node-1-test
+    - ENV_NAME=node-2-test
+before_install: gem install travis-chef && travis-chef prepare
+script: travis-chef
+branches:
+  only:
+    - master
+    - develop
+    - /^hotfix\/.*$/
+    - /^release\/.*$/
+    - /^environment\/.*$/
+addons:
+  artifacts:
+    debug: true
+    paths:
+      - $(find dist/ -type f | tr "\n" ":")
+    working_dir: dist
+    target_paths: eaccept-ecom/${TRAVIS_COMMIT:0:7}/${ENV_NAME}
+    s3_region: us-west-1

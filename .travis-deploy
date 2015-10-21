@@ -1,0 +1,35 @@
+setup_dev() {
+  export CHEF_SERVER="https://chef.granicuslabs.com"
+  export CHEF_VALIDATOR="chef-validator.dev"
+  export CHEF_CLIENT="glabs.dev"
+  travis-chef setup
+}
+
+deploy() {
+  . .travis-test
+  if [ "${ENV_NAME}" = "node-1-test" ]; then
+    git push -f origin environment/${1}:deployed/${1}
+  fi
+  return $?
+}
+
+update() {
+  if [ "${ENV_NAME}" = "node-1-test" ]; then
+    knife ssh "recipes:eaccept AND (chef_environment:${1})" 'sudo chef-client -l info'
+    return $?
+  fi
+}
+
+case "${environment}" in
+  dev|qa)
+    setup_dev
+    deploy ${environment} && \
+    update ${environment}
+    exit $?
+  ;;
+  production)
+    deploy production && \
+    update production
+    exit $?
+  ;;
+esac

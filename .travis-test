@@ -1,0 +1,3 @@
+set -e
+ant buildwar
+set +e
