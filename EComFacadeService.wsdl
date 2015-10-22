@@ -315,6 +315,7 @@
           <xs:element name="deleted" type="xs:boolean"/>
           <xs:element name="firmAccessAdmin" type="xs:boolean"/>
           <xs:element minOccurs="0" name="firmAdminUserAccessId" type="xs:long"/>
+          <xs:element name="overriddenSubWarningSent" type="xs:boolean"/>
           <xs:element minOccurs="0" name="overriddenUntillDate" type="xs:dateTime"/>
           <xs:element minOccurs="0" name="user" type="tns:user"/>
           <xs:element minOccurs="0" name="userAccessCompositePrimaryKey" type="tns:userAccessCompositePrimaryKey"/>
@@ -680,6 +681,7 @@
       <xs:element minOccurs="0" name="numberOfRecords" type="xs:int"/>
       <xs:element minOccurs="0" name="startingFrom" type="xs:int"/>
       <xs:element minOccurs="0" name="toDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="transactionType" type="xs:string"/>
       <xs:element minOccurs="0" name="userName" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
@@ -1201,7 +1203,7 @@
       <xs:element minOccurs="0" name="itemsPurchased" type="xs:int"/>
       <xs:element minOccurs="0" name="nodeName" type="xs:string"/>
       <xs:element minOccurs="0" name="payAsUGoTxId" type="xs:long"/>
-      <xs:element minOccurs="0" name="payAsUGoTxItemId" type="xs:long"/>
+      <xs:element minOccurs="0" name="payAsUGoTxItemId" type="xs:string"/>
       <xs:element minOccurs="0" name="siteDescription" type="xs:string"/>
       <xs:element minOccurs="0" name="siteName" type="xs:string"/>
       <xs:element minOccurs="0" name="subscription" type="xs:string"/>
