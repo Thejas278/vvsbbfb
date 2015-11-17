@@ -63,7 +63,17 @@ public class SystemUtil {
 	}
     
     public static void main (String args[]) {
-        System.out.println(encrypt("vivek"));
+    	/*private static String PASSWORD_KEY = "Nk0BusFu9aLE4qb";		
+		private static String PASSWORD_KEY = "dookudu";*/
+    	String text1 = "mez*^8AFO]mDTZ";
+    	String text2 = "A893A81F03B327BF21EC41D4EADB8509E715F72B445B152A329676B13071250A";
+		String algorithm = "PBEWITHSHA256AND256BITAES-CBC-BC";
+		String devPasswordKey = "dookudu";
+		String prodPasswordKey1 = "Nk0BusFu9aLE4qb";
+		String prodPasswordKey2 = "zEFyZpXc0NYAgYU";
+		
+		System.out.println(encrypt(text1,algorithm,devPasswordKey));
+		//System.out.println(decrypt(text2,algorithm,prodPasswordKey2));
     }
     public static String encrypt(String plainText) {
         String encryptedText = null;

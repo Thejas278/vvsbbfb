@@ -2,6 +2,7 @@ package com.fdt.otctx.service;
 
 import static com.fdt.common.SystemConstants.NOTIFY_ADMIN;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.rmi.RemoteException;
@@ -275,6 +276,7 @@ public class OTCTXServiceImpl implements OTCTXService {
             logger.error("Refund Of Transaction oTCResponseDTO {}", oTCResponseDTO);
             this.handleOTCException(oTCRequestDTO, oTCResponseDTO, site, exception);
         }
+        logger.info("Exiting  doSaleOTC oTCResponseDTO {}" + oTCResponseDTO);
         return oTCResponseDTO;
     }
 
@@ -433,11 +435,28 @@ public class OTCTXServiceImpl implements OTCTXService {
 		encryptedCardSwipe.setMagnePrintStatus(mPrintStatus);
 		authentication.setUsername(hostId);
 		authentication.setPassword(hostPwd);
-		authentication.setCustomerCode("001000014");        
+		authentication.setCustomerCode("001000086");        
         try {                
     		decryptCardSwipeRequest.setEncryptedCardSwipe(encryptedCardSwipe);
-    		decryptCardSwipeRequest.setAuthentication(authentication);
+    		decryptCardSwipeRequest.setAuthentication(authentication);    		
     		decryptCardSwipe.setRequest(decryptCardSwipeRequest);
+    		/* Printing Magensa Request */
+    		for (Field field : decryptCardSwipeRequest.getClass().getDeclaredFields()) {
+    		    field.setAccessible(true);
+    		    String name = field.getName();
+    		    Object value = null;
+				try {
+					value = field.get(decryptCardSwipeRequest);
+					 System.out.printf("%s : %s%n", name, value);
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		   
+    		}
     		decryptCardSwipeResponse =  magensaStub.decryptCardSwipe(decryptCardSwipe);
     	} catch (RemoteException remoteException) {
             remoteException.printStackTrace();

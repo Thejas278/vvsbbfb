@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="DecryptService"
+	targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex"
+	xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy"
+	xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:tns="http://tempuri.org/" xmlns:wsa10="http://www.w3.org/2005/08/addressing"
+	xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+	<wsp:Policy wsu:Id="BasicHttpsBinding_IDecrypt_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:TransportBinding
+					xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<sp:HttpsToken RequireClientCertificate="false" />
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256 />
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict />
+							</wsp:Policy>
+						</sp:Layout>
+					</wsp:Policy>
+				</sp:TransportBinding>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsdl:types>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:import namespace="http://schemas.datacontract.org/2004/07/Decrypt.Core" />
+			<xs:element name="DecryptData">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="request" nillable="true"
+							type="q1:DecryptRequest" xmlns:q1="http://schemas.datacontract.org/2004/07/Decrypt.Core" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DecryptDataResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="DecryptDataResult"
+							nillable="true" type="q2:DecryptResponse"
+							xmlns:q2="http://schemas.datacontract.org/2004/07/Decrypt.Core" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GenerateMac">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="request" nillable="true"
+							type="q3:GenerateMacRequest" xmlns:q3="http://schemas.datacontract.org/2004/07/Decrypt.Core" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GenerateMacResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="GenerateMacResult"
+							nillable="true" type="q4:GenerateMACResponse"
+							xmlns:q4="http://schemas.datacontract.org/2004/07/Decrypt.Core" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DecryptCardSwipe">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="request" nillable="true"
+							type="q5:DecryptCardSwipeRequest" xmlns:q5="http://schemas.datacontract.org/2004/07/Decrypt.Core" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DecryptCardSwipeResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="DecryptCardSwipeResult"
+							nillable="true" type="q6:DecryptCardSwipeResponse"
+							xmlns:q6="http://schemas.datacontract.org/2004/07/Decrypt.Core" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+		<xs:schema attributeFormDefault="qualified"
+			elementFormDefault="qualified"
+			targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
+			<xs:element name="anyType" nillable="true" type="xs:anyType" />
+			<xs:element name="anyURI" nillable="true" type="xs:anyURI" />
+			<xs:element name="base64Binary" nillable="true" type="xs:base64Binary" />
+			<xs:element name="boolean" nillable="true" type="xs:boolean" />
+			<xs:element name="byte" nillable="true" type="xs:byte" />
+			<xs:element name="dateTime" nillable="true" type="xs:dateTime" />
+			<xs:element name="decimal" nillable="true" type="xs:decimal" />
+			<xs:element name="double" nillable="true" type="xs:double" />
+			<xs:element name="float" nillable="true" type="xs:float" />
+			<xs:element name="int" nillable="true" type="xs:int" />
+			<xs:element name="long" nillable="true" type="xs:long" />
+			<xs:element name="QName" nillable="true" type="xs:QName" />
+			<xs:element name="short" nillable="true" type="xs:short" />
+			<xs:element name="string" nillable="true" type="xs:string" />
+			<xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte" />
+			<xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt" />
+			<xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong" />
+			<xs:element name="unsignedShort" nillable="true"
+				type="xs:unsignedShort" />
+			<xs:element name="char" nillable="true" type="tns:char" />
+			<xs:simpleType name="char">
+				<xs:restriction base="xs:int" />
+			</xs:simpleType>
+			<xs:element name="duration" nillable="true" type="tns:duration" />
+			<xs:simpleType name="duration">
+				<xs:restriction base="xs:duration">
+					<xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?" />
+					<xs:minInclusive value="-P10675199DT2H48M5.4775808S" />
+					<xs:maxInclusive value="P10675199DT2H48M5.4775807S" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:element name="guid" nillable="true" type="tns:guid" />
+			<xs:simpleType name="guid">
+				<xs:restriction base="xs:string">
+					<xs:pattern
+						value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:attribute name="FactoryType" type="xs:QName" />
+			<xs:attribute name="Id" type="xs:ID" />
+			<xs:attribute name="Ref" type="xs:IDREF" />
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified"
+			targetNamespace="http://schemas.datacontract.org/2004/07/Decrypt.Core"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Decrypt.Core">
+			<xs:complexType name="DecryptRequest">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:GenericMagensaInputs">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="Authentication"
+								nillable="true" type="tns:Authentication" />
+							<xs:element minOccurs="0" name="EncryptedData"
+								nillable="true" type="xs:string" />
+							<xs:element minOccurs="0" name="KSN" nillable="true"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="KeyType" type="tns:KeyVariantEnum" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="DecryptRequest" nillable="true"
+				type="tns:DecryptRequest" />
+			<xs:complexType name="GenericMagensaInputs">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="BillingLabel" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="CustomerTransactionID"
+						nillable="true" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="GenericMagensaInputs" nillable="true"
+				type="tns:GenericMagensaInputs" />
+			<xs:complexType name="Authentication">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="CustomerCode" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="Password" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="Username" nillable="true"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="Authentication" nillable="true"
+				type="tns:Authentication" />
+			<xs:simpleType name="KeyVariantEnum">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Pin" />
+					<xs:enumeration value="Data" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:element name="KeyVariantEnum" nillable="true"
+				type="tns:KeyVariantEnum" />
+			<xs:complexType name="DecryptResponse">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:BasicTransactionInfo">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="DecryptedData"
+								nillable="true" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="DecryptResponse" nillable="true"
+				type="tns:DecryptResponse" />
+			<xs:complexType name="BasicTransactionInfo">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="CustomerTransactionId"
+						nillable="true" type="xs:string" />
+					<xs:element minOccurs="0" name="IsReplay" type="xs:boolean" />
+					<xs:element minOccurs="0" name="MagTranId" nillable="true"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="BasicTransactionInfo" nillable="true"
+				type="tns:BasicTransactionInfo" />
+			<xs:complexType name="GenerateMacRequest">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:GenericMagensaInputs">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="Authentication"
+								nillable="true" type="tns:Authentication" />
+							<xs:element minOccurs="0" name="DataToMAC" nillable="true"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="KSN" nillable="true"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="KeyDerivationType"
+								type="tns:KeyDerivationEnum" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="GenerateMacRequest" nillable="true"
+				type="tns:GenerateMacRequest" />
+			<xs:simpleType name="KeyDerivationEnum">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Fixed" />
+					<xs:enumeration value="DUKPT" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:element name="KeyDerivationEnum" nillable="true"
+				type="tns:KeyDerivationEnum" />
+			<xs:complexType name="GenerateMACResponse">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:BasicTransactionInfo">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="MACedString" nillable="true"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="GenerateMACResponse" nillable="true"
+				type="tns:GenerateMACResponse" />
+			<xs:complexType name="DecryptCardSwipeRequest">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:GenericMagensaInputs">
+						<xs:sequence>
+							<xs:element name="Authentication" nillable="true"
+								type="tns:Authentication" />
+							<xs:element name="EncryptedCardSwipe" nillable="true"
+								type="tns:EncryptedCardSwipe" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="DecryptCardSwipeRequest" nillable="true"
+				type="tns:DecryptCardSwipeRequest" />
+			<xs:complexType name="EncryptedCardSwipe">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="DeviceSN" nillable="true"
+						type="xs:string" />
+					<xs:element name="KSN" nillable="true" type="xs:string" />
+					<xs:element minOccurs="0" name="MagnePrint" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="MagnePrintStatus"
+						nillable="true" type="xs:string" />
+					<xs:element minOccurs="0" name="Track1" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="Track2" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="Track3" nillable="true"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="EncryptedCardSwipe" nillable="true"
+				type="tns:EncryptedCardSwipe" />
+			<xs:complexType name="DecryptCardSwipeResponse">
+				<xs:complexContent mixed="false">
+					<xs:extension base="tns:BasicTransactionInfo">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="CardID" nillable="true"
+								type="xs:string" />
+							<xs:element name="DecryptedCardSwipe" nillable="true"
+								type="tns:DecryptedCardSwipe" />
+							<xs:element minOccurs="0" name="MagnePrintScore" type="xs:decimal" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:element name="DecryptCardSwipeResponse" nillable="true"
+				type="tns:DecryptCardSwipeResponse" />
+			<xs:complexType name="DecryptedCardSwipe">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="MagnePrint" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="Track1" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="Track2" nillable="true"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="Track3" nillable="true"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="DecryptedCardSwipe" nillable="true"
+				type="tns:DecryptedCardSwipe" />
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="IDecrypt_DecryptData_InputMessage">
+		<wsdl:part name="parameters" element="tns:DecryptData" />
+	</wsdl:message>
+	<wsdl:message name="IDecrypt_DecryptData_OutputMessage">
+		<wsdl:part name="parameters" element="tns:DecryptDataResponse" />
+	</wsdl:message>
+	<wsdl:message name="IDecrypt_GenerateMac_InputMessage">
+		<wsdl:part name="parameters" element="tns:GenerateMac" />
+	</wsdl:message>
+	<wsdl:message name="IDecrypt_GenerateMac_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GenerateMacResponse" />
+	</wsdl:message>
+	<wsdl:message name="IDecrypt_DecryptCardSwipe_InputMessage">
+		<wsdl:part name="parameters" element="tns:DecryptCardSwipe" />
+	</wsdl:message>
+	<wsdl:message name="IDecrypt_DecryptCardSwipe_OutputMessage">
+		<wsdl:part name="parameters" element="tns:DecryptCardSwipeResponse" />
+	</wsdl:message>
+	<wsdl:portType name="IDecrypt">
+		<wsdl:operation name="DecryptData">
+			<wsdl:input wsaw:Action="http://tempuri.org/IDecrypt/DecryptData"
+				message="tns:IDecrypt_DecryptData_InputMessage" />
+			<wsdl:output wsaw:Action="http://tempuri.org/IDecrypt/DecryptDataResponse"
+				message="tns:IDecrypt_DecryptData_OutputMessage" />
+		</wsdl:operation>
+		<wsdl:operation name="GenerateMac">
+			<wsdl:input wsaw:Action="http://tempuri.org/IDecrypt/GenerateMac"
+				message="tns:IDecrypt_GenerateMac_InputMessage" />
+			<wsdl:output wsaw:Action="http://tempuri.org/IDecrypt/GenerateMacResponse"
+				message="tns:IDecrypt_GenerateMac_OutputMessage" />
+		</wsdl:operation>
+		<wsdl:operation name="DecryptCardSwipe">
+			<wsdl:input wsaw:Action="http://tempuri.org/IDecrypt/DecryptCardSwipe"
+				message="tns:IDecrypt_DecryptCardSwipe_InputMessage" />
+			<wsdl:output wsaw:Action="http://tempuri.org/IDecrypt/DecryptCardSwipeResponse"
+				message="tns:IDecrypt_DecryptCardSwipe_OutputMessage" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="BasicHttpBinding_IDecrypt" type="tns:IDecrypt">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="DecryptData">
+			<soap:operation soapAction="http://tempuri.org/IDecrypt/DecryptData"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GenerateMac">
+			<soap:operation soapAction="http://tempuri.org/IDecrypt/GenerateMac"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DecryptCardSwipe">
+			<soap:operation soapAction="http://tempuri.org/IDecrypt/DecryptCardSwipe"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="BasicHttpsBinding_IDecrypt" type="tns:IDecrypt">
+		<wsp:PolicyReference URI="#BasicHttpsBinding_IDecrypt_policy" />
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="DecryptData">
+			<soap:operation soapAction="http://tempuri.org/IDecrypt/DecryptData"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GenerateMac">
+			<soap:operation soapAction="http://tempuri.org/IDecrypt/GenerateMac"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DecryptCardSwipe">
+			<soap:operation soapAction="http://tempuri.org/IDecrypt/DecryptCardSwipe"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="DecryptService">
+		<wsdl:port name="BasicHttpBinding_IDecrypt" binding="tns:BasicHttpBinding_IDecrypt">
+			<soap:address location="http://decrypt.magensa.net:1525/Decrypt.svc" />
+		</wsdl:port>
+		<wsdl:port name="BasicHttpsBinding_IDecrypt" binding="tns:BasicHttpsBinding_IDecrypt">
+			<soap:address location="https://decrypt.magensa.net/Decrypt.svc" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

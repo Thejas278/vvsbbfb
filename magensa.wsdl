@@ -1,0 +1,1094 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.magensa.net/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.magensa.net/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">A service Provided by Magensa.</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.magensa.net/">
+      <s:element name="ChallengeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ChallengeResponseInputs" type="tns:ChallengeResponseInputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="ChallengeResponseOutputs" type="tns:ChallengeResponseOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ChallengeResponseInputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ChallengeFromReader" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ChallengeAction" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ChallengeResponseOutputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ChallengeToReader" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ChallengeResponseResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ChallengeResponseOutputs" type="tns:ChallengeResponseOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckHealth">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckHealthResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CheckHealthResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Decrypt">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptInputs" type="tns:DecryptInputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptOutputs" type="tns:DecryptOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptInputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CardData" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardDataFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OutputFormatCode" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DecryptOutputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PAN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardHolder" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Expdt" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptOutputs" type="tns:DecryptOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DecryptRXV201">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptRXV201_Input" type="tns:DecryptRXV201Inputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptRXV201_Output" type="tns:DecryptRXV201Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptRXV201Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncMP" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="KSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeviceSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPStatus" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OutputFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncryptionBlockType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RegisteredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureInput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DecryptRXV201Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PAN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureOutput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptRXV201Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptRXV201_Output" type="tns:DecryptRXV201Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Register">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterInputs" type="tns:RegisterInputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterOutputs" type="tns:RegisterOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RegisterInputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CardData" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UsernameOfCard" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPEffDt" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPExpDt" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IssueNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IndexHashType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RegisteredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UtilityField" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="RegisterOutputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegisterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterOutputs" type="tns:RegisterOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DecryptRV202">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptRV202_Input" type="tns:DecryptRV202Inputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptRV202Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncMP" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="KSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeviceSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPStatus" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OutputFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncryptionBlockType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RegisteredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureInput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptRV202Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptRV202Result" type="tns:DecryptRV202Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptRV202Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PAN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureOutput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptRegisterScore">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Inputs" type="tns:Inputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="Outputs" type="tns:Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CardData" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IssueNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InputFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPEffDt" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPExpDt" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OutputFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RegisteredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UsernameOfCard" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UtilityField" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Score" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Pan" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track3" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptRegisterScoreResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Outputs" type="tns:Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DecryptSV202">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptSV202_Input" type="tns:DecryptSV202Inputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptSV202Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncMP" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="KSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeviceSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPStatus" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OutputFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncryptionBlockType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ScoredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureInput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptSV202Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptSV202Result" type="tns:DecryptSV202Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptSV202Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PAN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Score" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureOutput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptRSV201">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptRSV201_Input" type="tns:DecryptRSV201Inputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptRSV201Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncMP" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="KSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeviceSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPStatus" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OutputFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncryptionBlockType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RegisteredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureInput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptRSV201Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptRSV201Result" type="tns:DecryptRSV201Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptRSV201Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PAN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Score" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureOutput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="UnregisterV202">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UnregisterV202_Input" type="tns:UnregisterV202Inputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="UnregisterV202Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="KSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeviceSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncryptionBlockType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureInput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="UnregisterV202Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UnregisterV202Result" type="tns:UnregisterV202Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="UnregisterV202Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureOutput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptT1V201">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptT1V201_Input" type="tns:DecryptT1V201Inputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptT1V201_Output" type="tns:DecryptT1V201Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DecryptT1V201Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncTrack3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncMP" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="KSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeviceSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPStatus" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OutputFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EncryptionBlockType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RegisteredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureInput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DecryptT1V201Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PAN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureOutput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DecryptT1V201Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DecryptT1V201_Output" type="tns:DecryptT1V201Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterCTV201">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterCTV201_Input" type="tns:RegisterCTV201Inputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RegisterCTV201Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MP" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeviceSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MPStatus" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RegisteredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureInput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegisterCTV201Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterCTV201Result" type="tns:RegisterCTV201Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RegisterCTV201Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FutureOutput" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="Score">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ScoreInputs" type="tns:ScoreInputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="ScoreOutputs" type="tns:ScoreOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ScoreInputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CardData" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IssueNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IndexHashType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RegisteredBy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UsernameOfCard" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ScoreOutputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ScoreResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ScoreOutputs" type="tns:ScoreOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Unregister">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UnRegisterInputs" type="tns:UnRegisterInputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="UnRegisterOutputs" type="tns:UnRegisterOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="UnRegisterInputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CardData" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UsernameOfCard" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IssueNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IndexHashType" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="UnRegisterOutputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="UnregisterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UnRegisterOutputs" type="tns:UnRegisterOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Test">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TestInputs" type="tns:TestInputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="TestOutputs" type="tns:TestOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="TestInputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CardData" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardDataFormatCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OutputFormatCode" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TestOutputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Track3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PAN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CardHolder" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Expdt" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="TestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TestOutputs" type="tns:TestOutputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GenerateMAC">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GenerateMACInputs" type="tns:MAC_Inputs" />
+            <s:element minOccurs="0" maxOccurs="1" name="GenerateMACOutputs" type="tns:MAC_Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="MAC_Inputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="HostID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HostPwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustTranID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="KSN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StringToMAC" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MAC_Outputs">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MagensaID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusMsg" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MAC" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StringWithMAC" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GenerateMACResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GenerateMACOutputs" type="tns:MAC_Outputs" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ChallengeResponseSoapIn">
+    <wsdl:part name="parameters" element="tns:ChallengeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ChallengeResponseSoapOut">
+    <wsdl:part name="parameters" element="tns:ChallengeResponseResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckHealthSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckHealth" />
+  </wsdl:message>
+  <wsdl:message name="CheckHealthSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckHealthResponse" />
+  </wsdl:message>
+  <wsdl:message name="DecryptSoapIn">
+    <wsdl:part name="parameters" element="tns:Decrypt" />
+  </wsdl:message>
+  <wsdl:message name="DecryptSoapOut">
+    <wsdl:part name="parameters" element="tns:DecryptResponse" />
+  </wsdl:message>
+  <wsdl:message name="DecryptRXV201SoapIn">
+    <wsdl:part name="parameters" element="tns:DecryptRXV201" />
+  </wsdl:message>
+  <wsdl:message name="DecryptRXV201SoapOut">
+    <wsdl:part name="parameters" element="tns:DecryptRXV201Response" />
+  </wsdl:message>
+  <wsdl:message name="RegisterSoapIn">
+    <wsdl:part name="parameters" element="tns:Register" />
+  </wsdl:message>
+  <wsdl:message name="RegisterSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterResponse" />
+  </wsdl:message>
+  <wsdl:message name="DecryptRV202SoapIn">
+    <wsdl:part name="parameters" element="tns:DecryptRV202" />
+  </wsdl:message>
+  <wsdl:message name="DecryptRV202SoapOut">
+    <wsdl:part name="parameters" element="tns:DecryptRV202Response" />
+  </wsdl:message>
+  <wsdl:message name="DecryptRegisterScoreSoapIn">
+    <wsdl:part name="parameters" element="tns:DecryptRegisterScore" />
+  </wsdl:message>
+  <wsdl:message name="DecryptRegisterScoreSoapOut">
+    <wsdl:part name="parameters" element="tns:DecryptRegisterScoreResponse" />
+  </wsdl:message>
+  <wsdl:message name="DecryptSV202SoapIn">
+    <wsdl:part name="parameters" element="tns:DecryptSV202" />
+  </wsdl:message>
+  <wsdl:message name="DecryptSV202SoapOut">
+    <wsdl:part name="parameters" element="tns:DecryptSV202Response" />
+  </wsdl:message>
+  <wsdl:message name="DecryptRSV201SoapIn">
+    <wsdl:part name="parameters" element="tns:DecryptRSV201" />
+  </wsdl:message>
+  <wsdl:message name="DecryptRSV201SoapOut">
+    <wsdl:part name="parameters" element="tns:DecryptRSV201Response" />
+  </wsdl:message>
+  <wsdl:message name="UnregisterV202SoapIn">
+    <wsdl:part name="parameters" element="tns:UnregisterV202" />
+  </wsdl:message>
+  <wsdl:message name="UnregisterV202SoapOut">
+    <wsdl:part name="parameters" element="tns:UnregisterV202Response" />
+  </wsdl:message>
+  <wsdl:message name="DecryptT1V201SoapIn">
+    <wsdl:part name="parameters" element="tns:DecryptT1V201" />
+  </wsdl:message>
+  <wsdl:message name="DecryptT1V201SoapOut">
+    <wsdl:part name="parameters" element="tns:DecryptT1V201Response" />
+  </wsdl:message>
+  <wsdl:message name="RegisterCTV201SoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterCTV201" />
+  </wsdl:message>
+  <wsdl:message name="RegisterCTV201SoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterCTV201Response" />
+  </wsdl:message>
+  <wsdl:message name="ScoreSoapIn">
+    <wsdl:part name="parameters" element="tns:Score" />
+  </wsdl:message>
+  <wsdl:message name="ScoreSoapOut">
+    <wsdl:part name="parameters" element="tns:ScoreResponse" />
+  </wsdl:message>
+  <wsdl:message name="UnregisterSoapIn">
+    <wsdl:part name="parameters" element="tns:Unregister" />
+  </wsdl:message>
+  <wsdl:message name="UnregisterSoapOut">
+    <wsdl:part name="parameters" element="tns:UnregisterResponse" />
+  </wsdl:message>
+  <wsdl:message name="TestSoapIn">
+    <wsdl:part name="parameters" element="tns:Test" />
+  </wsdl:message>
+  <wsdl:message name="TestSoapOut">
+    <wsdl:part name="parameters" element="tns:TestResponse" />
+  </wsdl:message>
+  <wsdl:message name="GenerateMACSoapIn">
+    <wsdl:part name="parameters" element="tns:GenerateMAC" />
+  </wsdl:message>
+  <wsdl:message name="GenerateMACSoapOut">
+    <wsdl:part name="parameters" element="tns:GenerateMACResponse" />
+  </wsdl:message>
+  <wsdl:portType name="MagensaSoap">
+    <wsdl:operation name="ChallengeResponse">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Generate response to reader challenge for website authentication.</wsdl:documentation>
+      <wsdl:input message="tns:ChallengeResponseSoapIn" />
+      <wsdl:output message="tns:ChallengeResponseSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckHealth">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Check Health.</wsdl:documentation>
+      <wsdl:input message="tns:CheckHealthSoapIn" />
+      <wsdl:output message="tns:CheckHealthSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Decrypt">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Decrypt Card Data.</wsdl:documentation>
+      <wsdl:input message="tns:DecryptSoapIn" />
+      <wsdl:output message="tns:DecryptSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRXV201">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Decrypt Card Information using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:DecryptRXV201SoapIn" />
+      <wsdl:output message="tns:DecryptRXV201SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Register">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Register Cards using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:RegisterSoapIn" />
+      <wsdl:output message="tns:RegisterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRV202">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Decrypt Card Information using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:DecryptRV202SoapIn" />
+      <wsdl:output message="tns:DecryptRV202SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRegisterScore">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Decrypt and (Register or Score) Card.</wsdl:documentation>
+      <wsdl:input message="tns:DecryptRegisterScoreSoapIn" />
+      <wsdl:output message="tns:DecryptRegisterScoreSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DecryptSV202">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Decrypt Card Information using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:DecryptSV202SoapIn" />
+      <wsdl:output message="tns:DecryptSV202SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRSV201">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Decrypt Card Information using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:DecryptRSV201SoapIn" />
+      <wsdl:output message="tns:DecryptRSV201SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UnregisterV202">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Unregister Cards using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:UnregisterV202SoapIn" />
+      <wsdl:output message="tns:UnregisterV202SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DecryptT1V201">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Decrypt Card Information using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:DecryptT1V201SoapIn" />
+      <wsdl:output message="tns:DecryptT1V201SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterCTV201">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registers Clear Text Card Information using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:RegisterCTV201SoapIn" />
+      <wsdl:output message="tns:RegisterCTV201SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Score">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Score Cards using Magensa.</wsdl:documentation>
+      <wsdl:input message="tns:ScoreSoapIn" />
+      <wsdl:output message="tns:ScoreSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Unregister">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Unregister Card.</wsdl:documentation>
+      <wsdl:input message="tns:UnregisterSoapIn" />
+      <wsdl:output message="tns:UnregisterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Test Operation.</wsdl:documentation>
+      <wsdl:input message="tns:TestSoapIn" />
+      <wsdl:output message="tns:TestSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GenerateMAC">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Generate MAC String.</wsdl:documentation>
+      <wsdl:input message="tns:GenerateMACSoapIn" />
+      <wsdl:output message="tns:GenerateMACSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MagensaSoap" type="tns:MagensaSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ChallengeResponse">
+      <soap:operation soapAction="http://www.magensa.net/ChallengeResponse" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckHealth">
+      <soap:operation soapAction="http://www.magensa.net/CheckHealth" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Decrypt">
+      <soap:operation soapAction="http://www.magensa.net/Decrypt" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRXV201">
+      <soap:operation soapAction="http://www.magensa.net/DecryptRXV201" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Register">
+      <soap:operation soapAction="http://www.magensa.net/Register" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRV202">
+      <soap:operation soapAction="http://www.magensa.net/DecryptRV202" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRegisterScore">
+      <soap:operation soapAction="http://www.magensa.net/DecryptRegisterScore" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptSV202">
+      <soap:operation soapAction="http://www.magensa.net/DecryptSV202" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRSV201">
+      <soap:operation soapAction="http://www.magensa.net/DecryptRSV201" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UnregisterV202">
+      <soap:operation soapAction="http://www.magensa.net/UnregisterV202" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptT1V201">
+      <soap:operation soapAction="http://www.magensa.net/DecryptT1V201" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterCTV201">
+      <soap:operation soapAction="http://www.magensa.net/RegisterCTV201" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Score">
+      <soap:operation soapAction="http://www.magensa.net/Score" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Unregister">
+      <soap:operation soapAction="http://www.magensa.net/Unregister" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <soap:operation soapAction="http://www.magensa.net/Test" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GenerateMAC">
+      <soap:operation soapAction="http://www.magensa.net/GenerateMAC" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="MagensaSoap12" type="tns:MagensaSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ChallengeResponse">
+      <soap12:operation soapAction="http://www.magensa.net/ChallengeResponse" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckHealth">
+      <soap12:operation soapAction="http://www.magensa.net/CheckHealth" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Decrypt">
+      <soap12:operation soapAction="http://www.magensa.net/Decrypt" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRXV201">
+      <soap12:operation soapAction="http://www.magensa.net/DecryptRXV201" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Register">
+      <soap12:operation soapAction="http://www.magensa.net/Register" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRV202">
+      <soap12:operation soapAction="http://www.magensa.net/DecryptRV202" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRegisterScore">
+      <soap12:operation soapAction="http://www.magensa.net/DecryptRegisterScore" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptSV202">
+      <soap12:operation soapAction="http://www.magensa.net/DecryptSV202" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptRSV201">
+      <soap12:operation soapAction="http://www.magensa.net/DecryptRSV201" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UnregisterV202">
+      <soap12:operation soapAction="http://www.magensa.net/UnregisterV202" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DecryptT1V201">
+      <soap12:operation soapAction="http://www.magensa.net/DecryptT1V201" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterCTV201">
+      <soap12:operation soapAction="http://www.magensa.net/RegisterCTV201" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Score">
+      <soap12:operation soapAction="http://www.magensa.net/Score" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Unregister">
+      <soap12:operation soapAction="http://www.magensa.net/Unregister" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <soap12:operation soapAction="http://www.magensa.net/Test" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GenerateMAC">
+      <soap12:operation soapAction="http://www.magensa.net/GenerateMAC" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Magensa">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">A service Provided by Magensa.</wsdl:documentation>
+    <wsdl:port name="MagensaSoap" binding="tns:MagensaSoap">
+      <soap:address location="https://ns.magensa.net/WSmagensa/service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="MagensaSoap12" binding="tns:MagensaSoap12">
+      <soap12:address location="https://ns.magensa.net/WSmagensa/service.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
