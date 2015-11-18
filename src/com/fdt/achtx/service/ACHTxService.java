@@ -20,7 +20,7 @@ public interface ACHTxService {
      * @throws SDLException
      */
     public ACHTxDTO getACHDetailsAndTransferXMLRequest(Long siteId, PaymentType paymentType,
-        String createdBy, String machineName)  throws SDLException;
+            String createdBy, String machineName) throws SDLException;
 
     /**
      * @param paymentType
@@ -31,18 +31,18 @@ public interface ACHTxService {
      * @throws SDLException
      * @throws SDLBusinessException
      */
-   public ACHTxDTO getACHDetailsForTransfer(Long siteId, PaymentType paymentType, String createdBy,
-		   String machineIp) throws SDLException, SDLBusinessException;
+    public ACHTxDTO getACHDetailsForTransfer(Long siteId, PaymentType paymentType, String createdBy,
+            String machineIp) throws SDLException, SDLBusinessException;
 
-	public void scheduleJobsForACHTransfersForAllSites() throws SchedulerException;
+    public void scheduleJobsForACHTransfersForAllSites() throws SchedulerException;
 
-	public void scheduleJobForPollingACHResponses() throws SchedulerException;
-	
-	public ACHTxDTO getACHDetailsForSFTP();
-	
-	public void updateCheckHistory(String checkNumber, String achTxRefNumber, String achStatus, 
-    		String achResponseSeverity, String achResponseStatusDesc, String achResponseErrorDesc,
-    		Date achResponseStatusDate, String machineName, String modifiedBy);
+    public void scheduleJobForPollingACHResponses() throws SchedulerException;
 
-	public ACHTxDTO getACHDetailsByPaymentReferenceID(String paymentReferenceId);
+    public ACHTxDTO getACHDetailsForSFTP();
+
+    public void updateCheckHistory(String checkNumber, String achTxRefNumber, String achStatus,
+            String achResponseSeverity, String achResponseStatusDesc, String achResponseErrorDesc,
+            Date achResponseStatusDate, String machineName, String modifiedBy);
+
+    public ACHTxDTO getACHDetailsByPaymentReferenceID(String paymentReferenceId);
 }

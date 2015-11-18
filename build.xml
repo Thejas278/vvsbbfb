@@ -61,8 +61,9 @@
             <entry key="ecommerce.magensa.certificatepwd" value="${ecommerce.magensa.certificatepwd}"/>
             <entry key="achtransactions.scheduler.isenabled" value="${achtransactions.scheduler.isenabled}"/>
             <entry key="achtransactions.mode" value="${achtransactions.mode}"/>
+            <entry key="achtransactions.jobTimeoutMins" value="${achtransactions.jobTimeoutMins}"/>
             <entry key="achtransactions.tempDirectory" value="${achtransactions.tempDirectory}"/>
-            <entry key="achtransactions.poll.cron" value="${achtransactions.poll.cron}"/>        	
+            <entry key="achtransactions.poll.cron" value="${achtransactions.poll.cron}"/>
         </propertyfile>
         <propertyfile file="${atomikos-conf}">
             <entry key="com.atomikos.icatch.log_base_dir" value="${atomikos.base_dir}" />
@@ -150,7 +151,7 @@
                 <include name="com/fdt/payasugotx/dto/**" /> 
                 <include name="com/fdt/payasugotx/entity/**" /> 
                 <include name="com/fdt/paymentgateway/dto/**" /> 
-                <include name="com/fdt/paymentgateway/exception/**" />            	
+                <include name="com/fdt/paymentgateway/exception/**" />
                 <include name="com/fdt/subscriptions/entity/**" /> 
                 <include name="com/fdt/subscriptions/dto/**" /> 
                 <include name="com/fdt/recurtx/dto/**" /> 

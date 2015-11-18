@@ -103,5 +103,6 @@
 
     <bean id="bouncyCastleProvider" class="org.bouncycastle.jce.provider.BouncyCastleProvider" />
 
+    <util:properties id="serverProperties" location="${CONFIG_LOCATION}/spring/properties/server.properties"/>
 
 </beans>
