@@ -18,6 +18,33 @@ import com.fdt.common.entity.ActiveJob;
 import com.fdt.common.service.JobManagementService;
 import com.fdt.ecom.service.EComService;
 
+/**
+ * <p>
+ * This class, which implements Quartz's Job interface, should be extended by any new jobs
+ * which want to take advantage of its database semaphore mechanism for locking and allowing
+ * for execution across multiple nodes.
+ * </p>
+ * 
+ * <p>
+ * The sub-classed jobs should implement two methods:
+ * </p>
+ * <ul>
+ * <li>{@code getJobName}</li>
+ * <li>{@code doExecute}</li>
+ * </ul>
+ * 
+ * <p>
+ * {@code getJobName} can return nearly anything but it should be unique.
+ * </p>
+ * 
+ * <p>
+ * {@code doExecute} is passed the JobExecutionContext and should perform the normal work
+ * of the job, while being confident that no other instance of the job is running at the same
+ * time on another server.
+ * </p>
+ * 
+ * @author Jon Miller
+ */
 public abstract class LoadBalancedJob implements Job, ApplicationContextAware {
 
     private final static Logger logger = LoggerFactory.getLogger(LoadBalancedJob.class);
