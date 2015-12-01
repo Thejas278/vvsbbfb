@@ -196,20 +196,20 @@ public class EComSchedulerService {
 
     @PostConstruct
     public void scheduleJobsForACHTransfers() {
-    	if (!this.isACHSchedulerEnabled()) {
+        if (!this.isACHSchedulerEnabled()) {
             logger.info("Skiping Scheduler Service For ACH Transfers.");
             return;
         }
-    	logger.info("Starting Scheduler Service For ACH Transfers.");
-    	try {
-			this.aCHTransacationService.scheduleJobsForACHTransfersForAllSites();
-			this.aCHTransacationService.scheduleJobForPollingACHResponses();
-		}  catch (RuntimeException | SchedulerException runTimeException) {
+        logger.info("Starting Scheduler Service For ACH Transfers.");
+        try {
+            this.aCHTransacationService.scheduleJobsForACHTransfersForAllSites();
+            this.aCHTransacationService.scheduleJobForPollingACHResponses();
+        }  catch (RuntimeException | SchedulerException runTimeException) {
             logger.error(NOTIFY_ADMIN, "Exception in Scheduler Service For ACH Transfers.", runTimeException);
         }
-    	logger.info("Ending Scheduler Service For ACH Transfers.");
-    }    
-    
+        logger.info("Ending Scheduler Service For ACH Transfers.");
+    }
+
     private boolean isACHSchedulerEnabled() {
         return (new Boolean(this.isACHSchedulerEnabled)).booleanValue();
     }

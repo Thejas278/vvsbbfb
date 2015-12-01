@@ -3,6 +3,7 @@ package com.fdt.common.dao;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Blob;
@@ -49,6 +50,15 @@ public abstract class AbstractBaseDAOImpl {
 
     protected PBEStringEncryptor getPbeStringEncryptor() {
         return pbeStringEncryptor;
+    }
+
+    protected boolean deleteById(Class<?> type, Serializable id) {
+        Object persistentInstance = currentSession().load(type, id);
+        if (persistentInstance != null) {
+            currentSession().delete(persistentInstance);
+            return true;
+        }
+        return false;
     }
 
     protected Long getLongFromBigInteger(Object object) {
