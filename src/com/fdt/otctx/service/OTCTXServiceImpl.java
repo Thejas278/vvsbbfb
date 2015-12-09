@@ -435,7 +435,7 @@ public class OTCTXServiceImpl implements OTCTXService {
 		encryptedCardSwipe.setMagnePrintStatus(mPrintStatus);
 		authentication.setUsername(hostId);
 		authentication.setPassword(hostPwd);
-		authentication.setCustomerCode("001000086");        
+		authentication.setCustomerCode("001000014");        
         try {                
     		decryptCardSwipeRequest.setEncryptedCardSwipe(encryptedCardSwipe);
     		decryptCardSwipeRequest.setAuthentication(authentication);    		
