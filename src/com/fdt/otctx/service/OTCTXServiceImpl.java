@@ -419,7 +419,7 @@ public class OTCTXServiceImpl implements OTCTXService {
     		logger.info("javax.net.ssl.keyStorePassword: " + keyStorePassword);
     		logger.info("Magensa WSDL: " + this.magensaWsdl);
         	magensaStub = new DecryptServiceStub(this.magensaWsdl);
-            magensaStub._getServiceClient().getOptions().setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
+            magensaStub._getServiceClient().getOptions().setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.TRUE);
         } catch (AxisFault axisFault) {
             axisFault.printStackTrace();
             logger.error(NOTIFY_ADMIN, "Error in Communicating With Magensa", axisFault);
@@ -440,14 +440,14 @@ public class OTCTXServiceImpl implements OTCTXService {
     		decryptCardSwipeRequest.setEncryptedCardSwipe(encryptedCardSwipe);
     		decryptCardSwipeRequest.setAuthentication(authentication);    		
     		decryptCardSwipe.setRequest(decryptCardSwipeRequest);
-    		/* Printing Magensa Request */
+    		logger.info("/***** Magensa Request Begin ********/");
     		for (Field field : decryptCardSwipeRequest.getClass().getDeclaredFields()) {
     		    field.setAccessible(true);
     		    String name = field.getName();
     		    Object value = null;
 				try {
 					value = field.get(decryptCardSwipeRequest);
-					 System.out.printf("%s : %s%n", name, value);
+					 logger.info("Field Name: " + name + "Value: " + value);
 				} catch (IllegalArgumentException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -457,6 +457,7 @@ public class OTCTXServiceImpl implements OTCTXService {
 				}
     		   
     		}
+    		logger.info("/***** Magensa Request End ********/");
     		decryptCardSwipeResponse =  magensaStub.decryptCardSwipe(decryptCardSwipe);
     	} catch (RemoteException remoteException) {
             remoteException.printStackTrace();

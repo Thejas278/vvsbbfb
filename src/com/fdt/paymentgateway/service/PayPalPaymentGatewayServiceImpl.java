@@ -80,7 +80,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
        SDKProperties.setHostPort(new Integer(payPalHostPort).intValue());
        SDKProperties.setTimeOut(new Integer(payPalTimeout).intValue());
        SDKProperties.setLogFileName(payPalLogFileName);
-       SDKProperties.setLoggingLevel(PayflowConstants.SEVERITY_WARN);
+       SDKProperties.setLoggingLevel(PayflowConstants.SEVERITY_DEBUG);
        SDKProperties.setMaxLogFileSize(Integer.parseInt(payPalLogFileSize));
        SDKProperties.setStackTraceOn(true);
     }
