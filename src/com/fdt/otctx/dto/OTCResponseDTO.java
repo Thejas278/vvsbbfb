@@ -88,14 +88,13 @@ public class OTCResponseDTO extends AbstractBaseDTO {
 	}
 
 	@Override
-    public String toString() {
-        return "OTCResponseDTO [payPalTxRefNum=" + payPalTxRefNum
-                + ", authCode=" + authCode + ", errorCode=" + errorCode
-                + ", errorDesc=" + errorDesc + ", baseAmount=" + baseAmount
-                + ", serviceFee=" + serviceFee + ", totalTxAmount="
-                + totalTxAmount + ", createdDate=" + createdDate
-                + ", modifiedDate=" + modifiedDate + ", modifiedBy="
-                + modifiedBy + ", active=" + active + ", createdBy="
-                + createdBy + "]";
-    }
+	public String toString() {
+		return "OTCResponseDTO [payPalTxRefNum=" + payPalTxRefNum
+				+ ", authCode=" + authCode + ", errorCode=" + errorCode
+				+ ", errorDesc=" + errorDesc + ", baseAmount=" + baseAmount
+				+ ", serviceFee=" + serviceFee + ", totalTxAmount="
+				+ totalTxAmount + ", merchant=" + merchant + "]";
+	}
+
+	
 }

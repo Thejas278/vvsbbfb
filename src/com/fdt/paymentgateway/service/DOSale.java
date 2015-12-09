@@ -54,7 +54,7 @@ public class DOSale {
         Invoice inv = new Invoice();
 
         // Set Amount.
-        Currency amt = new Currency(new Double(7.00d), "USD");
+        Currency amt = new Currency(new Double(733.00d), "USD");
         inv.setAmt(amt);
         inv.setPoNum("POi4c");
         inv.setInvNum("INV4c");

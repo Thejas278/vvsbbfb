@@ -1,5 +1,7 @@
 package com.fdt.otctx.dto;
 
+import java.util.Arrays;
+
 
 public class OTCRequestDTO {
 
@@ -255,12 +257,23 @@ public class OTCRequestDTO {
 
 	@Override
 	public String toString() {
-		return "OTCRequestDTO [siteName=" + siteName + ", actualAmtToCharge="
+		return "OTCRequestDTO [productType=" + productType + ", itemName="
+				+ itemName + ", siteName=" + siteName + ", actualAmtToCharge="
 				+ actualAmtToCharge + ", machineName=" + machineName
-				+ ", userLogged=" + userLogged + ", officeLoc=" + officeLoc
-				+ ", comments=" + comments + ", invoiceNumber=" + invoiceNumber
-				+ "]";
+				+ ", userLogged=" + userLogged + ", encTrackOne=" + encTrackOne
+				+ ", encTrackTwo=" + encTrackTwo + ", encTrackThree="
+				+ encTrackThree + ", encMp=" + encMp + ", ksn=" + ksn
+				+ ", mPrintStatus=" + mPrintStatus + ", officeLoc=" + officeLoc
+				+ ", comments=" + comments + ", officeLocAdr1=" + officeLocAdr1
+				+ ", officeLocAdr2=" + officeLocAdr2 + ", officeLocCity="
+				+ officeLocCity + ", officeLocState=" + officeLocState
+				+ ", officeLocZip=" + officeLocZip + ", officeLocPhone="
+				+ officeLocPhone + ", officeLocComments1=" + officeLocComments1
+				+ ", officeLocComments2=" + officeLocComments2
+				+ ", invoiceNumber=" + invoiceNumber + ", tax=" + tax + "]";
 	}
+
+	
 
 
 }
