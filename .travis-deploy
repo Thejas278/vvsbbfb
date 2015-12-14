@@ -1,5 +1,5 @@
 setup_dev() {
-  export CHEF_SERVER="https://chef.granicuslabs.com"
+  export CHEF_SERVER="https://chef.granicuslabs.com/organizations/dev"
   export CHEF_VALIDATOR="chef-validator.dev"
   export CHEF_CLIENT="glabs.dev"
   travis-chef setup
