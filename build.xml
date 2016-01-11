@@ -191,6 +191,7 @@
               </fileset>
             <fileset dir="${webcontent}" >
                 <include name="WEB-INF/resources/javascripts/**" />
+            	<include name="WEB-INF/resources/font-awesome/**" />
                 <include name="WEB-INF/resources/styles/**.css" />
             </fileset>
             <lib dir="${dist}" >

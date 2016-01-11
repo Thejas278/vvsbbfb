@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="${request.getContextPath()}/resources/styles/login.css" />
 <link rel="stylesheet" href="${request.getContextPath()}/resources/styles/jquery-ui-1.8.11.base.css" />
 <link rel="stylesheet" href="${request.getContextPath()}/resources/styles/jquery-ui-custom-ext.css" />
+<link rel="stylesheet" href="${request.getContextPath()}/resources/font-awesome/css/font-awesome.min.css">
+
 <script type="text/javascript" src="${request.getContextPath()}/resources/javascripts/jquery.min.js"/></script>
 <script type="text/javascript" src="${request.getContextPath()}/resources/javascripts/jquery-ui.min.js"/></script>
 <script type="text/javascript" src="${request.getContextPath()}/resources/javascripts/jquery.validationEngine-en.js"></script>
@@ -165,15 +167,15 @@ td.footer{
 			</table>
 			</div>
 			<br />
-			<div  style="text-align:center;padding-right:20px"><a id="printRecepit" style="cursor:pointer;"><img src="${request.getContextPath()}/resources/images/print.png" /><@spring.message code="security.ecommerce.label.printReceipt" /></a></div>
+			<div  style="text-align:center;padding-right:20px"><a id="printRecepit" style="cursor:pointer;"><i class="fa fa-print blue" style="font-size:25px;"></i>&nbsp;<@spring.message code="security.ecommerce.label.printReceipt" /></a></div>
 			<#else>
 				<#if ERROR?has_content>
 					${ERROR}
 				</#if>
 			</#if>
 			<div class="ADCSI_title" id="ADCSI_title">
-				<span style="width:48%;text-align:left;display:inline-block;"><#if returnUrl?has_content><a href="${returnUrl?replace('reviewShoppingCart.admin', 'accountInformation.admin')}?isReAu=true">Return to Account Information<img style="border:0px;;" src="${request.getContextPath()}/resources/images/accountInformation.png"/></a></#if></span>
-				<span style="width:48%;text-align:right;display:inline-block;"></span>
+				<span style="width:48%;text-align:left;display:inline-block;"><#if returnUrl?has_content><a href="${returnUrl?replace('reviewShoppingCart.admin', 'accountInformation.admin')}?isReAu=true"><i class="fa fa-info-circle blue" style="font-size:18px;"></i> &nbsp;Return to Account Information </a></#if></span>
+				<span style="width:48%;text-align:right;display:inline-block;"><#if returnUrl?has_content><a href="${returnUrl?replace('reviewShoppingCart.admin', 'checkSubscription.admin')}"><i class="fa fa-search blue" style="font-size:18px;"></i>&nbsp;Search</#if></span>
 			</div>
 		</div>
 	</div>
