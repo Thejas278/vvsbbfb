@@ -419,7 +419,7 @@ public class OTCTXServiceImpl implements OTCTXService {
     		logger.info("javax.net.ssl.keyStorePassword: " + keyStorePassword);
     		logger.info("Magensa WSDL: " + this.magensaWsdl);
         	magensaStub = new DecryptServiceStub(this.magensaWsdl);
-            magensaStub._getServiceClient().getOptions().setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.TRUE);
+            //magensaStub._getServiceClient().getOptions().setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.TRUE);
         } catch (AxisFault axisFault) {
             axisFault.printStackTrace();
             logger.error(NOTIFY_ADMIN, "Error in Communicating With Magensa", axisFault);
