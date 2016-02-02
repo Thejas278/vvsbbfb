@@ -46,6 +46,8 @@ import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
 import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
 import com.fdt.paymentgateway.exception.PaymentGatewayUserExceptionCodes;
 import com.fdt.recurtx.dto.UserAccountDetailDTO;
+import com.fdt.recurtx.entity.UserAccount;
+import com.fdt.security.dao.UserDAO;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
 
 public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
@@ -58,6 +60,9 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
 
     @Autowired
     private EComDAO eComDAO;
+    
+    @Autowired
+    private UserDAO userDAO;
 
     @Value("${ecommerce.paypal.paypalhostaddress}")
     private String payPalHostAddress = null;
@@ -521,7 +526,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
         PayflowConnectionData connection = new PayflowConnectionData();
         String txRefNumber = null;
         Site site = existingUserAccountDTO.getSite();
-        CreditCard creditCard = existingUserAccountDTO.getUserAccount().getCreditCard();
+        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName);
         UserInfo user = this.getMerchantInfo(site.getNormalMerchant());
         Invoice invoice = new Invoice();
         BillTo bill = new BillTo();

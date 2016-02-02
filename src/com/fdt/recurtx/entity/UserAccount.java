@@ -38,10 +38,6 @@ public class UserAccount extends AbstractBaseEntity {
     private boolean markForCancellation = false;
 
     @OneToOne
-    @JoinColumn(name = "CREDIT_CARD_ID", nullable = false)
-    private CreditCard creditCard;
-
-    @OneToOne
     @JoinColumn(name = "USER_ACCESS_ID", nullable = false)
     private UserAccess userAccess;
 
@@ -85,14 +81,6 @@ public class UserAccount extends AbstractBaseEntity {
         this.markForCancellation = markForCancellation;
     }
 
-    public CreditCard getCreditCard() {
-        return creditCard;
-    }
-
-    public void setCreditCard(CreditCard creditCard) {
-        this.creditCard = creditCard;
-    }
-
     public UserAccess getUserAccess() {
         return userAccess;
     }
@@ -108,15 +96,5 @@ public class UserAccount extends AbstractBaseEntity {
     public void setVerified(boolean isVerified) {
         this.isVerified = isVerified;
     }
-
-	@Override
-	public String toString() {
-		return "UserAccount [lastBillingDate=" + lastBillingDate
-				+ ", nextBillingDate=" + nextBillingDate
-				+ ", markForCancellation=" + markForCancellation
-				+ ", creditCard=" + creditCard + ", userAccess=" + userAccess
-				+ ", lastTxRefNum=" + lastTxRefNum + ", isVerified="
-				+ isVerified + "]";
-	}
 
 }

@@ -652,7 +652,6 @@ public class SubServiceImpl implements SubService {
                             UserAccount existingUserAccount = userAccess.getUserAccount();
                             userAccount.setId(existingUserAccount.getId());
                             userAccount.setCreatedDate(existingUserAccount.getCreatedDate());
-                            userAccount.setCreditCard(creditCard);
                             /*payPalDTO = this.paymentGateway.reActivateRecurring(userAccess.getAccess().getSite(), userAccount,
                                     false, "paySubscriptions", userName);*/
                             payPalDTO = this.paymentGateway.doSale(userAccess.getAccess().getSite(), userAccess.getAccess()
@@ -691,7 +690,6 @@ public class SubServiceImpl implements SubService {
                         continue;
                     }
 
-                    userAccount.setCreditCard(creditCard);
                     userAccount.setActive(true);
                     userAccount.setModifiedBy(userName);
                     userAccount.setCreatedBy(userName);
@@ -977,8 +975,7 @@ public class SubServiceImpl implements SubService {
         UserAccountDetailDTO existingUserAccountDTO = upgradeDowngradeDTO.getExistingUserAccountDetail();
         AccessDetailDTO newAccessDTO = upgradeDowngradeDTO.getNewAccessDetailDTO();
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(true);
-        CreditCard creditCard = (existingUserAccountDTO.getUserAccount().getCreditCard() == null) ? null
-            : (existingUserAccountDTO.getUserAccount().getCreditCard());
+        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName);
         if(creditCard != null && creditCard.isActive()) {
             Site site = existingUserAccountDTO.getSite();
             if (upgradeDowngradeDTO.isDowngrade()) {
@@ -1039,7 +1036,7 @@ public class SubServiceImpl implements SubService {
             recurTransactionRefund.setTxRefNum(transactionId);
             recurTransactionRefund.setTransactionType(TransactionType.REFUND);
             recurTransactionRefund.setSettlementStatus(settlementStatusType);
-            creditCard = existingUserAccountDTO.getUserAccount().getCreditCard();
+            creditCard = this.userDAO.getCreditCardDetails(userName);
             CardType cardType = CreditCardUtil.getCardType(creditCard.getNumber());
             recurTransactionRefund.setCardNumber(creditCard.getNumber());
             recurTransactionRefund.setCardType(cardType);
@@ -1088,7 +1085,7 @@ public class SubServiceImpl implements SubService {
         AccessDetailDTO newAccessDTO = upgradeDowngradeDTO.getNewAccessDetailDTO();
         UserAccount userAccount = (existingUserAccountDTO.getUserAccount() == null) ? null : (existingUserAccountDTO
             .getUserAccount());
-        CreditCard creditCard = (userAccount.getCreditCard() == null) ? null : (userAccount.getCreditCard());
+        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName);
         boolean isEnableAccess = false;
         PayPalDTO paymentTxResponseDTO = new PayPalDTO();
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(false);
@@ -1161,7 +1158,7 @@ public class SubServiceImpl implements SubService {
                 throw new RuntimeException("The User Access is not Disabled");
             }
 
-            creditCard = existingUserAccountDTO.getUserAccount().getCreditCard();
+            creditCard = this.userDAO.getCreditCardDetails(userName);
             CardType cardType = CreditCardUtil.getCardType(creditCard.getNumber());
 
             String orgTxRefNum = null;
@@ -1324,7 +1321,6 @@ public class SubServiceImpl implements SubService {
                     creditCard, "changeFromCurrentlyUnPaidToUnrestrictedSubscription", userName, true);
             transactionId = payPalDTO.getTxRefNum();
             UserAccount newUserAccount = new UserAccount();
-            newUserAccount.setCreditCard(creditCard);
             newUserAccount.setActive(true);
             newUserAccount.setModifiedBy(userName);
             newUserAccount.setCreatedBy(userName);

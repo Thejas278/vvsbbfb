@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -36,7 +35,6 @@ import com.fdt.recurtx.entity.UserAccount;
 import com.fdt.security.entity.Access;
 import com.fdt.security.entity.User;
 import com.fdt.security.entity.UserAccess;
-import com.fdt.security.entity.enums.AccessType;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
 import com.fdt.subscriptions.dto.SubscriptionDTO;
 import com.fdt.subscriptions.entity.SubscriptionFee;
@@ -229,7 +227,6 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
             site.setAccess(accessList);
             site.setTimeZone(this.getString(row[39]));
             userAccountDetailDTO.setUserId(this.getLongFromBigInteger(row[28]));
-            userAccount.setCreditCard(creditCard);
             userAccount.setLastTxRefNum(this.getString(row[37]));
             userAccountDetailDTO.setUserAccount(userAccount);
             userAccountDetailDTO.setSubFee(subFee);

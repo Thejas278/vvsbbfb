@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration scan="true" scanPeriod="300 seconds">
 
-	<property name="PREFIX_HOME" value="C:\\logs\\Ecom\\"/>
+	<property name="PREFIX_HOME" value="H:\\logs\\Ecom\\"/>
 
 	<appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT">
 		<encoder>
@@ -76,8 +76,7 @@
         <appender-ref ref="INPUT_LOG_APPENDER" />
     </logger>
 
-	<root level="INFO">
-	    <!-- Commented for Prod <appender-ref ref="STDOUT"/>  -->
+	<root level="DEBUG">
 	    <appender-ref ref="FILE"/>
 		<appender-ref ref="EMAIL"/>
 		<appender-ref ref="STDOUT"/>
