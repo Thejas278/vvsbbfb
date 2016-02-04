@@ -852,4 +852,9 @@ public class UserServiceImpl implements UserService {
 		return this.userDAO.getFirmUsersCount(adminUserId, accessId);
 	}
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor= Throwable.class)
+	public boolean removeCard(String username, String creditCardId) {
+		return this.userDAO.removeCard(username, creditCardId);
+	}
+
 }

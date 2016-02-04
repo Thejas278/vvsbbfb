@@ -1,12 +1,13 @@
 package com.fdt.security.dao;
 
+import static com.fdt.security.dao.UserHQL.DELETE_CARD_BY_USER_NAME_AND_CREDIT_CARD_ID;
+import static com.fdt.security.dao.UserHQL.DELETE_USER_EVENT_BY_USER_NAME_REQ_TOKEN;
 import static com.fdt.security.dao.UserHQL.FIND_USER_EVENT_BY_USER_NAME;
 import static com.fdt.security.dao.UserHQL.FIND_USER_EVENT_BY_USER_NAME_REQ_TOKEN;
+import static com.fdt.security.dao.UserHQL.GET_ACCESS_BY_USER_ID;
 import static com.fdt.security.dao.UserHQL.GET_ADMIN_USER_ACCESS_BY_USER_ID;
 import static com.fdt.security.dao.UserHQL.GET_FIRM_USER_ACCESS_BY_USERID_ACCESSIDS;
 import static com.fdt.security.dao.UserHQL.GET_USER_ACCESS_BY_USER_ID_ACCESS_IDS;
-import static com.fdt.security.dao.UserHQL.DELETE_USER_EVENT_BY_USER_NAME_REQ_TOKEN;
-import static com.fdt.security.dao.UserHQL.GET_ACCESS_BY_USER_ID;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,12 +20,11 @@ import java.util.Map;
 
 import org.apache.commons.collections.list.SetUniqueList;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -73,6 +73,7 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             String number =  null;
             if (row[10] != null && !StringUtils.isEmpty(row[10].toString())) {
                 number = this.getPbeStringEncryptor().decrypt(row[10].toString());
+                creditCard.setId(this.getLongFromString(row[13]));
                 creditCard.setCardType(CreditCardUtil.getCardType(number));
                 number = number.substring(number.length() - 4, number.length());
                 creditCard.setNumber(row[10] == null ? null : number);
@@ -82,51 +83,51 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             user.setAuthorizationPending(this.getBoolean(row[39]));
             user.setPayedUser(this.getBoolean(row[11]));
             user.setPaymentDue(this.getBoolean(row[12]));
-            user.setFirstName(this.getString(row[13]));
-            user.setLastName(this.getString(row[14]));
-            user.setLastLoginTime(this.getDate(row[17]));
-            user.setCreatedDate(this.getDate(row[18]));
+            user.setFirstName(this.getString(row[14]));
+            user.setLastName(this.getString(row[15]));
+            user.setLastLoginTime(this.getDate(row[18]));
+            user.setCreatedDate(this.getDate(row[19]));
             List<Access> accessList = new LinkedList<Access>();
             List<Site> sites = new LinkedList<Site>();
             resultListIterator.previous(); // To reset the iterator position to first row.
             while(resultListIterator.hasNext()) {
                 row = (Object[]) resultListIterator.next();
                 Access access = new Access();
-                access.setId(this.getLongFromInteger(row[22]));
+                access.setId(this.getLongFromInteger(row[23]));
                 access.setCode(this.getString(row[7]));
-                access.setGuestFlg(this.getBoolean(row[15]));
-                access.setAccessType(this.getAccessType(row[16]));
-                access.setComments(this.getString(row[24]));
-                access.setAccessOverriden(this.getBoolean(row[25]));
-                access.setAuthorized(this.getBoolean(row[26]));
-                access.setActive(this.getBoolean(row[37]));
-                access.setFirmLevelAccess(this.getBoolean(row[34]));
+                access.setGuestFlg(this.getBoolean(row[16]));
+                access.setAccessType(this.getAccessType(row[17]));
+                access.setComments(this.getString(row[25]));
+                access.setAccessOverriden(this.getBoolean(row[26]));
+                access.setAuthorized(this.getBoolean(row[27]));
+                access.setActive(this.getBoolean(row[38]));
+                access.setFirmLevelAccess(this.getBoolean(row[35]));
                 UserAccess userAccess = new UserAccess();
-                userAccess.setFirmAccessAdmin(this.getBoolean(row[35]));
-                userAccess.setId(this.getLongFromInteger(row[38]));
-                userAccess.setFirmAdminUserAccessId(this.getLongFromInteger(row[36]));
-                userAccess.setActive(this.getBoolean(row[28]));
+                userAccess.setFirmAccessAdmin(this.getBoolean(row[36]));
+                userAccess.setId(this.getLongFromInteger(row[39]));
+                userAccess.setFirmAdminUserAccessId(this.getLongFromInteger(row[37]));
+                userAccess.setActive(this.getBoolean(row[29]));
                 access.addUserAccess(userAccess);
-                Long siteId = this.getLongFromInteger(row[19]);
+                Long siteId = this.getLongFromInteger(row[20]);
                 if (siteId != null) {
                     Site site = new Site();
                     site.setId(siteId);
-                    site.setName(this.getString(row[20]));
-                    site.setDescription(this.getString(row[27]));
+                    site.setName(this.getString(row[21]));
+                    site.setDescription(this.getString(row[28]));
                     sites.add(site);
                     access.setSite(site);
                 }
                 accessList.add(access);
             }
-            user.setRegisteredNode(this.getString(row[21]));
+            user.setRegisteredNode(this.getString(row[22]));
             user.setSites(SetUniqueList.decorate(sites));
             user.setAccess(SetUniqueList.decorate(accessList));
-            user.setCurrentLoginTime(this.getDate(row[23]));
-            user.setPhone(this.getString(row[29]));
-            user.setAcceptedTerms(this.getBoolean(row[30]));
-            user.setFirmName(this.getString(row[31]));
-            user.setFirmNumber(this.getString(row[32]));
-            user.setBarNumber(this.getString(row[33]));
+            user.setCurrentLoginTime(this.getDate(row[24]));
+            user.setPhone(this.getString(row[30]));
+            user.setAcceptedTerms(this.getBoolean(row[31]));
+            user.setFirmName(this.getString(row[32]));
+            user.setFirmNumber(this.getString(row[33]));
+            user.setBarNumber(this.getString(row[34]));
         }
         return user;
     }
@@ -1227,5 +1228,20 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
 			.setParameter("username", userName)
 			.executeUpdate();
 	     }
+
+	@Override
+	public boolean removeCard(String username, String creditCardId) {
+		try {
+			Session session = currentSession();
+			session.createQuery(DELETE_CARD_BY_USER_NAME_AND_CREDIT_CARD_ID)
+					.setParameter("username", username)
+					.setParameter("creditCardId", Long.valueOf(creditCardId)).executeUpdate();
+			session.flush();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}
 
 }

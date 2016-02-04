@@ -211,5 +211,7 @@ public interface UserService {
     
     public int getFirmUsersCount(Long adminUserId, Long accessId);
 
+	public boolean removeCard(String username, String creditCardId);
+
     
 }

@@ -998,4 +998,11 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
 		return this.payAsSubService.getDocumentIdByCertifiedDocumentNumber(certifiedDocumentNumber, siteName);
 	}
 
+	@WebMethod
+	@GET @Path("removeCard/{username}/{creditCardId}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public boolean removeCard(@PathParam("username") String username, @PathParam("creditCardId") String creditCardId) {
+		return this.userService.removeCard(username, creditCardId);
+	}
+
 }

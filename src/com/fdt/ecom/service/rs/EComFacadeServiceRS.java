@@ -365,4 +365,8 @@ public interface EComFacadeServiceRS {
 	public String getDocumentIdByCertifiedDocumentNumber(
 			@WebParam(name="certifiedDocumentNumber") String certifiedDocumentNumber,
 			@WebParam(name="siteName") String siteName);
+	
+	@WebMethod
+	public boolean removeCard(@WebParam(name="username") String username, 
+			@WebParam(name="creditCardId") String creditCardId);
 }

@@ -24,6 +24,14 @@ public final class UserHQL {
     			"SELECT au " +
     			"FROM User au " +
     			"WHERE au.username = :username)";
+    
+    public static String DELETE_CARD_BY_USER_NAME_AND_CREDIT_CARD_ID =
+    		"DELETE FROM CreditCard cc " +
+    		"WHERE cc.id = :creditCardId " +
+    		"AND cc.userId IN (" +
+    			"SELECT au.id " +
+    			"FROM User au " +
+    			"WHERE au.username = :username)";
 
     public static String GET_ADMIN_USER_ACCESS_BY_USER_ID = 
     		"SELECT userAccess from UserAccess userAccess " + 

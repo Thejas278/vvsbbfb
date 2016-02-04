@@ -152,4 +152,6 @@ public interface UserDAO {
 
 	public void updateisEmailNotificationSent(String username, boolean isEmailNotificationSent);
 
+	public boolean removeCard(String username, String creditCardId);
+
 }
