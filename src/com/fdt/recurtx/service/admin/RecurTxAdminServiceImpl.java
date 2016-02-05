@@ -296,103 +296,118 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
         String paymentPeriod = payPalSchedulerDTO.getPaymentPeriod();
         Long userAccountId = payPalSchedulerDTO.getUserAccountId();
         Long merchantId = site.getNormalMerchant().getId();
-        String cardNumber = payPalSchedulerDTO.getAccountNumber();
-        String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
-        CardType cardType = CreditCardUtil.getCardType(cardNumber);
-        Double txFeePercent = null;
-        Double txFeeFlat = null;
-        if (cardType == CardType.AMEX) {
-            txFeePercent = site.getNormalMerchant().getTxFeePercentAmex();
-            txFeeFlat = site.getNormalMerchant().getTxFeeFlatAmex();
-        } else {
-            txFeePercent = site.getNormalMerchant().getTxFeePercent();
-            txFeeFlat = site.getNormalMerchant().getTxFeeFlat();
-        }
-        Double clientShare = payPalSchedulerDTO.getClientShare();
         PayPalDTO paymentTxResponseDTO = null;
         boolean isPaymentSuccessful = true;
+        boolean isCardDeleted = false;
+        if (creditCard == null) {
+        	isCardDeleted = true;
+		}        
+        Double clientShare = payPalSchedulerDTO.getClientShare();
+             
         RecurTx recurTransaction = new RecurTx();
         recurTransaction.setLastBillingDate(new Date());
         recurTransaction.setNextBillingDate(SystemUtil.getNextBillingDate(paymentPeriod).toDate());
+        
         Map<String, Object> emailData = new HashMap<String, Object>();
         emailData.put("customerName", payPalSchedulerDTO.getUserFirstName() + " " + payPalSchedulerDTO.getUserLastName());
         emailData.put("currentDate", new Date());
         emailData.put("serverUrl", this.ecomServerURL);
         SiteConfiguration siteConfig = this.eComDAO.getSiteConfiguration(site.getId());
         Assert.notNull(siteConfig, "siteConfig Cannot be Null");
-        try {
-            paymentTxResponseDTO = this.paymentGateway.doSale(site, amtToCharge, creditCard, "chargeRecurring", userName,
-                true);
-        } catch (PaymentGatewayUserException paymentGatewayUserException) {
-            isPaymentSuccessful = false;
-            logger.error("Exception in the EComScheduler {} For PayPalSchedulerDTO {} ",
-                paymentGatewayUserException.getDescription(), payPalSchedulerDTO, paymentGatewayUserException);
-        } catch (PaymentGatewaySystemException paymentGatewaySystemException) {
-            isPaymentSuccessful = false;
-            logger.error("Exception in the EComScheduler {} For PayPalSchedulerDTO {} ",
-                paymentGatewaySystemException.getDescription(), payPalSchedulerDTO, paymentGatewaySystemException);
+       
+        if(!isCardDeleted) {
+        	String cardNumber = payPalSchedulerDTO.getAccountNumber();
+            String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
+            CardType cardType = CreditCardUtil.getCardType(cardNumber);
+            Double txFeePercent = null;
+            Double txFeeFlat = null;
+            if (cardType == CardType.AMEX) {
+                txFeePercent = site.getNormalMerchant().getTxFeePercentAmex();
+                txFeeFlat = site.getNormalMerchant().getTxFeeFlatAmex();
+            } else {
+                txFeePercent = site.getNormalMerchant().getTxFeePercent();
+                txFeeFlat = site.getNormalMerchant().getTxFeeFlat();
+            }
+        	try {
+                paymentTxResponseDTO = this.paymentGateway.doSale(site, amtToCharge, creditCard, "chargeRecurring", userName,
+                    true);
+            } catch (PaymentGatewayUserException paymentGatewayUserException) {
+                isPaymentSuccessful = false;
+                logger.error("Exception in the EComScheduler {} For PayPalSchedulerDTO {} ",
+                    paymentGatewayUserException.getDescription(), payPalSchedulerDTO, paymentGatewayUserException);
+            } catch (PaymentGatewaySystemException paymentGatewaySystemException) {
+                isPaymentSuccessful = false;
+                logger.error("Exception in the EComScheduler {} For PayPalSchedulerDTO {} ",
+                    paymentGatewaySystemException.getDescription(), payPalSchedulerDTO, paymentGatewaySystemException);
+            }
+            
+            if(isPaymentSuccessful) {
+                recurTransaction.setTxRefNum(paymentTxResponseDTO.getTxRefNum());
+                recurTransaction.setCardNumber(lastFourDigits);
+                recurTransaction.setCardExpired(false);
+                recurTransaction.setAccountName(payPalSchedulerDTO.getCreditCard().getName());
+                recurTransaction.setBaseAmount(amtToCharge);
+                recurTransaction.setTotalTxAmount(amtToCharge);
+                recurTransaction.setTransactionDate(SystemUtil.changeTimeZone(new Date(),
+                    TimeZone.getTimeZone(site.getTimeZone())));
+                recurTransaction.setUserId(payPalSchedulerDTO.getUserId());
+                recurTransaction.setAccessId(payPalSchedulerDTO.getAccessId());
+                recurTransaction.setSite(site);
+                Access access = new Access();
+                access.setDescription(payPalSchedulerDTO.getAccessDescription());
+                recurTransaction.setAccess(access);
+                recurTransaction.setSettlementStatus(SettlementStatusType.UNSETTLED);
+                recurTransaction.setTransactionType(TransactionType.CHARGE);
+                recurTransaction.setActive(true);
+                recurTransaction.setMerchantId(merchantId);
+                recurTransaction.setCardType(cardType);
+                recurTransaction.setTxFeePercent(txFeePercent);
+                recurTransaction.setTxFeeFlat(txFeeFlat);
+                Double amtToChargeAfterTransactionFee = amtToCharge - (amtToCharge*txFeePercent/100) + txFeeFlat;
+                Double graniusShare = amtToChargeAfterTransactionFee * (1.0d - payPalSchedulerDTO.getClientShare());
+                boolean thresholdReached = this.payAsUGoSubService.isThresholdReached(site, graniusShare);                    
+                if(thresholdReached){
+                	clientShare = 1.0d;
+                } else {
+                	clientShare = payPalSchedulerDTO.getClientShare();
+                }
+                recurTransaction.setClientShare(clientShare);
+                recurTransaction.setModifiedBy(PAYPAL_SCHEDULER);
+                recurTransaction.setCreatedBy(PAYPAL_SCHEDULER);
+                recurTransaction.setModifiedDate(new Date());
+                recurTransaction.setCreatedDate(new Date());
+                String machineName = null;
+                try {
+                    InetAddress thisIp =InetAddress.getLocalHost();
+                    machineName  = thisIp.getHostAddress();
+                } catch (UnknownHostException e) {
+                    machineName = PAYPAL_SCHEDULER;
+                    logger.error("UnknownHostException in inquirePayPal..");
+                }
+                recurTransaction.setMachineName(machineName);
+                /** Create the Transaction History **/
+                this.recurTxDAO.saveRecurTransaction(recurTransaction);
+                /** Update the Next Billing Date **/
+                int noOfRecordsUpdated = this.subDAO.updateBillingDates(userAccountId, new Date(),
+                          SystemUtil.getNextBillingDate(paymentPeriod).toDate(), true, PAYPAL_SCHEDULER);
+                if (noOfRecordsUpdated == 0) {
+                      logger.error("The Next Billing Dates Are Not Updated");
+                throw new RuntimeException("The Next Billing Dates Are Not Updated");
+                }
+                emailData.put("recurTxHistInfo", recurTransaction);
+                this.emailProducer.sendMailUsingTemplate(siteConfig.getFromEmailAddress(),
+                    payPalSchedulerDTO.getUserName(), siteConfig.getRecurringPaymentSuccessSubject(),
+                        siteConfig.getEmailTemplateFolder() + siteConfig.getRecurringPaymentSuccessTemplate(), emailData);
+                } else {
+                    this.disableUserAccountAndSendFailedPaymentEmail(payPalSchedulerDTO, recurTransaction, siteConfig, site,
+                        emailData , isCardDeleted);
+                }
+        } else {
+        	this.disableUserAccountAndSendFailedPaymentEmail(payPalSchedulerDTO, recurTransaction, siteConfig, site,
+                    emailData, isCardDeleted);
         }
-        if(isPaymentSuccessful) {
-            recurTransaction.setTxRefNum(paymentTxResponseDTO.getTxRefNum());
-            recurTransaction.setCardNumber(lastFourDigits);
-            recurTransaction.setCardExpired(false);
-            recurTransaction.setAccountName(payPalSchedulerDTO.getCreditCard().getName());
-            recurTransaction.setBaseAmount(amtToCharge);
-            recurTransaction.setTotalTxAmount(amtToCharge);
-            recurTransaction.setTransactionDate(SystemUtil.changeTimeZone(new Date(),
-                TimeZone.getTimeZone(site.getTimeZone())));
-            recurTransaction.setUserId(payPalSchedulerDTO.getUserId());
-            recurTransaction.setAccessId(payPalSchedulerDTO.getAccessId());
-            recurTransaction.setSite(site);
-            Access access = new Access();
-            access.setDescription(payPalSchedulerDTO.getAccessDescription());
-            recurTransaction.setAccess(access);
-            recurTransaction.setSettlementStatus(SettlementStatusType.UNSETTLED);
-            recurTransaction.setTransactionType(TransactionType.CHARGE);
-            recurTransaction.setActive(true);
-            recurTransaction.setMerchantId(merchantId);
-            recurTransaction.setCardType(cardType);
-            recurTransaction.setTxFeePercent(txFeePercent);
-            recurTransaction.setTxFeeFlat(txFeeFlat);
-            Double amtToChargeAfterTransactionFee = amtToCharge - (amtToCharge*txFeePercent/100) + txFeeFlat;
-            Double graniusShare = amtToChargeAfterTransactionFee * (1.0d - payPalSchedulerDTO.getClientShare());
-            boolean thresholdReached = this.payAsUGoSubService.isThresholdReached(site, graniusShare);                    
-            if(thresholdReached){
-            	clientShare = 1.0d;
-            } else {
-            	clientShare = payPalSchedulerDTO.getClientShare();
-            }
-            recurTransaction.setClientShare(clientShare);
-            recurTransaction.setModifiedBy(PAYPAL_SCHEDULER);
-            recurTransaction.setCreatedBy(PAYPAL_SCHEDULER);
-            recurTransaction.setModifiedDate(new Date());
-            recurTransaction.setCreatedDate(new Date());
-            String machineName = null;
-            try {
-                InetAddress thisIp =InetAddress.getLocalHost();
-                machineName  = thisIp.getHostAddress();
-            } catch (UnknownHostException e) {
-                machineName = PAYPAL_SCHEDULER;
-                logger.error("UnknownHostException in inquirePayPal..");
-            }
-            recurTransaction.setMachineName(machineName);
-            /** Create the Transaction History **/
-            this.recurTxDAO.saveRecurTransaction(recurTransaction);
-            /** Update the Next Billing Date **/
-            int noOfRecordsUpdated = this.subDAO.updateBillingDates(userAccountId, new Date(),
-                      SystemUtil.getNextBillingDate(paymentPeriod).toDate(), true, PAYPAL_SCHEDULER);
-            if (noOfRecordsUpdated == 0) {
-                  logger.error("The Next Billing Dates Are Not Updated");
-            throw new RuntimeException("The Next Billing Dates Are Not Updated");
-            }
-            emailData.put("recurTxHistInfo", recurTransaction);
-            this.emailProducer.sendMailUsingTemplate(siteConfig.getFromEmailAddress(),
-                payPalSchedulerDTO.getUserName(), siteConfig.getRecurringPaymentSuccessSubject(),
-                    siteConfig.getEmailTemplateFolder() + siteConfig.getRecurringPaymentSuccessTemplate(), emailData);
-            } else {
-                this.disableUserAccountAndSendFailedPaymentEmail(payPalSchedulerDTO, recurTransaction, siteConfig, site,
-                    emailData);
-            }
+        
+        
     }
 
      /** This Method Returns All The Recurring Transactions Made By A User On A Particular Site.
@@ -440,7 +455,8 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
 
     private void disableUserAccountAndSendFailedPaymentEmail(RecurTxSchedulerDTO payPalSchedulerDTO,
     		RecurTx recurTransaction,
-            SiteConfiguration siteConfig, Site site, Map<String, Object> emailData) {
+            SiteConfiguration siteConfig, Site site, Map<String, Object> emailData,
+            boolean isCardDeleted) {
 
     	List<Long> userAccessIdsToBeDisabled = new ArrayList<Long>();
     	userAccessIdsToBeDisabled.add(payPalSchedulerDTO.getUserAccessId());
@@ -458,7 +474,7 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
     	this.disableUserAccesses(userAccessIdsToBeDisabled, PAYPAL_SCHEDULER, "FAILED PAYMENT");
 
     	// pass userAccessId and firm user access ids to be disabled
-        this.disableUserAccount(payPalSchedulerDTO.getUserAccessId(), PAYPAL_SCHEDULER, "FAILED PAYMENT", false);
+        this.disableUserAccount(payPalSchedulerDTO.getUserAccessId(), PAYPAL_SCHEDULER, "FAILED PAYMENT", false, isCardDeleted);
         emailData.put("transactionInfo", "Failure");
         recurTransaction.setUserId(payPalSchedulerDTO.getUserId());
         recurTransaction.setAccessId(payPalSchedulerDTO.getAccessId());
@@ -499,7 +515,7 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
         }
     }
 
-    private void disableUserAccount(Long userAccessId, String modifiedBy, String comments, boolean isCardExpired) {
+    private void disableUserAccount(Long userAccessId, String modifiedBy, String comments, boolean isCardExpired, boolean isCardDeleted) {
         Assert.notNull(userAccessId, "User AccessId Cannot be Null");
         // Disable UserAccount for user, Firm Level User will not have entry in UserAccount , so no need to disable UserAccount for them.
         int recordsModUserAccount = this.subDAO.disableUserAccount(userAccessId, modifiedBy);
@@ -508,7 +524,7 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
             throw new RuntimeException("The User Account is not Disabled");
         }
 
-        if(isCardExpired) {
+        if(!isCardDeleted & isCardExpired) {
             // Disable CreditCard if it's expired, Firm Level User will not have credit card for this access
             int recordsModCCInfo = this.subDAO.enableDisableCreditCard(userAccessId, false, modifiedBy);
             if (recordsModCCInfo == 0) {

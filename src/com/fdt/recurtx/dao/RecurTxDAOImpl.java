@@ -74,18 +74,22 @@ public class RecurTxDAOImpl extends AbstractBaseDAOImpl implements RecurTxDAO {
                 site.setRevenueThresholdStartDate(this.getDate(row[41]));
                 String userName = this.getString(row[9]);
                 site.addMerchant(merchant);
-                CreditCard creditCard = new CreditCard();
-                creditCard.setId(this.getLongFromInteger(row[23]));
-                creditCard.setName(this.getString(row[24]));
-                creditCard.setNumber(row[25] == null ? null : this.getPbeStringEncryptor().decrypt(row[25].toString()));
-                creditCard.setExpiryMonth(this.getInteger(row[26]));
-                creditCard.setExpiryYear(this.getInteger(row[27]));
-                creditCard.setAddressLine1(this.getString(row[28]));
-                creditCard.setAddressLine2(this.getString(row[29]));
-                creditCard.setCity(this.getString(row[30]));
-                creditCard.setState(this.getString(row[31]));
-                creditCard.setZip(this.getString(row[32]));
-                creditCard.setPhone(this.getLongFromBigInteger(row[33]));
+                CreditCard creditCard = null;
+                Long creditCardID = this.getLongFromInteger(row[23]);
+                if (creditCardID != null) {
+                	creditCard = new CreditCard();
+                    creditCard.setId(creditCardID);
+                    creditCard.setName(this.getString(row[24]));
+                    creditCard.setNumber(row[25] == null ? null : this.getPbeStringEncryptor().decrypt(row[25].toString()));
+                    creditCard.setExpiryMonth(this.getInteger(row[26]));
+                    creditCard.setExpiryYear(this.getInteger(row[27]));
+                    creditCard.setAddressLine1(this.getString(row[28]));
+                    creditCard.setAddressLine2(this.getString(row[29]));
+                    creditCard.setCity(this.getString(row[30]));
+                    creditCard.setState(this.getString(row[31]));
+                    creditCard.setZip(this.getString(row[32]));
+                    creditCard.setPhone(this.getLongFromBigInteger(row[33]));
+				}
                 paypalVerificationDTO.setAmtToCarge(this.getDoubleFromBigDecimal(row[34]));
                 paypalVerificationDTO.setPaymentPeriod(this.getString(row[35]));
                 paypalVerificationDTO.setCreditCard(creditCard);
