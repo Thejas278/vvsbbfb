@@ -585,63 +585,43 @@ public class SubServiceImpl implements SubService {
      * @throws SDLBusinessException
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-    public List<PayPalDTO> payRecurSub(CreditCard newCreditCardInformation, String userName, String nodeName,
+    public List<PayPalDTO> payRecurSub(CreditCard creditCardFromClient, String userName, String nodeName,
             String machineName) throws AccessUnAuthorizedException, SDLBusinessException  {
-        Assert.hasLength(userName, "User Name Cannot be Null");
-        Assert.hasLength(machineName, "Machine Name Cannot be Null");
-        List<PayPalDTO> payPalDTOs = new LinkedList<PayPalDTO>();
-        PayPalDTO  payPalDTO = null;
-        User user = this.subDAO.getUserPaymentInfo(userName, nodeName);
 
-        CreditCard creditCard = null;
+        Assert.hasLength(userName, "User Name Cannot be Null");
+        Assert.hasLength(nodeName, "Node Name Cannot be Null");
+        Assert.hasLength(machineName, "Machine Name Cannot be Null");
+
+        User user = this.subDAO.getUserPaymentInfo(userName, nodeName);
         if (user == null) {
             throw new SDLBusinessException();
         }
+
         Long userId = user.getId();
         boolean flag = true;
         List<UserAccess> userAccessList = user.getUserAccessList();
         for (UserAccess userAccess : userAccessList) {
-            if(userAccess.isAuthorized()) {
+            if (userAccess.isAuthorized()) {
                 flag = false;
                 break;
             }
         }
-        if(flag) {
+        if (flag) {
             throw new AccessUnAuthorizedException("Subscription is UnAuthorized For Payment");
         }
-        if (newCreditCardInformation != null && user.getCreditCard() == null) {
-            newCreditCardInformation.setUserId(user.getId());
-            newCreditCardInformation.setActive(true);
-            newCreditCardInformation.setCreatedDate(new Date());
-            newCreditCardInformation.setModifiedDate(new Date());
-            newCreditCardInformation.setCreatedBy(userName);
-            newCreditCardInformation.setModifiedBy(userName);
-            this.userDAO.saveCreditCard(newCreditCardInformation);
-            creditCard = newCreditCardInformation;
-        } else if (newCreditCardInformation != null && user.getCreditCard() != null) {
-            /**
-             * Use the Existing Credit Card PK from the DB but get other
-             * information from what the user has entered
-             **/
-            newCreditCardInformation.setId(user.getCreditCard().getId());
-            newCreditCardInformation.setUserId(user.getId());
-            newCreditCardInformation.setModifiedDate(new Date());
-            newCreditCardInformation.setCreatedBy(user.getCreditCard().getCreatedBy());
-            newCreditCardInformation.setCreatedDate(user.getCreditCard().getCreatedDate());
-            newCreditCardInformation.setModifiedBy(userName);
-            newCreditCardInformation.setActive(true);
-            this.userDAO.saveCreditCard(newCreditCardInformation);
-            creditCard = newCreditCardInformation;
-        } else if (newCreditCardInformation == null) {
-            /** Use the Existing Credit Card from the DB **/
-            creditCard = user.getCreditCard();
-        }
+
+        // The credit card passed in from the client has a masked account number.
+        // We recover it by querying the database based on the client credit card ID.
+        CreditCard creditCard = eComDAO.getCreditCard(creditCardFromClient.getId());
+
+        List<PayPalDTO> payPalDTOs = new LinkedList<PayPalDTO>();
+        PayPalDTO  payPalDTO = null;
 
         for (UserAccess userAccess : userAccessList) {
-        	// Check if user access is a firm level user subscription, it is paid by firm administrator
-        	if(userAccess.isFirmLevelUserSubscription()){
-        		continue;
-        	}
+            // Check if user access is a firm level user subscription, it is paid by firm administrator
+            if (userAccess.isFirmLevelUserSubscription()) {
+                continue;
+            }
             if(userAccess.isAuthorized()) {
                 List<PayPalDTO> payPalDTOListForEmail = new LinkedList<PayPalDTO>();
                 if (userAccess.isActive() == false) {
@@ -652,8 +632,6 @@ public class SubServiceImpl implements SubService {
                             UserAccount existingUserAccount = userAccess.getUserAccount();
                             userAccount.setId(existingUserAccount.getId());
                             userAccount.setCreatedDate(existingUserAccount.getCreatedDate());
-                            /*payPalDTO = this.paymentGateway.reActivateRecurring(userAccess.getAccess().getSite(), userAccount,
-                                    false, "paySubscriptions", userName);*/
                             payPalDTO = this.paymentGateway.doSale(userAccess.getAccess().getSite(), userAccess.getAccess()
                                 .getSite().getAccess().get(0).getSubscriptionFee().getFee(), creditCard, "paySubscriptions",
                                     userName, true);

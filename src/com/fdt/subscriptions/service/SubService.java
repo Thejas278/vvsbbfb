@@ -137,7 +137,7 @@ public interface SubService {
      * @throws AccessUnAuthorizedException thrown when the subscription you are paying for is not authorized.
      * @throws SDLBusinessException
      */
-    public List<PayPalDTO> payRecurSub(CreditCard creditCardDetails, String username,  String nodeName,
+    public List<PayPalDTO> payRecurSub(CreditCard creditCard, String username,  String nodeName,
             String machineName) throws AccessUnAuthorizedException, SDLBusinessException;
 
     /** This Method Is Used In checkSubscription Controller. It Gets All The Subscriptions Which User Has Subscribed But

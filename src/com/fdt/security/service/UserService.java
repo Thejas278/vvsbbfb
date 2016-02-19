@@ -175,29 +175,33 @@ public interface UserService {
      */
     public void updateUserTerms(User user) throws UserNameNotFoundException ;
 
-    /** This Method Updates The Credit Card Information of a User.
-     * @param userName Email Id Of The User Whose Credit Card Information Needs To Be Updated.
-     * @param modifiedBy Email Id Of The User Who Is Trying To Update.
-     * @param newCreditCardInformation New Credit Card Information.
-     * @throws PaymentGatewaySystemException
-     * @throws PaymentGatewayUserException
+    /**
+     * This method adds a new credit card or updates an existing one.
+     * 
+     * @param userName email ID of the the user to add a new credit card for
+     * @param modifiedBy email ID of the the user doing the update (normally the same)
+     * @param creditCardInfo new credit card information
      */
-    public void updateExistingCreditCardInformation(String userName, String modifiedBy, CreditCard newCreditCardInformation)
-        throws PaymentGatewaySystemException, PaymentGatewayUserException;
+    public void addOrUpdateCreditCard(String userName, String modifiedBy, CreditCard creditCardIndo);
 
-    /** This Method Gets The Credit Card Information of a User.
-     * @param username Email Id Of The User Whose Credit Card Information Needs To Be Pulled.
-     * @return Credit Card Information.
+    /**
+     * TODO: DELETE THIS
      */
     public CreditCard getCreditCardDetails(String username);
 
-    /** This Method Gets The Credit Card Information of a User.
-     * @param userId Id Of The User Whose Credit Card Information Needs To Be Pulled.
-     * @return Credit Card Information.
+    /**
+     * TODO: DELETE THIS
      */
     public CreditCard getCreditCardDetails(Long userId);
 
-    
+    public CreditCard getCreditCardDetails(String username, Long creditCardId);
+
+    public CreditCard getCreditCardDetails(Long userId, Long creditCardId);
+
+    public List<CreditCard> getCreditCardDetailsList(String username);
+
+    public List<CreditCard> getCreditCardDetailsList(Long userId);
+
     public UserEvent findUserEvent(String userName);
 
     /**

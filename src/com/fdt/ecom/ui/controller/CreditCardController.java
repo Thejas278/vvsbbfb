@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,6 +55,8 @@ public class CreditCardController extends AbstractBaseController {
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.setAllowedFields(new String[] {
+            "id",
+            "addNewCard",
             "useExistingAccount",
             "accountName",
             "number",
@@ -79,10 +82,11 @@ public class CreditCardController extends AbstractBaseController {
     }
 
     @RequestMapping(value="/secure/viewAccountInformation.admin")
-    public ModelAndView viewCreditCardInformation(HttpServletRequest request,
-                                                  HttpServletResponse response,
-                                                  @RequestParam(value = "token1") String userNameInParameter,
-                                                  @RequestParam(value = "token3") String returnURL) {
+    public ModelAndView viewCreditCardInformation(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(value = "token1") String userNameInParameter,
+            @RequestParam(value = "token3") String returnURL,
+            @RequestParam(value = "token4", defaultValue = "false") boolean addNewCard,
+            @RequestParam(value = "token5", defaultValue = "-1") Long creditCardId) {
         CreditCardForm creditCardForm = new CreditCardForm();
         request.getSession().setMaxInactiveInterval(Integer.parseInt(sessionTimeout));
         ModelAndView modelAndView = this.getModelAndView(request, ECOM_CC_INFO);
@@ -94,20 +98,32 @@ public class CreditCardController extends AbstractBaseController {
             modelAndView.addObject("token3", returnURL);
             return modelAndView;
         }
-        CreditCard creditCard = this.userService.getCreditCardDetails(userName);
-        if (creditCard != null) {
-            creditCardForm = this.buildCreditCardForm(creditCard);
+        if (!addNewCard) {
+            CreditCard card = null;
+            if (creditCardId > -1) {
+                card = userService.getCreditCardDetails(userName, creditCardId);
+            } else {
+                List<CreditCard> cardList = userService.getCreditCardDetailsList(userName);
+                if (cardList != null && !cardList.isEmpty()) {
+                    card = cardList.get(0);
+                }
+            }
+            if (card != null) {
+                creditCardForm = buildCreditCardForm(card);
+            }
         }
         creditCardForm.setEmailId(userName);
         modelAndView.addObject("creditCardForm", creditCardForm);
+        modelAndView.addObject("addNewCard", addNewCard);
         modelAndView.addObject("returnUrl", returnURL);
         return modelAndView;
     }
 
     @RequestMapping(value="/secure/updateAccountInformation.admin", produces="application/json")
     @ResponseBody
-    public Set<ErrorCode> updateCreditCardInfo(@ModelAttribute("creditCardForm")
-                CreditCardForm creditCardForm, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+    public Set<ErrorCode> updateCreditCardInfo(@ModelAttribute("creditCardForm") CreditCardForm creditCardForm,
+            BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+
         Set<ErrorCode> errors = new HashSet<ErrorCode>();
 
         String verificationResult = verifyBindingInJSON(bindingResult);
@@ -143,14 +159,9 @@ public class CreditCardController extends AbstractBaseController {
         }
 
         CreditCard creditCardInfo = buildCreditCard(creditCardForm, request);
-        try {
-            this.userService.updateExistingCreditCardInformation(creditCardForm.getEmailId(), creditCardForm.getEmailId(),
-            		creditCardInfo);
-        } catch (PaymentGatewayUserException payPalUserException) {
-            bindingResult.rejectValue("ERROR", "paypal.errorcode." + payPalUserException.getErrorCode());
-        } catch (PaymentGatewaySystemException payPalSystemException) {
-            bindingResult.rejectValue("ERROR", "paypal.errorcode.generalsystemerror");
-        }
+        String emailId = creditCardForm.getEmailId();
+        userService.addOrUpdateCreditCard(emailId, emailId, creditCardInfo);
+
         if (bindingResult.hasErrors()) {
             return this.populateErrorCodes(bindingResult.getFieldErrors());
         }
@@ -227,6 +238,7 @@ public class CreditCardController extends AbstractBaseController {
 
     private CreditCard buildCreditCard(CreditCardForm creditCardForm, HttpServletRequest request) {
         CreditCard creditCard = new CreditCard();
+        creditCard.setId(creditCardForm.getId());
         creditCard.setName(creditCardForm.getAccountName());
         creditCard.setNumber(creditCardForm.getNumber());
         creditCard.setExpiryMonth(creditCardForm.getExpMonth());
@@ -245,6 +257,7 @@ public class CreditCardController extends AbstractBaseController {
 
     private CreditCardForm buildCreditCardForm(CreditCard creditCard) {
         CreditCardForm creditCardForm = new CreditCardForm();
+        creditCardForm.setId(creditCard.getId());
         creditCardForm.setAccountName(creditCard.getName());
         creditCardForm.setNumber(creditCard.getNumber());
         creditCardForm.setAddressLine1(creditCard.getAddressLine1());

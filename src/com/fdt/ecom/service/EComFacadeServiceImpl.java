@@ -300,7 +300,7 @@ public class EComFacadeServiceImpl implements EComFacadeService {
     public void updateExistingCreditCardInformation(String userName, String modifiedBy, CreditCard newCreditCard)
             throws PaymentGatewaySystemException, PaymentGatewayUserException {
         try {
-        	this.userService.updateExistingCreditCardInformation(userName, modifiedBy, newCreditCard);
+        	this.userService.addOrUpdateCreditCard(userName, modifiedBy, newCreditCard);
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in updateExistingCreditCardInformation for userName {}, modifiedBy {}, " +
                     "CreditCard {}", userName, modifiedBy, newCreditCard, runtimeException);
@@ -308,6 +308,7 @@ public class EComFacadeServiceImpl implements EComFacadeService {
         }
     }
 
+    // TODO: DELETE THIS
     public CreditCard getCreditCardDetails(Long userId) {
         try {
             return this.userService.getCreditCardDetails(userId);
@@ -317,11 +318,48 @@ public class EComFacadeServiceImpl implements EComFacadeService {
         }
     }
 
+    // TODO: DELETE THIS
     public CreditCard getCreditCardDetailsByUserName(String userName) {
         try {
             return this.userService.getCreditCardDetails(userName);
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsByUserName for userName {}", userName, runtimeException);
+            throw runtimeException;
+        }
+    }
+
+    public CreditCard getCreditCardDetailsWithId(Long userId, Long creditCardId) {
+        try {
+            return this.userService.getCreditCardDetails(userId, creditCardId);
+        } catch(RuntimeException runtimeException) {
+            logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetails for userId {}", userId, runtimeException);
+            throw runtimeException;
+        }
+    }
+
+    public CreditCard getCreditCardDetailsByUserNameWithId(String userName, Long creditCardId) {
+        try {
+            return this.userService.getCreditCardDetails(userName, creditCardId);
+        } catch(RuntimeException runtimeException) {
+            logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsByUserName for userName {}", userName, runtimeException);
+            throw runtimeException;
+        }
+    }
+
+    public List<CreditCard> getCreditCardDetailsList(Long userId) {
+        try {
+            return this.userService.getCreditCardDetailsList(userId);
+        } catch(RuntimeException runtimeException) {
+            logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsList for userId {}", userId, runtimeException);
+            throw runtimeException;
+        }
+    }
+
+    public List<CreditCard> getCreditCardDetailsListByUserName(String userName) {
+        try {
+            return this.userService.getCreditCardDetailsList(userName);
+        } catch(RuntimeException runtimeException) {
+            logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsListByUserName for userName {}", userName, runtimeException);
             throw runtimeException;
         }
     }

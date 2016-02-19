@@ -377,10 +377,9 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
     @Path("updateExistingCreditCardInformation/{userName}/{modifiedBy}")
     @Produces({MediaType.APPLICATION_JSON})
     public void updateExistingCreditCardInformation(@PathParam("userName") String userName,
-            @PathParam("modifiedBy") String modifiedBy, @RequestBody CreditCard newCreditCard)
-                    throws PaymentGatewaySystemException, PaymentGatewayUserException {
+            @PathParam("modifiedBy") String modifiedBy, @RequestBody CreditCard newCreditCard){
         try {
-            this.userService.updateExistingCreditCardInformation(userName, modifiedBy, newCreditCard);
+            this.userService.addOrUpdateCreditCard(userName, modifiedBy, newCreditCard);
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in updateExistingCreditCardInformation for userName {}, modifiedBy {}, " +
                     "CreditCard {}", userName, modifiedBy,  newCreditCard, runtimeException);
@@ -388,6 +387,21 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
         }
     }
 
+    // TODO: DELETE THIS
+    @WebMethod
+    @GET
+    @Path("getCreditCardDetailsByUserName/{userName}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public CreditCard getCreditCardDetailsByUserName(@PathParam("userName") String userName) {
+        try {
+            return this.userService.getCreditCardDetails(userName);
+        } catch(RuntimeException runtimeException) {
+            logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsByUserName for userName {}", userName, runtimeException);
+            throw runtimeException;
+        }
+    }
+
+    // TODO: DELETE THIS
     @WebMethod
     @GET
     @Path("getCreditCardDetails/{userId}")
@@ -403,13 +417,52 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
 
     @WebMethod
     @GET
-    @Path("getCreditCardDetailsByUserName/{userName}")
+    @Path("getCreditCardDetailsByUserNameWithId/{userName}/{creditCardId}")
     @Produces({MediaType.APPLICATION_JSON})
-    public CreditCard getCreditCardDetailsByUserName(@PathParam("userName") String userName) {
+    public CreditCard getCreditCardDetailsByUserNameWithId(@PathParam("userName") String userName, @PathParam("creditCardId") Long creditCardId) {
         try {
-            return this.userService.getCreditCardDetails(userName);
+            return this.userService.getCreditCardDetails(userName, creditCardId);
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsByUserName for userName {}", userName, runtimeException);
+            throw runtimeException;
+        }
+    }
+
+    @WebMethod
+    @GET
+    @Path("getCreditCardDetailsWithId/{userId}/{creditCardId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public CreditCard getCreditCardDetailsWithId(@PathParam("userId") Long userId, @PathParam("creditCardId") Long creditCardId) {
+        try {
+            return this.userService.getCreditCardDetails(userId, creditCardId);
+        } catch(RuntimeException runtimeException) {
+            logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetails for userId {}", userId, runtimeException);
+            throw runtimeException;
+        }
+    }
+
+    @WebMethod
+    @GET
+    @Path("getCreditCardDetailsListByUserName/{userName}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<CreditCard> getCreditCardDetailsListByUserName(@PathParam("userName") String userName) {
+        try {
+            return this.userService.getCreditCardDetailsList(userName);
+        } catch(RuntimeException runtimeException) {
+            logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsListByUserName for userName {}", userName, runtimeException);
+            throw runtimeException;
+        }
+    }
+
+    @WebMethod
+    @GET
+    @Path("getCreditCardDetailsList/{userId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<CreditCard> getCreditCardDetailsList(@PathParam("userId") Long userId) {
+        try {
+            return this.userService.getCreditCardDetailsList(userId);
+        } catch(RuntimeException runtimeException) {
+            logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsList for userId {}", userId, runtimeException);
             throw runtimeException;
         }
     }

@@ -651,9 +651,9 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
                     site.setId(siteId);
                     site.setDescription(this.getString(row[6]));
                     site.setTimeZone(this.getString(row[4]));
-                    site.setRevenueThresholdAmount(this.getDoubleFromBigDecimal(row[41]));
-                    site.setRevenueThresholdStartDate(this.getDate(row[42]));
-                    site.setName(this.getString(row[43]));
+                    site.setRevenueThresholdAmount(this.getDoubleFromBigDecimal(row[28]));
+                    site.setRevenueThresholdStartDate(this.getDate(row[29]));
+                    site.setName(this.getString(row[30]));
                     siteList.add(site);
                     uniqueSites.put(siteId, site);
                 } else {
@@ -663,46 +663,44 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
 
                 Merchant merchant = new Merchant();
                 merchant.setUserName(this.getString(row[0]));
-                merchant.setPassword( row[1] == null ? null : this.getPbeStringEncryptor().decrypt(row[1].toString()));
+                merchant.setPassword(row[1] == null ? null : this.getPbeStringEncryptor().decrypt(row[1].toString()));
                 merchant.setVendorName(this.getString(row[2]));
                 merchant.setPartner(this.getString(row[3]));
-                merchant.setId(this.getLongFromInteger(row[26]));
-                merchant.setTxFeePercent(this.getDoubleFromBigDecimal(row[28]));
-                merchant.setTxFeeFlat(this.getDoubleFromBigDecimal(row[29]));
-                merchant.setTxFeePercentAmex(this.getDoubleFromBigDecimal(row[31]));
-                merchant.setTxFeeFlatAmex(this.getDoubleFromBigDecimal(row[32]));
+                merchant.setId(this.getLongFromInteger(row[15]));
+                merchant.setTxFeePercent(this.getDoubleFromBigDecimal(row[17]));
+                merchant.setTxFeeFlat(this.getDoubleFromBigDecimal(row[18]));
+                merchant.setTxFeePercentAmex(this.getDoubleFromBigDecimal(row[20]));
+                merchant.setTxFeeFlatAmex(this.getDoubleFromBigDecimal(row[21]));
 
                 UserAccess userAccess = new UserAccess();
-                Long userAccessId = this.getLongFromInteger(row[24]);
+                Long userAccessId = this.getLongFromInteger(row[13]);
                 userAccess.setId(userAccessId);
-                userAccess.setAuthorized(this.getBoolean(row[27]));
+                userAccess.setAuthorized(this.getBoolean(row[16]));
                 Access access = new Access();
                 List<Access> accessList = new LinkedList<Access>();
-                Long accessId = this.getLongFromInteger(row[25]);
+                Long accessId = this.getLongFromInteger(row[14]);
                 access.setId(accessId);
                 access.setCode(this.getString(row[7]));
                 access.setDescription(this.getString(row[8]));
-                access.setClientShare(this.getDoubleFromBigDecimal(row[30]));
-                access.setFirmLevelAccess(this.getBoolean(row[38]));
-                userAccess.setFirmAccessAdmin(this.getBoolean(row[39]));
-                userAccess.setFirmAdminUserAccessId(this.getLongFromInteger(row[40]));
+                access.setClientShare(this.getDoubleFromBigDecimal(row[19]));
+                access.setFirmLevelAccess(this.getBoolean(row[25]));
+                userAccess.setFirmAccessAdmin(this.getBoolean(row[26]));
+                userAccess.setFirmAdminUserAccessId(this.getLongFromInteger(row[27]));
                 userAccess.setAccess(access);
 
-                Long userAccountId = this.getLongFromBigInteger(row[35]);
-
+                Long userAccountId = this.getLongFromBigInteger(row[22]);
 
                 if(userAccountId != null) {
                     UserAccount userAccount = new UserAccount();
                     userAccount.setId(userAccountId);
-                    userAccount.setCreatedDate(this.getDate(row[37]));
+                    userAccount.setCreatedDate(this.getDate(row[24]));
                     UserAccess userAccessOfUserAccount = new UserAccess();
-                    Long userAccessIdOfUserAccount = this.getLongFromInteger(row[36]);
+                    Long userAccessIdOfUserAccount = this.getLongFromInteger(row[23]);
                     userAccessOfUserAccount.setId(userAccessIdOfUserAccount);
                     userAccount.setUserAccess(userAccessOfUserAccount);
                     userAccountList.add(userAccount);
                     userAccess.setUserAccount(userAccount);
                 }
-
 
                 /** Setting Subscription Fee **/
                 SubscriptionFee subscriptionFee = new SubscriptionFee();
@@ -714,29 +712,11 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
                 /**Set Subscription Fee to Access **/
                 access.setSubscriptionFee(subscriptionFee);
 
-                Long creditCardId = this.getLongFromInteger(row[12]);
-                if(creditCardId != null) {
-                    creditCard = new CreditCard();
-                    creditCard.setId(creditCardId);
-                    creditCard.setName(this.getString(row[13]));
-                    creditCard.setNumber(row[14] == null ? null : this.getPbeStringEncryptor().decrypt(row[14].toString()));
-                    creditCard.setExpiryMonth(this.getInteger(row[15]));
-                    creditCard.setExpiryYear(this.getInteger(row[16]));
-                    creditCard.setAddressLine1(this.getString(row[17]));
-                    creditCard.setAddressLine2(this.getString(row[18]));
-                    creditCard.setCity(this.getString(row[19]));
-                    creditCard.setState(this.getString(row[20]));
-                    creditCard.setZip(this.getString(row[21]));
-                    creditCard.setPhone(this.getLongFromBigInteger(row[22]));
-                    creditCard.setCreatedBy(this.getString(row[33]));
-                    creditCard.setCreatedDate(this.getDate(row[34]));
-
-                }
                 site.addMerchant(merchant);
                 accessList.add(access);
                 site.setAccess(accessList);
                 access.setSite(site);
-                userId = this.getLongFromBigInteger(row[23]);
+                userId = this.getLongFromBigInteger(row[12]);
                 userAccessList.add(userAccess);
             }
 

@@ -29,6 +29,7 @@ import com.fdt.ecom.entity.NodeConfiguration;
 import com.fdt.ecom.entity.Site;
 import com.fdt.ecom.entity.Term;
 import com.fdt.ecom.entity.UserTerm;
+import com.fdt.ecom.util.CreditCardUtil;
 import com.fdt.email.EmailProducer;
 import com.fdt.payasugotx.dao.PayAsUGoTxDAO;
 import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
@@ -648,43 +649,30 @@ public class UserServiceImpl implements UserService {
     	return this.userDAO.findUserEvent(userName);
     }
 
-    /** This Method Updates The Credit Card Information of a User.
-     * @param userName Email Id Of The User Whose Credit Card Information Needs To Be Updated.
-     * @param modifiedBy Email Id Of The User Who Is Trying To Update.
-     * @param newCreditCardInformation New Credit Card Information.
-     * @throws PaymentGatewaySystemException
-     * @throws PaymentGatewayUserException
+    /**
+     * This method adds a new credit card or updates an existing one.
+     * 
+     * @param userName email ID of the the user to add a new credit card for
+     * @param modifiedBy email ID of the the user doing the update (normally the same)
+     * @param creditCardInfo new credit card information
      */
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor= Throwable.class)
-    public void updateExistingCreditCardInformation(String userName, String modifiedBy, CreditCard newCreditCardInformation)
-            throws PaymentGatewaySystemException, PaymentGatewayUserException {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    public void addOrUpdateCreditCard(String userName, String modifiedBy, CreditCard creditCardInfo) {
         Assert.hasLength(userName, "User Name Cannot be Null/Empty");
-        Assert.notNull(newCreditCardInformation, "Credit Card Information Cannot be Null");
-        User user = this.subDAO.getRecurSubAccountInfo(userName);
+        Assert.notNull(creditCardInfo, "Credit Card Information Cannot be Null");
+        User user = this.userDAO.getUser(userName);
         Assert.notNull(user, "user Cannot be Null");
-        if (user.getCreditCard() != null) {
-            newCreditCardInformation.setId(user.getCreditCard().getId());
-            newCreditCardInformation.setUserId(user.getId());
-            newCreditCardInformation.setCreatedBy(user.getCreditCard().getCreatedBy());
-            newCreditCardInformation.setCreatedDate(user.getCreditCard().getCreatedDate());
-            newCreditCardInformation.setModifiedBy(modifiedBy);
-            newCreditCardInformation.setModifiedDate(new Date());
-            newCreditCardInformation.setActive(true);
-            this.userDAO.saveCreditCard(newCreditCardInformation);
-        } else if (user.getCreditCard()  == null) {
-            newCreditCardInformation.setUserId(user.getId());
-            newCreditCardInformation.setModifiedBy(modifiedBy);
-            newCreditCardInformation.setCreatedBy(userName);
-            newCreditCardInformation.setModifiedDate(new Date());
-            newCreditCardInformation.setCreatedDate(new Date());
-            newCreditCardInformation.setActive(true);
-            this.userDAO.saveCreditCard(newCreditCardInformation);
-        }
+        creditCardInfo.setUserId(user.getId());
+        creditCardInfo.setModifiedBy(modifiedBy);
+        creditCardInfo.setCreatedBy(userName);
+        creditCardInfo.setModifiedDate(new Date());
+        creditCardInfo.setCreatedDate(new Date());
+        creditCardInfo.setActive(true);
+        this.userDAO.saveCreditCard(creditCardInfo);
     }
 
-    /** This Method Gets The Credit Card Information of a User.
-     * @param username Email Id Of The User Whose Credit Card Information Needs To Be Pulled.
-     * @return Credit Card Information.
+    /**
+     * TODO: DELETE THIS
      */
     @Transactional(readOnly = true)
     public CreditCard getCreditCardDetails(String userName) {
@@ -702,9 +690,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    /** This Method Gets The Credit Card Information of a User.
-     * @param userId Id Of The User Whose Credit Card Information Needs To Be Pulled.
-     * @return Credit Card Information.
+    /**
+     * TODO: DELETE THIS
      */
     @Transactional(readOnly = true)
     public CreditCard getCreditCardDetails(Long userId) {
@@ -719,6 +706,72 @@ public class UserServiceImpl implements UserService {
         String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
         cardInfo.setNumber(maskedNumber);
         return cardInfo;
+    }
+
+    @Transactional(readOnly = true)
+    public CreditCard getCreditCardDetails(String userName, Long creditCardId) {
+        Assert.hasLength(userName, "User Name Cannot be Null/Empty");
+        CreditCard cardInfo = this.userDAO.getCreditCardDetails(userName, creditCardId);
+        if(cardInfo == null){
+            return null;
+        }
+        String creditCardNumber = cardInfo.getNumber();
+        int length = creditCardNumber.length();
+        String toBeMaskedPart = creditCardNumber.substring(0, length-4);
+        String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
+        cardInfo.setNumber(maskedNumber);
+        return cardInfo;
+    }
+
+    @Transactional(readOnly = true)
+    public CreditCard getCreditCardDetails(Long userId, Long creditCardId) {
+        Assert.notNull(userId, "User Id Cannot be Null");
+        CreditCard cardInfo = this.userDAO.getCreditCardDetails(userId, creditCardId);
+        if(cardInfo == null){
+            return null;
+        }
+        String creditCardNumber = cardInfo.getNumber();
+        int length = creditCardNumber.length();
+        String toBeMaskedPart = creditCardNumber.substring(0, length-4);
+        String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
+        cardInfo.setNumber(maskedNumber);
+        return cardInfo;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CreditCard> getCreditCardDetailsList(String userName) {
+        Assert.hasLength(userName, "User Name Cannot be Null/Empty");
+        List<CreditCard> cardList = userDAO.getCreditCardDetailsList(userName);
+        if (cardList == null || cardList.isEmpty()) {
+            return null;
+        }
+        for (CreditCard card : cardList) {
+            String creditCardNumber = card.getNumber();
+            int length = creditCardNumber.length();
+            String toBeMaskedPart = creditCardNumber.substring(0, length-4);
+            String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
+            card.setNumber(maskedNumber);
+            card.setCardType(CreditCardUtil.getCardType(creditCardNumber));
+        }
+        return cardList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CreditCard> getCreditCardDetailsList(Long userId) {
+        Assert.notNull(userId, "User Id Cannot be Null");
+        List<CreditCard> cardList = userDAO.getCreditCardDetailsList(userId);
+        if (cardList == null || cardList.isEmpty()) {
+            return null;
+        }
+        for (CreditCard card : cardList) {
+            String creditCardNumber = card.getNumber();
+            int length = creditCardNumber.length();
+            String toBeMaskedPart = creditCardNumber.substring(0, length-4);
+            String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
+            card.setNumber(maskedNumber);
+            card.setCardType(CreditCardUtil.getCardType(creditCardNumber));
+        }
+        return cardList;
     }
 
     private void sendUserMail(User user, String fromEMailAddress, String subject, String emailTemplateFile,

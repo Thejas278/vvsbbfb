@@ -9,6 +9,7 @@ import com.fdt.common.entity.ErrorCode;
 import com.fdt.ecom.dto.UserCountDTO;
 import com.fdt.ecom.entity.BankDetails;
 import com.fdt.ecom.entity.Code;
+import com.fdt.ecom.entity.CreditCard;
 import com.fdt.ecom.entity.Merchant;
 import com.fdt.ecom.entity.NodeConfiguration;
 import com.fdt.ecom.entity.ReceiptConfiguration;
@@ -104,5 +105,7 @@ public interface EComDAO {
     public void deleteErrorLogContents(Long errorLogId);
 
     public PaymentType getPaymentTypeForTransaction(String txRefNumber);
+
+    public CreditCard getCreditCard(Long creditCardId);
 
 }

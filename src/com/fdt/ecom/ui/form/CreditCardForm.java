@@ -21,6 +21,9 @@ public class CreditCardForm {
 
     private String useExistingAccount = NEW_CREDIT_CARD;
 
+    private Boolean addNewCard = false;
+    private Long id;
+
     @Pattern(regexp="[a-zA-Z][a-zA-Z ]+",message="security.invalid.accountName" , groups = { CreditCardGroup.class } )
     @Size(min = 1, max = 50, message="security.invalid.accountName" , groups = { CreditCardGroup.class })
     private String accountName;
@@ -375,6 +378,20 @@ public class CreditCardForm {
 	public void setBankAccountName(String bankAccountName) {
 		this.bankAccountName = bankAccountName;
 	}
-    
-		
+
+    public Boolean getAddNewCard() {
+        return addNewCard;
+    }
+
+    public void setAddNewCard(Boolean addNewCard) {
+        this.addNewCard = addNewCard;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

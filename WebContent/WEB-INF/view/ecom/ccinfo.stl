@@ -66,6 +66,12 @@ span.loading {
 				<tr>			
 					<td style="width:50%;vertical-align:top;">
 							<@form.input type="hidden" path="emailId" class="ADCSI_Input" />
+              <@form.input type="hidden" path="id" class="ADCSI_Input" />
+              <#if addNewCard == true>
+                <input type="hidden" id="addNewCard" name="addNewCard" value="true" />
+              <#else>
+                <input type="hidden" id="addNewCard" name="addNewCard" value="false" />
+              </#if>
 							<div class="ADCSI_row">
 							<span class="ADCSI_leftcol" ><@spring.message code="security.ecommerce.accountName" /></span>
 							<span class="ADCSI_rightcol" style="width: 250px; display: inline-block; ">
@@ -175,7 +181,11 @@ span.loading {
 				<span id="ERROR"></span>
 				<span id="SUCCESS"></span>
 				<a href="${returnUrl}?isReAu=true">Return to Previous Page</a>&nbsp;&nbsp;
-				<input class="button" type="submit" id="btnUpdateAcct" name="btnUpdateAcct" tabindex="21" value='<@spring.message code="security.authentication.update"/>' />						
+        <#if addNewCard == true>
+          <input class="button" type="submit" id="btnUpdateAcct" name="btnUpdateAcct" tabindex="21" value='<@spring.message code="security.authentication.addCard"/>' />
+        <#else>
+          <input class="button" type="submit" id="btnUpdateAcct" name="btnUpdateAcct" tabindex="21" value='<@spring.message code="security.authentication.update"/>' />
+        </#if>
 			</div>
 			<br />
 			<div class="ADCSI_row">
@@ -277,6 +287,8 @@ span.loading {
 		    $('#processing').show();
 		    $('#btnUpdateAcct').hide();
 		    if (frmErrors.length > 0) $('#frmccinfo').validationEngine('hide');;
+        var id = $("input#id").val();
+        var addNewCard = $("input#addNewCard").val();
 		    var accountName = $("input#accountName").val();
 			var accountNumber = $("input#number").val();
 			var expMonthS = $("input#expMonthS").val();
@@ -289,9 +301,12 @@ span.loading {
 			var zip = $("input#zip").val();
 			var emailId = $("input#emailId").val();
 			var phoneNumber = $("input#phoneNumber").val();
-			var dataString = 'accountName='+ accountName + '&number=' + accountNumber + '&expMonthS=' + expMonthS + '&expYear=' + expYear + '&cvv=' + cvv + '&addressLine1=' + addressLine1 + '&addressLine2=' + addressLine2 + '&city=' + city + '&state=' + state + '&zip=' + zip + '&phoneNumber=' + phoneNumber + '&emailId=' + emailId;
-			var hasFormValidationErrors = false;
-		    var strFormValidationErrors = ""	
+      var dataString = 'id=' + id + '&addNewCard=' + addNewCard + '&accountName='+ accountName + '&number=' + accountNumber + 
+        '&expMonthS=' + expMonthS + '&expYear=' + expYear + '&cvv=' + cvv + '&addressLine1=' + addressLine1 + 
+        '&addressLine2=' + addressLine2 + '&city=' + city + '&state=' + state + '&zip=' + zip + 
+        '&phoneNumber=' + phoneNumber + '&emailId=' + emailId;
+      var hasFormValidationErrors = false;
+      var strFormValidationErrors = ""
 			$.ajax({
 		      type: "POST",
 		      url: "updateAccountInformation.admin",

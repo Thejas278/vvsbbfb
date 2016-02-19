@@ -27,6 +27,7 @@ import com.fdt.common.entity.Tx;
 import com.fdt.ecom.dto.UserCountDTO;
 import com.fdt.ecom.entity.BankDetails;
 import com.fdt.ecom.entity.Code;
+import com.fdt.ecom.entity.CreditCard;
 import com.fdt.ecom.entity.CreditUsageFee;
 import com.fdt.ecom.entity.Merchant;
 import com.fdt.ecom.entity.Node;
@@ -1478,5 +1479,8 @@ public class EComDAOImpl extends AbstractBaseDAOImpl implements EComDAO {
         return paymentType;
 	}
 
+    public CreditCard getCreditCard(Long creditCardId) {
+        return (CreditCard) currentSession().get(CreditCard.class, creditCardId);
+    }
 
 }

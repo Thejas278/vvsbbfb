@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
@@ -1065,44 +1066,56 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
         return cardInfo;
     }
 
+    /**
+     * TODO: DELETE THIS
+     */
     public CreditCard getCreditCardDetails(String username) {
-        CreditCard cardInfo = null;
-        Session session = currentSession();
-        List resultSet = session.getNamedQuery("GET_CREDIT_CARD_DETAILS")
-                        .setParameter("userName", username).list();
-        if(resultSet.size() > 0){
-            cardInfo = new CreditCard();
-            Object[] row = (Object[]) resultSet.get(0);
-            cardInfo.setId(this.getLongFromInteger(row[0]));
-            cardInfo.setName(this.getString(row[1]));
-            cardInfo.setNumber(row[2] == null ? null : this.getPbeStringEncryptor().decrypt(row[2].toString()));
-            cardInfo.setExpiryMonth(this.getInteger(row[3]));
-            cardInfo.setExpiryYear(this.getInteger(row[4]));
-            cardInfo.setAddressLine1(this.getString(row[5]));
-            cardInfo.setAddressLine2(this.getString(row[6]));
-            cardInfo.setCity(this.getString(row[7]));
-            cardInfo.setState(this.getString(row[8]));
-            cardInfo.setZip(this.getString(row[9]));
-            cardInfo.setPhone(this.getLongFromBigInteger(row[10]));
-            cardInfo.setActive(this.getBoolean(row[11]));
-            cardInfo.setCreatedDate(this.getDate(row[12]));
-            cardInfo.setModifiedDate(this.getDate(row[13]));
-            cardInfo.setModifiedBy(this.getString(row[14]));
-            cardInfo.setUserId(this.getLongFromBigInteger(row[15]));
-            cardInfo.setCreatedBy(this.getString(row[16]));
-        }
-        return cardInfo;
+        List<CreditCard> list = getCreditCardDetailsList(username);
+        return !list.isEmpty() ? list.get(0) : null;
     }
 
-
+    /**
+     * TODO: DELETE THIS
+     */
     public CreditCard getCreditCardDetails(Long userId) {
-        CreditCard cardInfo = null;
-        Session session = currentSession();
-        List resultSet = session.getNamedQuery("GET_CREDIT_CARD_DETAILS_BY_USERID")
-                         .setParameter("userId", userId).list();
-        if(resultSet.size() > 0){
-            cardInfo = new CreditCard();
-            Object[] row = (Object[]) resultSet.get(0);
+        List<CreditCard> list = getCreditCardDetailsList(userId);
+        return !list.isEmpty() ? list.get(0) : null;
+    }
+
+    public CreditCard getCreditCardDetails(String username, Long creditCardId) {
+
+        User user = getUser(username);
+
+        @SuppressWarnings("unchecked")
+        List<CreditCard> list = currentSession().createCriteria(CreditCard.class)
+                .add(Restrictions.eq("id", creditCardId))
+                .add(Restrictions.eq("userId", user.getId()))
+                .list();
+
+        return !list.isEmpty() ? list.get(0) : null;
+    }
+
+    public CreditCard getCreditCardDetails(Long userId, Long creditCardId) {
+        @SuppressWarnings("unchecked")
+        List<CreditCard> list = currentSession().createCriteria(CreditCard.class)
+                .add(Restrictions.eq("id", creditCardId))
+                .add(Restrictions.eq("userId", userId))
+                .list();
+        return !list.isEmpty() ? list.get(0) : null;
+    }
+
+    public List<CreditCard> getCreditCardDetailsList(String username) {
+
+        @SuppressWarnings("rawtypes")
+        List resultSet = currentSession()
+                .getNamedQuery("GET_CREDIT_CARD_DETAILS")
+                .setParameter("userName", username)
+                .list();
+
+        List<CreditCard> result = new ArrayList<>();
+        for (Object entry : resultSet) {
+            Object[] row = (Object[]) entry;
+            CreditCard cardInfo = new CreditCard();
             cardInfo.setId(this.getLongFromInteger(row[0]));
             cardInfo.setName(this.getString(row[1]));
             cardInfo.setNumber(row[2] == null ? null : this.getPbeStringEncryptor().decrypt(row[2].toString()));
@@ -1120,10 +1133,44 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             cardInfo.setModifiedBy(this.getString(row[14]));
             cardInfo.setUserId(this.getLongFromBigInteger(row[15]));
             cardInfo.setCreatedBy(this.getString(row[16]));
+            result.add(cardInfo);
         }
-        return cardInfo;
+        return result;
     }
 
+    public List<CreditCard> getCreditCardDetailsList(Long userId) {
+
+        @SuppressWarnings("rawtypes")
+        List resultSet = currentSession()
+                .getNamedQuery("GET_CREDIT_CARD_DETAILS_BY_USERID")
+                .setParameter("userId", userId)
+                .list();
+
+        List<CreditCard> result = new ArrayList<>();
+        for (Object entry : resultSet) {
+            Object[] row = (Object[]) entry;
+            CreditCard cardInfo = new CreditCard();
+            cardInfo.setId(this.getLongFromInteger(row[0]));
+            cardInfo.setName(this.getString(row[1]));
+            cardInfo.setNumber(row[2] == null ? null : this.getPbeStringEncryptor().decrypt(row[2].toString()));
+            cardInfo.setExpiryMonth(this.getInteger(row[3]));
+            cardInfo.setExpiryYear(this.getInteger(row[4]));
+            cardInfo.setAddressLine1(this.getString(row[5]));
+            cardInfo.setAddressLine2(this.getString(row[6]));
+            cardInfo.setCity(this.getString(row[7]));
+            cardInfo.setState(this.getString(row[8]));
+            cardInfo.setZip(this.getString(row[9]));
+            cardInfo.setPhone(this.getLongFromBigInteger(row[10]));
+            cardInfo.setActive(this.getBoolean(row[11]));
+            cardInfo.setCreatedDate(this.getDate(row[12]));
+            cardInfo.setModifiedDate(this.getDate(row[13]));
+            cardInfo.setModifiedBy(this.getString(row[14]));
+            cardInfo.setUserId(this.getLongFromBigInteger(row[15]));
+            cardInfo.setCreatedBy(this.getString(row[16]));
+            result.add(cardInfo);
+        }
+        return result;
+    }
 
     public void saveCreditCard(List<CreditCard> creditCards) {
         Session session = currentSession();

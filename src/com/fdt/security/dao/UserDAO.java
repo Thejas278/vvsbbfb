@@ -26,11 +26,25 @@ public interface UserDAO {
     public void saveUser(User user);
 
     public void saveUserAcess(List<UserAccess> userAccess);
-    
+
+    /**
+     * TODO: DELETE THIS
+     */
     public CreditCard getCreditCardDetails(Long userId);
 
+    /**
+     * TODO: DELETE THIS
+     */
     public CreditCard getCreditCardDetails(String userName);
-    
+
+    public CreditCard getCreditCardDetails(Long userId, Long creditCardId);
+
+    public CreditCard getCreditCardDetails(String userName, Long creditCardId);
+
+    public List<CreditCard> getCreditCardDetailsList(Long userId);
+
+    public List<CreditCard> getCreditCardDetailsList(String userName);
+
     public CreditCard getFirmCreditCardDetails(String userName);
 
     public void saveUserAcess(UserAccess userAccess);

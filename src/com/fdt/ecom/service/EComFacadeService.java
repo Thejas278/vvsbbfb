@@ -313,11 +313,27 @@ public interface EComFacadeService {
     @WebMethod
     public List<Code> getCodes(@WebParam(name="codeCategory") String codeCategory);
 
+    // TODO: DELETE THIS
     @WebMethod
-    public CreditCard getCreditCardDetailsByUserName(@WebParam(name = "userName") String userName) ;
+    public CreditCard getCreditCardDetailsByUserName(@WebParam(name = "userName") String userName);
 
+    // TODO: DELETE THIS
     @WebMethod
     public CreditCard getCreditCardDetails(@WebParam(name="userId") Long userId);
+
+    @WebMethod
+    public CreditCard getCreditCardDetailsByUserNameWithId(@WebParam(name = "userName") String userName,
+            @WebParam(name = "creditCardId") Long creditCardId) ;
+
+    @WebMethod
+    public CreditCard getCreditCardDetailsWithId(@WebParam(name="userId") Long userId,
+            @WebParam(name = "creditCardId") Long creditCardId);
+
+    @WebMethod
+    public List<CreditCard> getCreditCardDetailsListByUserName(@WebParam(name = "userName") String userName) ;
+
+    @WebMethod
+    public List<CreditCard> getCreditCardDetailsList(@WebParam(name="userId") Long userId);
 
     @WebMethod
     public List<Term> getNewTermsAndConditionsforUser(@WebParam(name="userName") String userName,
