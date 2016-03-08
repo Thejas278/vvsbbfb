@@ -903,7 +903,7 @@ public class PaymentGatewayController extends AbstractBaseController {
         }
         CreditCardForm creditCardForm =  new CreditCardForm();
         if (user.isCardAvailable()) {
-            CreditCard creditCard = this.userService.getCreditCardDetails(request.getRemoteUser());
+            CreditCard creditCard = this.userService.getCreditCardDetails(request.getRemoteUser()).get(0);
             creditCardForm = this.buildCreditCardForm(creditCard);
         }
 
@@ -1157,7 +1157,7 @@ public class PaymentGatewayController extends AbstractBaseController {
                       }
                 }
                 CreditCardForm creditCardForm = new CreditCardForm();
-                CreditCard creditCard = this.userService.getCreditCardDetails(request.getRemoteUser());
+                CreditCard creditCard = this.userService.getCreditCardDetails(request.getRemoteUser()).get(0);
                 if (creditCard != null) {
                     creditCardForm = this.buildCreditCardForm(creditCard);
                 }

@@ -32,6 +32,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.fdt.common.dao.AbstractBaseDAOImpl;
+import com.fdt.common.util.SystemUtil;
 import com.fdt.ecom.entity.CreditCard;
 import com.fdt.ecom.entity.Site;
 import com.fdt.ecom.entity.Term;
@@ -1069,17 +1070,17 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
     /**
      * TODO: DELETE THIS
      */
-    public CreditCard getCreditCardDetails(String username) {
+    public List<CreditCard> getCreditCardDetails(String username) {
         List<CreditCard> list = getCreditCardDetailsList(username);
-        return !list.isEmpty() ? list.get(0) : null;
+        return list;
     }
 
     /**
      * TODO: DELETE THIS
      */
-    public CreditCard getCreditCardDetails(Long userId) {
+    public List<CreditCard> getCreditCardDetails(Long userId) {
         List<CreditCard> list = getCreditCardDetailsList(userId);
-        return !list.isEmpty() ? list.get(0) : null;
+        return list;
     }
 
     public CreditCard getCreditCardDetails(String username, Long creditCardId) {
@@ -1118,7 +1119,9 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             CreditCard cardInfo = new CreditCard();
             cardInfo.setId(this.getLongFromInteger(row[0]));
             cardInfo.setName(this.getString(row[1]));
-            cardInfo.setNumber(row[2] == null ? null : this.getPbeStringEncryptor().decrypt(row[2].toString()));
+            String number = row[2] == null ? null : this.getPbeStringEncryptor().decrypt(row[2].toString());
+            cardInfo.setNumber(number);
+            cardInfo.setCardType(SystemUtil.getCardType(number));
             cardInfo.setExpiryMonth(this.getInteger(row[3]));
             cardInfo.setExpiryYear(this.getInteger(row[4]));
             cardInfo.setAddressLine1(this.getString(row[5]));
@@ -1152,7 +1155,9 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             CreditCard cardInfo = new CreditCard();
             cardInfo.setId(this.getLongFromInteger(row[0]));
             cardInfo.setName(this.getString(row[1]));
-            cardInfo.setNumber(row[2] == null ? null : this.getPbeStringEncryptor().decrypt(row[2].toString()));
+            String number = row[2] == null ? null : this.getPbeStringEncryptor().decrypt(row[2].toString());
+            cardInfo.setNumber(number);
+            cardInfo.setCardType(SystemUtil.getCardType(number));
             cardInfo.setExpiryMonth(this.getInteger(row[3]));
             cardInfo.setExpiryYear(this.getInteger(row[4]));
             cardInfo.setAddressLine1(this.getString(row[5]));

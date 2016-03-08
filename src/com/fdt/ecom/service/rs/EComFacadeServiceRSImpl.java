@@ -392,7 +392,7 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
     @GET
     @Path("getCreditCardDetailsByUserName/{userName}")
     @Produces({MediaType.APPLICATION_JSON})
-    public CreditCard getCreditCardDetailsByUserName(@PathParam("userName") String userName) {
+    public List<CreditCard> getCreditCardDetailsByUserName(@PathParam("userName") String userName) {
         try {
             return this.userService.getCreditCardDetails(userName);
         } catch(RuntimeException runtimeException) {
@@ -406,7 +406,7 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
     @GET
     @Path("getCreditCardDetails/{userId}")
     @Produces({MediaType.APPLICATION_JSON})
-    public CreditCard getCreditCardDetails(@PathParam("userId") Long userId) {
+    public List<CreditCard> getCreditCardDetails(@PathParam("userId") Long userId) {
         try {
             return this.userService.getCreditCardDetails(userId);
         } catch(RuntimeException runtimeException) {

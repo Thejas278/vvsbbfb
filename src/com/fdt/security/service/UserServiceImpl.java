@@ -675,18 +675,20 @@ public class UserServiceImpl implements UserService {
      * TODO: DELETE THIS
      */
     @Transactional(readOnly = true)
-    public CreditCard getCreditCardDetails(String userName) {
+    public List<CreditCard> getCreditCardDetails(String userName) {
         Assert.hasLength(userName, "User Name Cannot be Null/Empty");
-        CreditCard cardInfo = this.userDAO.getCreditCardDetails(userName);
-        if(cardInfo == null){
+        List<CreditCard> creditCardList = this.userDAO.getCreditCardDetails(userName);
+        if(creditCardList == null){
             return null;
         }
-        String creditCardNumber = cardInfo.getNumber();
-        int length = creditCardNumber.length();
-        String toBeMaskedPart = creditCardNumber.substring(0, length-4);
-        String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
-        cardInfo.setNumber(maskedNumber);
-        return cardInfo;
+        for (CreditCard cardInfo : creditCardList) {
+        	String creditCardNumber = cardInfo.getNumber();
+            int length = creditCardNumber.length();
+            String toBeMaskedPart = creditCardNumber.substring(0, length-4);
+            String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
+            cardInfo.setNumber(maskedNumber);
+		}
+        return creditCardList;
 
     }
 
@@ -694,18 +696,20 @@ public class UserServiceImpl implements UserService {
      * TODO: DELETE THIS
      */
     @Transactional(readOnly = true)
-    public CreditCard getCreditCardDetails(Long userId) {
+    public List<CreditCard> getCreditCardDetails(Long userId) {
         Assert.notNull(userId, "User Id Cannot be Null");
-        CreditCard cardInfo = this.userDAO.getCreditCardDetails(userId);
-        if(cardInfo == null){
+        List<CreditCard> creditCardList = this.userDAO.getCreditCardDetails(userId);
+        if(creditCardList == null){
             return null;
         }
-        String creditCardNumber = cardInfo.getNumber();
-        int length = creditCardNumber.length();
-        String toBeMaskedPart = creditCardNumber.substring(0, length-4);
-        String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
-        cardInfo.setNumber(maskedNumber);
-        return cardInfo;
+        for (CreditCard cardInfo : creditCardList) {
+        	String creditCardNumber = cardInfo.getNumber();
+            int length = creditCardNumber.length();
+            String toBeMaskedPart = creditCardNumber.substring(0, length-4);
+            String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
+            cardInfo.setNumber(maskedNumber);
+		}
+        return creditCardList;
     }
 
     @Transactional(readOnly = true)

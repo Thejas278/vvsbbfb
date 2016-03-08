@@ -311,11 +311,11 @@ public interface EComFacadeServiceRS {
 
     // TODO: DELETE THIS
     @WebMethod
-    public CreditCard getCreditCardDetailsByUserName(@WebParam(name = "userName") String userName);
+    public List<CreditCard> getCreditCardDetailsByUserName(@WebParam(name = "userName") String userName);
 
     // TODO: DELETE THIS
     @WebMethod
-    public CreditCard getCreditCardDetails(@WebParam(name="userId") Long userId);
+    public List<CreditCard> getCreditCardDetails(@WebParam(name="userId") Long userId);
 
     @WebMethod
     public CreditCard getCreditCardDetailsByUserNameWithId(@WebParam(name = "userName") String userName,

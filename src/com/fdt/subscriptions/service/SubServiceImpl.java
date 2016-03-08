@@ -953,7 +953,7 @@ public class SubServiceImpl implements SubService {
         UserAccountDetailDTO existingUserAccountDTO = upgradeDowngradeDTO.getExistingUserAccountDetail();
         AccessDetailDTO newAccessDTO = upgradeDowngradeDTO.getNewAccessDetailDTO();
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(true);
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName);
+        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
         if(creditCard != null && creditCard.isActive()) {
             Site site = existingUserAccountDTO.getSite();
             if (upgradeDowngradeDTO.isDowngrade()) {
@@ -1014,7 +1014,7 @@ public class SubServiceImpl implements SubService {
             recurTransactionRefund.setTxRefNum(transactionId);
             recurTransactionRefund.setTransactionType(TransactionType.REFUND);
             recurTransactionRefund.setSettlementStatus(settlementStatusType);
-            creditCard = this.userDAO.getCreditCardDetails(userName);
+            creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
             CardType cardType = CreditCardUtil.getCardType(creditCard.getNumber());
             recurTransactionRefund.setCardNumber(creditCard.getNumber());
             recurTransactionRefund.setCardType(cardType);
@@ -1063,7 +1063,7 @@ public class SubServiceImpl implements SubService {
         AccessDetailDTO newAccessDTO = upgradeDowngradeDTO.getNewAccessDetailDTO();
         UserAccount userAccount = (existingUserAccountDTO.getUserAccount() == null) ? null : (existingUserAccountDTO
             .getUserAccount());
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName);
+        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
         boolean isEnableAccess = false;
         PayPalDTO paymentTxResponseDTO = new PayPalDTO();
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(false);
@@ -1136,7 +1136,7 @@ public class SubServiceImpl implements SubService {
                 throw new RuntimeException("The User Access is not Disabled");
             }
 
-            creditCard = this.userDAO.getCreditCardDetails(userName);
+            creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
             CardType cardType = CreditCardUtil.getCardType(creditCard.getNumber());
 
             String orgTxRefNum = null;
@@ -1291,7 +1291,7 @@ public class SubServiceImpl implements SubService {
         boolean enableAccess = false;
         Site site = null;
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(false);
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName);
+        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
         if (creditCard != null && creditCard.isActive()) {
             /* User Account Does not Exist. But Credit Card Exist for the User */
             site = newAccessDTO.getSite();
@@ -1820,7 +1820,7 @@ public class SubServiceImpl implements SubService {
         }
 
         // Now let's make sure that new admin user does have credit card in the database.
-        CreditCard ccInfo = this.userDAO.getCreditCardDetails(newAdminUserName);
+        CreditCard ccInfo = this.userDAO.getCreditCardDetails(newAdminUserName).get(0);
         if(ccInfo == null){
         	throw new SDLBusinessException(this.getMessage("security.firmlevelsub.nocreditcardinfofound",
     				new String[]{newAdminUserName}));

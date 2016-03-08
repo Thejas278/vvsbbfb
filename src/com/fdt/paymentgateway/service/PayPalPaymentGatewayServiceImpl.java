@@ -526,7 +526,7 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
         PayflowConnectionData connection = new PayflowConnectionData();
         String txRefNumber = null;
         Site site = existingUserAccountDTO.getSite();
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName);
+        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
         UserInfo user = this.getMerchantInfo(site.getNormalMerchant());
         Invoice invoice = new Invoice();
         BillTo bill = new BillTo();

@@ -187,12 +187,12 @@ public interface UserService {
     /**
      * TODO: DELETE THIS
      */
-    public CreditCard getCreditCardDetails(String username);
+    public List<CreditCard> getCreditCardDetails(String username);
 
     /**
      * TODO: DELETE THIS
      */
-    public CreditCard getCreditCardDetails(Long userId);
+    public List<CreditCard> getCreditCardDetails(Long userId);
 
     public CreditCard getCreditCardDetails(String username, Long creditCardId);
 

@@ -142,7 +142,7 @@ public class RecurTxAdminServiceImpl implements RecurTxAdminService {
                 new Object[]{recurTransaction.getTxRefNum(), SystemUtil.format(recurTransaction.getTransactionDate()
                     .toString()), txValidityPeriod}));
         }
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(recurTransaction.getUserId());
+        CreditCard creditCard = this.userDAO.getCreditCardDetails(recurTransaction.getUserId()).get(0);
         Assert.notNull(recurTransaction.getSite(), "Original Transaction Reference Number Has No MerchantInfo");
         if (recurTransaction != null) {
             refundTxRefNum = this.paymentGateway.doCredit(creditCard, recurTransaction.getSite().getNormalMerchant(),

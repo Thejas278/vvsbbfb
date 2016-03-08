@@ -30,12 +30,12 @@ public interface UserDAO {
     /**
      * TODO: DELETE THIS
      */
-    public CreditCard getCreditCardDetails(Long userId);
+    public List<CreditCard> getCreditCardDetails(Long userId);
 
     /**
      * TODO: DELETE THIS
      */
-    public CreditCard getCreditCardDetails(String userName);
+    public List<CreditCard> getCreditCardDetails(String userName);
 
     public CreditCard getCreditCardDetails(Long userId, Long creditCardId);
 

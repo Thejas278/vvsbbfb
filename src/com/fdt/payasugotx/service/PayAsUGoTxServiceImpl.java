@@ -175,7 +175,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
         	if(payAsUGoTransactionDTO.isUseFirmsCreditCard()){
         		creditCard = this.userDAO.getFirmCreditCardDetails(userName);
         	} else {
-        		creditCard = this.userDAO.getCreditCardDetails(userName);
+        		creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
         	}
         	// Credit Card could be null for the government subscriptions
         	if(creditCard != null){
@@ -363,7 +363,7 @@ public class PayAsUGoTxServiceImpl implements PayAsUGoTxService {
                 /** If the User Wanted to Store the Credit Card Save it **/
 
                 if (payAsUGoTransactionDTO.isSaveCreditCard() && isSaveCreditCard) {
-                    CreditCard existingCreditCard = this.userDAO.getCreditCardDetails(userName);
+                    CreditCard existingCreditCard = this.userDAO.getCreditCardDetails(userName).get(0);
                     creditCard.setUserId(user.getId());
                     creditCard.setActive(true);
                     creditCard.setModifiedDate(new Date());

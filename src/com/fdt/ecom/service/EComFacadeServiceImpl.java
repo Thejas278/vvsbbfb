@@ -311,7 +311,7 @@ public class EComFacadeServiceImpl implements EComFacadeService {
     // TODO: DELETE THIS
     public CreditCard getCreditCardDetails(Long userId) {
         try {
-            return this.userService.getCreditCardDetails(userId);
+            return this.userService.getCreditCardDetails(userId).get(0);
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetails for userId {}", userId, runtimeException);
             throw runtimeException;
@@ -321,7 +321,7 @@ public class EComFacadeServiceImpl implements EComFacadeService {
     // TODO: DELETE THIS
     public CreditCard getCreditCardDetailsByUserName(String userName) {
         try {
-            return this.userService.getCreditCardDetails(userName);
+            return this.userService.getCreditCardDetails(userName).get(0);
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in getCreditCardDetailsByUserName for userName {}", userName, runtimeException);
             throw runtimeException;
