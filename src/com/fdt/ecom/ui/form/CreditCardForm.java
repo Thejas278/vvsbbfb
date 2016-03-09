@@ -13,103 +13,115 @@ public class CreditCardForm {
 
     public interface CreditCardGroup {
     }
-    
+
+    public interface UpdateCreditCardGroup {
+    }
+
     public interface BankAccountGroup {
     }
 
-    private static String NEW_CREDIT_CARD = "N";
-
-    private String useExistingAccount = NEW_CREDIT_CARD;
-
+    private String useExistingAccount = "N";
     private Boolean addNewCard = false;
+
     private Long id;
 
-    @Pattern(regexp="[a-zA-Z][a-zA-Z ]+",message="security.invalid.accountName" , groups = { CreditCardGroup.class } )
-    @Size(min = 1, max = 50, message="security.invalid.accountName" , groups = { CreditCardGroup.class })
+    @Pattern(regexp = "[a-zA-Z][a-zA-Z ]+", message = "security.invalid.accountName",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
+    @Size(min = 1, max = 50, message = "security.invalid.accountName",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
     private String accountName;
 
     @Pattern(regexp="[a-zA-Z][a-zA-Z ]+",message="security.invalid.bankAccountName" , groups = { BankAccountGroup.class } )
     @Size(min = 1, max = 50, message="security.invalid.bankAccountName" , groups = { BankAccountGroup.class })
     private String bankAccountName;
-    
-    @CreditCardNumber(message="security.invalid.number" , groups = { CreditCardGroup.class })
+
+    @CreditCardNumber(message = "security.invalid.number", groups = { CreditCardGroup.class })
     private String number;
-    
-    @NotNull(message="security.invalid.bankAccountNumber", groups = { BankAccountGroup.class })
+
+    @NotNull(message = "security.invalid.bankAccountNumber", groups = { BankAccountGroup.class })
     private String bankAccountNumber;
-    
-    @NotNull(message="security.invalid.bankRoutingNumber", groups = { BankAccountGroup.class })
+
+    @NotNull(message = "security.invalid.bankRoutingNumber", groups = { BankAccountGroup.class })
     private String bankRoutingNumber;
-    
-    @NotNull(message="security.invalid.bankAccountType", groups = { BankAccountGroup.class })
+
+    @NotNull(message = "security.invalid.bankAccountType", groups = { BankAccountGroup.class })
     private String bankAccountType;
-    
-    @NotNull(message="security.invalid.payByACH", groups = { BankAccountGroup.class })
+
+    @NotNull(message = "security.invalid.payByACH", groups = { BankAccountGroup.class })
     private String payByMethod;
 
     private Integer expMonth;
 
     private String expMonthS;
 
-    @NotNull(message="security.invalid.expYear", groups = { CreditCardGroup.class })
-    @Min(value=2011, message="security.invalid.expYear", groups = { CreditCardGroup.class })
+    @NotNull(message="security.invalid.expYear", groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
+    @Min(value=2011, message="security.invalid.expYear", groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
     private Integer expYear;
 
     @NotNull(message="security.invalid.cvv", groups = { CreditCardGroup.class })
-    @Size(min = 3, max = 4, message="security.invalid.cvv" , groups = { CreditCardGroup.class })
+    @Size(min = 3, max = 4, message="security.invalid.cvv" ,groups = { CreditCardGroup.class })
     @Digits(integer=4, fraction=0, message="security.invalid.cvv" , groups = { CreditCardGroup.class })
     private String cvv;
 
-    @Pattern(regexp="[a-zA-Z0-9]+[a-zA-Z0-9 #.,-]+",message="security.invalid.addressLine1" , groups = { CreditCardGroup.class } )
-    @Size(min=1, max=250, message="security.invalid.addressLine1", groups = { CreditCardGroup.class })
+    @Pattern(regexp = "[a-zA-Z0-9]+[a-zA-Z0-9 #.,-]+", message = "security.invalid.addressLine1",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
+    @Size(min = 1, max = 250, message = "security.invalid.addressLine1",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
     private String addressLine1;
 
-    @Size(min=0, max=250, message="security.invalid.addressLine2" , groups = { CreditCardGroup.class })
+    @Size(min = 0, max = 250, message = "security.invalid.addressLine2",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
     private String addressLine2;
 
-    @Pattern(regexp="[a-zA-Z]+[a-zA-Z ]+",message="security.invalid.city" , groups = { CreditCardGroup.class } )
-    @Size(min=1, max=50, message="security.invalid.city", groups = { CreditCardGroup.class })
+    @Pattern(regexp = "[a-zA-Z]+[a-zA-Z ]+", message = "security.invalid.city",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
+    @Size(min = 1, max = 50, message = "security.invalid.city",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
     private String city;
 
-    @Pattern(regexp="[a-zA-Z]{2}",message="security.invalid.state" , groups = { CreditCardGroup.class } )
-    @Length(min=2, max=2, message="security.invalid.state", groups = { CreditCardGroup.class })
+    @Pattern(regexp = "[a-zA-Z]{2}", message = "security.invalid.state",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
+    @Length(min = 2, max = 2, message = "security.invalid.state",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
     private String state;
 
-    @Pattern(regexp="[0-9]{5}",message="security.invalid.zip" , groups = { CreditCardGroup.class } )
-    @Size(min=5, max=5, message="security.invalid.zip", groups = { CreditCardGroup.class })
+    @Pattern(regexp = "[0-9]{5}", message = "security.invalid.zip",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
+    @Size(min = 5, max = 5, message = "security.invalid.zip",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
     private String zip;
 
-
-    @NotNull(message="security.invalid.phoneNumber", groups = { CreditCardGroup.class })
-    @Digits(integer=10, fraction=0, message="security.invalid.phoneNumber", groups = { CreditCardGroup.class })
+    @NotNull(message = "security.invalid.phoneNumber",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
+    @Digits(integer = 10, fraction = 0, message = "security.invalid.phoneNumber",
+            groups = { CreditCardGroup.class, UpdateCreditCardGroup.class })
     private Long phoneNumber;
-    
-    @Pattern(regexp="[a-zA-Z0-9]+[a-zA-Z0-9 #.,-]+",message="security.invalid.addressLine1" , groups = { BankAccountGroup.class } )
-    @Size(min=1, max=250, message="security.invalid.addressLine1", groups = { BankAccountGroup.class })
+
+    @Pattern(regexp = "[a-zA-Z0-9]+[a-zA-Z0-9 #.,-]+", message = "security.invalid.addressLine1", groups = { BankAccountGroup.class })
+    @Size(min = 1, max = 250, message = "security.invalid.addressLine1", groups = { BankAccountGroup.class })
     private String bankAccountAddressLine1;
 
-    @Size(min=0, max=250, message="security.invalid.addressLine2" , groups = { BankAccountGroup.class })
+    @Size(min = 0, max = 250, message = "security.invalid.addressLine2", groups = { BankAccountGroup.class })
     private String bankAccountAddressLine2;
 
-    @Pattern(regexp="[a-zA-Z]+[a-zA-Z ]+",message="security.invalid.city" , groups = { BankAccountGroup.class } )
-    @Size(min=1, max=50, message="security.invalid.city", groups = { BankAccountGroup.class })
+    @Pattern(regexp = "[a-zA-Z]+[a-zA-Z ]+", message = "security.invalid.city", groups = { BankAccountGroup.class })
+    @Size(min = 1, max = 50, message = "security.invalid.city", groups = { BankAccountGroup.class })
     private String bankAccountCity;
 
-    @Pattern(regexp="[a-zA-Z]{2}",message="security.invalid.state" , groups = { BankAccountGroup.class } )
-    @Length(min=2, max=2, message="security.invalid.state", groups = { BankAccountGroup.class })
+    @Pattern(regexp = "[a-zA-Z]{2}", message = "security.invalid.state", groups = { BankAccountGroup.class })
+    @Length(min = 2, max = 2, message = "security.invalid.state", groups = { BankAccountGroup.class })
     private String bankAccountState;
 
-    @Pattern(regexp="[0-9]{5}",message="security.invalid.zip" , groups = { BankAccountGroup.class } )
-    @Size(min=5, max=5, message="security.invalid.zip", groups = { BankAccountGroup.class })
+    @Pattern(regexp = "[0-9]{5}", message = "security.invalid.zip", groups = { BankAccountGroup.class })
+    @Size(min = 5, max = 5, message = "security.invalid.zip", groups = { BankAccountGroup.class })
     private String bankAccountZip;
-
 
     @NotNull(message="security.invalid.phoneNumber", groups = { BankAccountGroup.class })
     @Digits(integer=10, fraction=0, message="security.invalid.phoneNumber", groups = { BankAccountGroup.class })
     private Long bankAccountPhoneNumber;
-    
-    
-    
+
+    private Boolean defaultCC;
+
     public String getBankAccountAddressLine1() {
 		return bankAccountAddressLine1;
 	}
@@ -184,14 +196,6 @@ public class CreditCardForm {
 
     public void setERROR(String eRROR) {
         ERROR = eRROR;
-    }
-
-    public String getUseExistingAccount() {
-        return useExistingAccount;
-    }
-
-    public void setUseExistingAccount(String useExistingAccount) {
-        this.useExistingAccount = useExistingAccount;
     }
 
     public String getAccountName() {
@@ -385,6 +389,22 @@ public class CreditCardForm {
 
     public void setAddNewCard(Boolean addNewCard) {
         this.addNewCard = addNewCard;
+    }
+
+    public String getUseExistingAccount() {
+        return useExistingAccount;
+    }
+
+    public void setUseExistingAccount(String useExistingAccount) {
+        this.useExistingAccount = useExistingAccount;
+    }
+
+    public Boolean getDefaultCC() {
+        return defaultCC;
+    }
+
+    public void setDefaultCC(Boolean defaultCC) {
+        this.defaultCC = defaultCC;
     }
 
     public Long getId() {

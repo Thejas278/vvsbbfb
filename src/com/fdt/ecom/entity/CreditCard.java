@@ -71,6 +71,10 @@ public class CreditCard extends AbstractBaseEntity {
     @Transient
     private CardType cardType = null;
 
+    @Column(name = "DEFAULT_CC", nullable = false)
+    @Type(type="yes_no")
+    private boolean defaultCC = false;
+
     public CardType getCardType() {
         return cardType;
     }
@@ -181,6 +185,14 @@ public class CreditCard extends AbstractBaseEntity {
 
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
+    }
+
+    public boolean getDefaultCC() {
+        return defaultCC;
+    }
+
+    public void setDefaultCC(boolean defaultCC) {
+        this.defaultCC = defaultCC;
     }
 
 	@Override

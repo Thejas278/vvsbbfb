@@ -14,7 +14,7 @@ import com.fdt.ecom.ui.form.CreditCardForm;
 public class CreditCardFormValidator implements Validator {
 
     @Override
-    public boolean supports(Class aClass) {
+    public boolean supports(Class<?> aClass) {
         return CreditCardForm.class.isAssignableFrom(aClass);
     }
 
@@ -22,28 +22,31 @@ public class CreditCardFormValidator implements Validator {
     public void validate(Object target, Errors errors) {
         CreditCardForm form = (CreditCardForm) target;
 
-        if(form.getNumber() != null) {
-            if(!form.getNumber().trim().isEmpty()){
-                Matcher checkForNumber = Pattern.compile("^[4563][0-9]{12,15}$").matcher(String.valueOf(form.getNumber().trim()));
-                if (!checkForNumber.matches()) {
-                    errors.rejectValue("number", "typeMismatch");
+        if (form.getAddNewCard()) {
+            if (form.getNumber() != null) {
+                if (!form.getNumber().trim().isEmpty()) {
+                    Pattern pattern = Pattern.compile("^[4563][0-9]{12,15}$");
+                    Matcher checkForNumber = pattern.matcher(String.valueOf(form.getNumber().trim()));
+                    if (!checkForNumber.matches()) {
+                        errors.rejectValue("number", "typeMismatch");
+                        return;
+                    }
+                } else {
+                    errors.rejectValue("number", "security.notnull.number");
                     return;
                 }
             } else {
                 errors.rejectValue("number", "security.notnull.number");
                 return;
             }
-        } else {
-            errors.rejectValue("number", "security.notnull.number");
-                return;
         }
 
-        if(form.getExpMonth().intValue() == -1) {
+        if (form.getExpMonth().intValue() == -1) {
             errors.rejectValue("expMonthS", "typeMismatch");
             return;
         }
 
-        if(form.getExpMonthS()== null || form.getExpMonthS() == ""){
+        if (form.getExpMonthS() == null || form.getExpMonthS() == "") {
             errors.rejectValue("expMonthS", "security.invalid.expMonthS");
             return;
         }
@@ -51,17 +54,14 @@ public class CreditCardFormValidator implements Validator {
         int expiryMonth = form.getExpMonth();
         int expiryYear = form.getExpYear();
 
-        int currentMonth =  Calendar.getInstance().get(Calendar.MONTH) + 1;
-        int currentYear =  Calendar.getInstance().get(Calendar.YEAR);
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-
-
-
-        if(form.getExpMonthS()== null || form.getExpMonthS() == ""){
+        if (form.getExpMonthS() == null || form.getExpMonthS() == "") {
             errors.rejectValue("expMonthS", "security.invalid.expMonthS");
         }
 
-        if(expiryMonth > 12 || expiryMonth < 1 ) {
+        if (expiryMonth > 12 || expiryMonth < 1) {
             errors.rejectValue("expMonthS", "security.invalid.expMonthS");
         }
 
@@ -76,14 +76,18 @@ public class CreditCardFormValidator implements Validator {
                 return;
             }
         }
-        Matcher amexMatcher = Pattern.compile("^3[47][0-9]{13}$").matcher(String.valueOf(form.getNumber()));
-        if (amexMatcher.matches()) {
-            if (String.valueOf(form.getCvv()).length() != 4) {
-                errors.rejectValue("cvv", "security.invalid.cvv");
-            }
-        } else {
-            if (String.valueOf(form.getCvv()).length() != 3) {
-                errors.rejectValue("cvv", "security.invalid.cvv");
+
+        if (form.getAddNewCard()) {
+            Pattern pattern = Pattern.compile("^3[47][0-9]{13}$");
+            Matcher amexMatcher = pattern.matcher(String.valueOf(form.getNumber()));
+            if (amexMatcher.matches()) {
+                if (String.valueOf(form.getCvv()).length() != 4) {
+                    errors.rejectValue("cvv", "security.invalid.cvv");
+                }
+            } else {
+                if (String.valueOf(form.getCvv()).length() != 3) {
+                    errors.rejectValue("cvv", "security.invalid.cvv");
+                }
             }
         }
     }

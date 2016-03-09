@@ -1039,11 +1039,16 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
     }
 
     public CreditCard getFirmCreditCardDetails(String username) {
+
         CreditCard cardInfo = null;
-        Session session = currentSession();
-        List resultSet = session.getNamedQuery("GET_FIRM_CREDIT_CARD_DETAILS")
-                        .setParameter("userName", username).list();
-        if(resultSet.size() > 0){
+
+        @SuppressWarnings("rawtypes")
+        List resultSet = currentSession()
+                .getNamedQuery("GET_FIRM_CREDIT_CARD_DETAILS")
+                .setParameter("userName", username)
+                .list();
+
+        if (resultSet.size() > 0){
             cardInfo = new CreditCard();
             Object[] row = (Object[]) resultSet.get(0);
             cardInfo.setId(this.getLongFromInteger(row[0]));
@@ -1063,7 +1068,9 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             cardInfo.setModifiedBy(this.getString(row[14]));
             cardInfo.setUserId(this.getLongFromBigInteger(row[15]));
             cardInfo.setCreatedBy(this.getString(row[16]));
+            cardInfo.setDefaultCC(this.getBoolean(row[17]));
         }
+
         return cardInfo;
     }
 
@@ -1136,6 +1143,7 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             cardInfo.setModifiedBy(this.getString(row[14]));
             cardInfo.setUserId(this.getLongFromBigInteger(row[15]));
             cardInfo.setCreatedBy(this.getString(row[16]));
+            cardInfo.setDefaultCC(this.getBoolean(row[17]));
             result.add(cardInfo);
         }
         return result;
@@ -1172,6 +1180,7 @@ public class UserDAOImpl extends AbstractBaseDAOImpl implements UserDAO {
             cardInfo.setModifiedBy(this.getString(row[14]));
             cardInfo.setUserId(this.getLongFromBigInteger(row[15]));
             cardInfo.setCreatedBy(this.getString(row[16]));
+            cardInfo.setDefaultCC(this.getBoolean(row[17]));
             result.add(cardInfo);
         }
         return result;

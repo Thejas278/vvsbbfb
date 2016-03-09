@@ -650,25 +650,72 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method adds a new credit card or updates an existing one.
+     * This method adds a new credit card.
      * 
      * @param userName email ID of the the user to add a new credit card for
      * @param modifiedBy email ID of the the user doing the update (normally the same)
      * @param creditCardInfo new credit card information
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-    public void addOrUpdateCreditCard(String userName, String modifiedBy, CreditCard creditCardInfo) {
-        Assert.hasLength(userName, "User Name Cannot be Null/Empty");
-        Assert.notNull(creditCardInfo, "Credit Card Information Cannot be Null");
-        User user = this.userDAO.getUser(userName);
-        Assert.notNull(user, "user Cannot be Null");
+    public void addCreditCard(String userName, String modifiedBy, CreditCard creditCardInfo) {
+        User user = userDAO.getUser(userName);
+        if (creditCardInfo.getDefaultCC()) {
+            clearDefaultFromUsersCards(user.getId());
+        }
         creditCardInfo.setUserId(user.getId());
         creditCardInfo.setModifiedBy(modifiedBy);
         creditCardInfo.setCreatedBy(userName);
         creditCardInfo.setModifiedDate(new Date());
         creditCardInfo.setCreatedDate(new Date());
         creditCardInfo.setActive(true);
-        this.userDAO.saveCreditCard(creditCardInfo);
+        userDAO.saveCreditCard(creditCardInfo);
+    }
+
+    /**
+     * This method updates an existing credit card. Only some fields can be updated.
+     * Specifically, the account number is NOT updated by this method, it is ignored on the
+     * passed in object.
+     * 
+     * @param userName email ID of the the user to add a new credit card for
+     * @param modifiedBy email ID of the the user doing the update (normally the same)
+     * @param newCreditCard new credit card information
+     */
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    public void updateCreditCard(String userName, String modifiedBy, CreditCard newCreditCard) {
+
+        User user = userDAO.getUser(userName);
+
+        if (newCreditCard.getDefaultCC()) {
+            clearDefaultFromUsersCards(user.getId());
+        }
+
+        CreditCard creditCard = userDAO.getCreditCardDetails(user.getId(), newCreditCard.getId());
+        creditCard.setActive(true);
+        creditCard.setAddressLine1(newCreditCard.getAddressLine1());
+        creditCard.setAddressLine2(newCreditCard.getAddressLine2());
+        creditCard.setCardType(newCreditCard.getCardType());
+        creditCard.setCity(newCreditCard.getCity());
+        if (newCreditCard.getDefaultCC()) {
+            creditCard.setDefaultCC(true);
+        }
+        creditCard.setExpiryMonth(newCreditCard.getExpiryMonth());
+        creditCard.setExpiryYear(newCreditCard.getExpiryYear());
+        creditCard.setModifiedBy(modifiedBy);
+        creditCard.setModifiedDate(new Date());
+        creditCard.setName(newCreditCard.getName());
+        creditCard.setPhone(newCreditCard.getPhone());
+        creditCard.setState(newCreditCard.getState());
+        creditCard.setZip(newCreditCard.getZip());
+        userDAO.saveCreditCard(creditCard);
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    public void clearDefaultFromUsersCards(Long userId) {
+        List<CreditCard> creditCards = userDAO.getCreditCardDetailsList(userId);
+        for (CreditCard creditCard : creditCards) {
+            creditCard.setDefaultCC(false);
+            userDAO.saveCreditCard(creditCard);
+        }
     }
 
     /**

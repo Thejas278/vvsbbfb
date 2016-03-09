@@ -176,13 +176,26 @@ public interface UserService {
     public void updateUserTerms(User user) throws UserNameNotFoundException ;
 
     /**
-     * This method adds a new credit card or updates an existing one.
+     * This method adds a new credit card.
      * 
      * @param userName email ID of the the user to add a new credit card for
      * @param modifiedBy email ID of the the user doing the update (normally the same)
      * @param creditCardInfo new credit card information
      */
-    public void addOrUpdateCreditCard(String userName, String modifiedBy, CreditCard creditCardIndo);
+    public void addCreditCard(String userName, String modifiedBy, CreditCard creditCardInfo);
+
+    /**
+     * This method updates an existing credit card. Only some fields can be updated.
+     * Specifically, the account number is NOT updated by this method, it is ignored on the
+     * passed in object.
+     * 
+     * @param userName email ID of the the user to add a new credit card for
+     * @param modifiedBy email ID of the the user doing the update (normally the same)
+     * @param creditCardInfo new credit card information
+     */
+    public void updateCreditCard(String userName, String modifiedBy, CreditCard creditCardInfo);
+
+    public void clearDefaultFromUsersCards(Long userId);
 
     /**
      * TODO: DELETE THIS

@@ -38,6 +38,7 @@ import com.fdt.common.ui.controller.AbstractBaseController;
 import com.fdt.ecom.entity.CreditCard;
 import com.fdt.ecom.ui.form.CreditCardForm;
 import com.fdt.ecom.ui.form.CreditCardForm.CreditCardGroup;
+import com.fdt.ecom.ui.form.CreditCardForm.UpdateCreditCardGroup;
 import com.fdt.ecom.ui.validator.CreditCardFormValidator;
 import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
 import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
@@ -63,6 +64,7 @@ public class CreditCardController extends AbstractBaseController {
             "expMonthS",
             "expYear",
             "cvv",
+            "defaultCC",
             "addressLine1",
             "addressLine2",
             "city",
@@ -144,7 +146,12 @@ public class CreditCardController extends AbstractBaseController {
             return errors;
         }
 
-        validate(creditCardForm, bindingResult, CreditCardGroup.class);
+        if (creditCardForm.getAddNewCard()) {
+            validate(creditCardForm, bindingResult, CreditCardGroup.class);
+        } else {
+            validate(creditCardForm, bindingResult, UpdateCreditCardGroup.class);
+        }
+
         if (bindingResult.hasErrors()) {
             errors = this.populateErrorCodes(bindingResult.getFieldErrors());
         }
@@ -160,7 +167,12 @@ public class CreditCardController extends AbstractBaseController {
 
         CreditCard creditCardInfo = buildCreditCard(creditCardForm, request);
         String emailId = creditCardForm.getEmailId();
-        userService.addOrUpdateCreditCard(emailId, emailId, creditCardInfo);
+
+        if (creditCardForm.getAddNewCard()) {
+            userService.addCreditCard(emailId, emailId, creditCardInfo);
+        } else {
+            userService.updateCreditCard(emailId, emailId, creditCardInfo);
+        }
 
         if (bindingResult.hasErrors()) {
             return this.populateErrorCodes(bindingResult.getFieldErrors());
@@ -252,6 +264,7 @@ public class CreditCardController extends AbstractBaseController {
         creditCard.setPhone(creditCardForm.getPhoneNumber());
         creditCard.setModifiedBy(request.getRemoteUser());
         creditCard.setActive(true);
+        creditCard.setDefaultCC(creditCardForm.getDefaultCC());
         return creditCard;
     }
 

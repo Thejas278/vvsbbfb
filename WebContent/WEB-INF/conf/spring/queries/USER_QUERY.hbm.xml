@@ -485,100 +485,111 @@
 						)
 				AND	AUA.IS_DELETED = 'N'	    
  </sql-query>	    
-	    
- <sql-query name="GET_CREDIT_CARD_DETAILS">
-	        SELECT cc.ID AS cc_ID
-	          ,cc.ACCOUNTNAME AS cc_ACCOUNTNAME
-	          ,cc.ACCOUNTNUMBER AS cc_ACCOUNTNUMBER
-	          ,cc.EXPMON AS cc_EXPMON
-	          ,cc.EXPYEAR AS cc_EXPYEAR
-	          ,cc.ADDRESS_1 AS cc_ADDRESS_1
-	          ,cc.ADDRESS_2 AS cc_ADDRESS_2
-	          ,cc.CITY AS cc_CITY
-	          ,cc.STATE AS cc_STATE
-	          ,cc.ZIP AS cc_ZIP
-	          ,cc.PHONE AS cc_PHONE
-	          ,cc.ACTIVE AS cc_ACTIVE
-	          ,cc.DATE_TIME_CREATED AS cc_DATE_TIME_CREATED
-	          ,cc.DATE_TIME_MOD AS cc_DATE_TIME_MOD
-	          ,cc.MOD_USER_ID AS cc_MOD_USER_ID
-	          ,cc.USER_ID AS cc_USER_ID
-	          ,cc.CREATED_BY AS cc_CREATED_BY
-	        FROM
-	            ECOMM_CCINFO cc,
-	            AUTH_USERS users
-	        WHERE
-	            cc.USER_ID = users.ID AND
-	            users.EMAIL_ID = :userName
-  </sql-query>
- <sql-query name="GET_CREDIT_CARD_DETAILS_BY_USERID">
-	        SELECT cc.ID AS cc_ID
-	          ,cc.ACCOUNTNAME AS cc_ACCOUNTNAME
-	          ,cc.ACCOUNTNUMBER AS cc_ACCOUNTNUMBER
-	          ,cc.EXPMON AS cc_EXPMON
-	          ,cc.EXPYEAR AS cc_EXPYEAR
-	          ,cc.ADDRESS_1 AS cc_ADDRESS_1
-	          ,cc.ADDRESS_2 AS cc_ADDRESS_2
-	          ,cc.CITY AS cc_CITY
-	          ,cc.STATE AS cc_STATE
-	          ,cc.ZIP AS cc_ZIP
-	          ,cc.PHONE AS cc_PHONE
-	          ,cc.ACTIVE AS cc_ACTIVE
-	          ,cc.DATE_TIME_CREATED AS cc_DATE_TIME_CREATED
-	          ,cc.DATE_TIME_MOD AS cc_DATE_TIME_MOD
-	          ,cc.MOD_USER_ID AS cc_MOD_USER_ID
-	          ,cc.USER_ID AS cc_USER_ID
-	          ,cc.CREATED_BY AS cc_CREATED_BY
-	        FROM
-	            ECOMM_CCINFO cc
-	        WHERE
-	            cc.USER_ID = :userId
-	        </sql-query>
- <sql-query name="GET_FIRM_CREDIT_CARD_DETAILS">
-			SELECT DISTINCT
-				firmCC.ID AS cc_ID
-	          ,firmCC.ACCOUNTNAME AS cc_ACCOUNTNAME
-	          ,firmCC.ACCOUNTNUMBER AS cc_ACCOUNTNUMBER
-	          ,firmCC.EXPMON AS cc_EXPMON
-	          ,firmCC.EXPYEAR AS cc_EXPYEAR
-	          ,firmCC.ADDRESS_1 AS cc_ADDRESS_1
-	          ,firmCC.ADDRESS_2 AS cc_ADDRESS_2
-	          ,firmCC.CITY AS cc_CITY
-	          ,firmCC.STATE AS cc_STATE
-	          ,firmCC.ZIP AS cc_ZIP
-	          ,firmCC.PHONE AS cc_PHONE
-	          ,firmCC.ACTIVE AS cc_ACTIVE
-	          ,firmCC.DATE_TIME_CREATED AS cc_DATE_TIME_CREATED
-	          ,firmCC.DATE_TIME_MOD AS cc_DATE_TIME_MOD
-	          ,firmCC.MOD_USER_ID AS cc_MOD_USER_ID
-	          ,firmCC.USER_ID AS cc_USER_ID
-	          ,firmCC.CREATED_BY AS cc_CREATED_BY
-			FROM	AUTH_USERS_ACCESS firmUserAccess,
-				AUTH_USERS_ACCESS adminUserAccess,
-				ECOMM_CCINFO firmCC,
-				AUTH_USERS users
-			WHERE users.EMAIL_ID = :userName AND
-			firmUserAccess.USER_ID = users.ID AND
-			firmUserAccess.FIRM_ADMIN_USER_ACCESS_ID = adminUserAccess.ID AND
-			firmCC.USER_ID = adminUserAccess.USER_ID AND
-			firmUserAccess.IS_DELETED = 'N' AND
-			adminUserAccess.IS_DELETED = 'N' 
-	    </sql-query>
- <sql-query name="GET_USER_BY_USER_ACCESS_ID">SELECT
-	users.EMAIL_ID AS userName
-				,users.ID AS userId
-				,userAccess.ACCESS_ID  AS accessId
-				,userAccess.IS_FIRM_ACCESS_ADMIN as isFirmAccessAdmin
-				,access.IS_FIRM_LEVEL_ACCESS as isFirmLevelAccess
-			FROM	
-				AUTH_USERS_ACCESS userAccess,
-				AUTH_USERS users, 
-				AUTH_ACCESS access
-			WHERE
-			userAccess.ID = :userAccessId
-			AND users.ID = userAccess.USER_ID 
-			AND userAccess.IS_DELETED = 'N' 
-			AND access.ID = userAccess.ACCESS_ID
+
+<sql-query name="GET_CREDIT_CARD_DETAILS">
+  SELECT
+    cc.ID AS cc_ID,
+    cc.ACCOUNTNAME AS cc_ACCOUNTNAME,
+    cc.ACCOUNTNUMBER AS cc_ACCOUNTNUMBER,
+    cc.EXPMON AS cc_EXPMON,
+    cc.EXPYEAR AS cc_EXPYEAR,
+    cc.ADDRESS_1 AS cc_ADDRESS_1,
+    cc.ADDRESS_2 AS cc_ADDRESS_2,
+    cc.CITY AS cc_CITY,
+    cc.STATE AS cc_STATE,
+    cc.ZIP AS cc_ZIP,
+    cc.PHONE AS cc_PHONE,
+    cc.ACTIVE AS cc_ACTIVE,
+    cc.DATE_TIME_CREATED AS cc_DATE_TIME_CREATED,
+    cc.DATE_TIME_MOD AS cc_DATE_TIME_MOD,
+    cc.MOD_USER_ID AS cc_MOD_USER_ID,
+    cc.USER_ID AS cc_USER_ID,
+    cc.CREATED_BY AS cc_CREATED_BY,
+    cc.DEFAULT_CC AS cc_DEFAULT_CC
+  FROM
+    ECOMM_CCINFO cc,
+    AUTH_USERS users
+  WHERE
+    cc.USER_ID = users.ID AND
+    users.EMAIL_ID = :userName
+</sql-query>
+
+<sql-query name="GET_CREDIT_CARD_DETAILS_BY_USERID">
+  SELECT
+    cc.ID AS cc_ID,
+    cc.ACCOUNTNAME AS cc_ACCOUNTNAME,
+    cc.ACCOUNTNUMBER AS cc_ACCOUNTNUMBER,
+    cc.EXPMON AS cc_EXPMON,
+    cc.EXPYEAR AS cc_EXPYEAR,
+    cc.ADDRESS_1 AS cc_ADDRESS_1,
+    cc.ADDRESS_2 AS cc_ADDRESS_2,
+    cc.CITY AS cc_CITY,
+    cc.STATE AS cc_STATE,
+    cc.ZIP AS cc_ZIP,
+    cc.PHONE AS cc_PHONE,
+    cc.ACTIVE AS cc_ACTIVE,
+    cc.DATE_TIME_CREATED AS cc_DATE_TIME_CREATED,
+    cc.DATE_TIME_MOD AS cc_DATE_TIME_MOD,
+    cc.MOD_USER_ID AS cc_MOD_USER_ID,
+    cc.USER_ID AS cc_USER_ID,
+    cc.CREATED_BY AS cc_CREATED_BY,
+    cc.DEFAULT_CC AS cc_DEFAULT_CC
+  FROM
+    ECOMM_CCINFO cc
+  WHERE
+    cc.USER_ID = :userId
+</sql-query>
+
+<sql-query name="GET_FIRM_CREDIT_CARD_DETAILS">
+  SELECT DISTINCT
+    firmCC.ID AS cc_ID,
+    firmCC.ACCOUNTNAME AS cc_ACCOUNTNAME,
+    firmCC.ACCOUNTNUMBER AS cc_ACCOUNTNUMBER,
+    firmCC.EXPMON AS cc_EXPMON,
+    firmCC.EXPYEAR AS cc_EXPYEAR,
+    firmCC.ADDRESS_1 AS cc_ADDRESS_1,
+    firmCC.ADDRESS_2 AS cc_ADDRESS_2,
+    firmCC.CITY AS cc_CITY,
+    firmCC.STATE AS cc_STATE,
+    firmCC.ZIP AS cc_ZIP,
+    firmCC.PHONE AS cc_PHONE,
+    firmCC.ACTIVE AS cc_ACTIVE,
+    firmCC.DATE_TIME_CREATED AS cc_DATE_TIME_CREATED,
+    firmCC.DATE_TIME_MOD AS cc_DATE_TIME_MOD,
+    firmCC.MOD_USER_ID AS cc_MOD_USER_ID,
+    firmCC.USER_ID AS cc_USER_ID,
+    firmCC.CREATED_BY AS cc_CREATED_BY,
+    firmCC.DEFAULT_CC AS DEFAULT_CC
+  FROM
+    AUTH_USERS_ACCESS firmUserAccess,
+    AUTH_USERS_ACCESS adminUserAccess,
+    ECOMM_CCINFO firmCC,
+    AUTH_USERS users
+  WHERE
+    users.EMAIL_ID = :userName AND
+    firmUserAccess.USER_ID = users.ID AND
+    firmUserAccess.FIRM_ADMIN_USER_ACCESS_ID = adminUserAccess.ID AND
+    firmCC.USER_ID = adminUserAccess.USER_ID AND
+    firmUserAccess.IS_DELETED = 'N' AND
+    adminUserAccess.IS_DELETED = 'N' 
+</sql-query>
+
+ <sql-query name="GET_USER_BY_USER_ACCESS_ID">
+  SELECT
+    users.EMAIL_ID AS userName,
+    users.ID AS userId,
+    userAccess.ACCESS_ID  AS accessId,
+    userAccess.IS_FIRM_ACCESS_ADMIN as isFirmAccessAdmin,
+    access.IS_FIRM_LEVEL_ACCESS as isFirmLevelAccess
+  FROM
+    AUTH_USERS_ACCESS userAccess,
+    AUTH_USERS users, 
+    AUTH_ACCESS access
+  WHERE
+    userAccess.ID = :userAccessId AND
+    users.ID = userAccess.USER_ID AND
+    userAccess.IS_DELETED = 'N' AND
+    access.ID = userAccess.ACCESS_ID
 </sql-query>
 
  <sql-query name="UPDATE_USER_ACCESS">

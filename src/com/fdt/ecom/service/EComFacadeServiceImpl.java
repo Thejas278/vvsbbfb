@@ -300,7 +300,11 @@ public class EComFacadeServiceImpl implements EComFacadeService {
     public void updateExistingCreditCardInformation(String userName, String modifiedBy, CreditCard newCreditCard)
             throws PaymentGatewaySystemException, PaymentGatewayUserException {
         try {
-        	this.userService.addOrUpdateCreditCard(userName, modifiedBy, newCreditCard);
+            if (newCreditCard.getId() != null) {
+                this.userService.updateCreditCard(userName, modifiedBy, newCreditCard);
+            } else {
+                this.userService.addCreditCard(userName, modifiedBy, newCreditCard);
+            }
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in updateExistingCreditCardInformation for userName {}, modifiedBy {}, " +
                     "CreditCard {}", userName, modifiedBy, newCreditCard, runtimeException);

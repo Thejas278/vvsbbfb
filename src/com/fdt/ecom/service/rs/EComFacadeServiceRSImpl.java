@@ -379,7 +379,11 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
     public void updateExistingCreditCardInformation(@PathParam("userName") String userName,
             @PathParam("modifiedBy") String modifiedBy, @RequestBody CreditCard newCreditCard){
         try {
-            this.userService.addOrUpdateCreditCard(userName, modifiedBy, newCreditCard);
+            if (newCreditCard.getId() != null) {
+                this.userService.updateCreditCard(userName, modifiedBy, newCreditCard);
+            } else {
+                this.userService.addCreditCard(userName, modifiedBy, newCreditCard);
+            }
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in updateExistingCreditCardInformation for userName {}, modifiedBy {}, " +
                     "CreditCard {}", userName, modifiedBy,  newCreditCard, runtimeException);
@@ -387,7 +391,6 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
         }
     }
 
-    // TODO: DELETE THIS
     @WebMethod
     @GET
     @Path("getCreditCardDetailsByUserName/{userName}")
@@ -401,7 +404,6 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
         }
     }
 
-    // TODO: DELETE THIS
     @WebMethod
     @GET
     @Path("getCreditCardDetails/{userId}")
