@@ -8,9 +8,9 @@ import static com.fdt.ecom.ui.EcomViewConstants.ECOM_PAYASUGO_PAYMENT_INFO;
 import static com.fdt.ecom.ui.EcomViewConstants.ECOM_PAYMENT_GATEWAY_CONFIRMATION;
 import static com.fdt.ecom.ui.EcomViewConstants.ECOM_REDIRECT_PAYASUGO_PAYMENT_CONFIRMATION;
 import static com.fdt.ecom.ui.EcomViewConstants.ECOM_REDIRECT_PAYMENT_GATEWAY;
-import static com.fdt.ecom.ui.EcomViewConstants.ECOM_REVIEW_SHOPPING_SERVER_CART;
-import static com.fdt.ecom.ui.EcomViewConstants.ECOM_SHOPPING_CART_PAYMENT_CONFIRMATION;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.Date;
 import java.util.Enumeration;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +37,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -61,6 +61,7 @@ import com.fdt.ecom.entity.ShoppingCartItem;
 import com.fdt.ecom.ui.form.CreditCardForm;
 import com.fdt.ecom.ui.form.CreditCardForm.BankAccountGroup;
 import com.fdt.ecom.ui.form.CreditCardForm.CreditCardGroup;
+import com.fdt.ecom.ui.form.CreditCardSelectionForm;
 import com.fdt.ecom.ui.validator.CreditCardFormValidator;
 import com.fdt.payasugotx.dto.PayAsUSubDTO;
 import com.fdt.payasugotx.entity.PayAsUGoTx;
@@ -122,7 +123,7 @@ public class PaymentGatewayController extends AbstractBaseController {
             "numberofpages",
             "prdtype",
             "prdkey",
-            "uniqueidentifier",            
+            "uniqueidentifier",
             "payByMethod",
             "paymentMethodOne",
             "paymentMethodTwo",
@@ -143,31 +144,28 @@ public class PaymentGatewayController extends AbstractBaseController {
             "paymentMethodThreeCity",
             "paymentMethodThreeAccountName",
             "paymentMethodThreeAddressLine1",
-            "paymentMethodThreeIdentifier"
+            "paymentMethodThreeIdentifier",
+            "selectedCardId"
         });
     }
 
-    private static String NEW_CREDIT_CARD = "N";
-
-    private static String UPDATE_CREDIT_CARD = "U";
-
     public static String SHOPPING_CART = "SHOPPING_CART";
 
-    private static String FIRM_CREDIT_CARD = "F";
-    
-    
-    @RequestMapping(value="/publicGetPaymentInfoDTO.admin", method=RequestMethod.GET,  produces="application/json")
-	@ResponseBody
-	private PaymentInfoDTO publicGetPaymentInfoDTO(@RequestParam String paymentInfoDTOId){
-		if(!StringUtils.isBlank(paymentInfoDTOId)){
-			PaymentInfoDTO paymentInfoDTO = this.webTransactionService.getPaymentInfoByID(Long.valueOf(paymentInfoDTOId));
-			String creditCardNumber = paymentInfoDTO.getCreditCardNumber();
-			String maskedCreditCardNumber = creditCardNumber.substring(0, 2).concat("******").concat(creditCardNumber.substring(creditCardNumber.length()-4));
-			paymentInfoDTO.setCreditCardNumber(maskedCreditCardNumber);
-			return paymentInfoDTO;
-		}
-		return null;
-	}
+    @RequestMapping(value = "/publicGetPaymentInfoDTO.admin", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    private PaymentInfoDTO publicGetPaymentInfoDTO(@RequestParam String paymentInfoDTOId) {
+        if (!StringUtils.isBlank(paymentInfoDTOId)) {
+            PaymentInfoDTO paymentInfoDTO = this.webTransactionService.getPaymentInfoByID(Long.valueOf(paymentInfoDTOId));
+            String creditCardNumber = paymentInfoDTO.getCreditCardNumber();
+            String maskedCreditCardNumber = creditCardNumber
+                    .substring(0, 2)
+                    .concat("******")
+                    .concat(creditCardNumber.substring(creditCardNumber.length() - 4));
+            paymentInfoDTO.setCreditCardNumber(maskedCreditCardNumber);
+            return paymentInfoDTO;
+        }
+        return null;
+    }
 
     /**
      * This method does the following
@@ -616,12 +614,12 @@ public class PaymentGatewayController extends AbstractBaseController {
         return modelAndView;
 
     }
-    
+
     @RequestMapping(value = "/paymentgatewaypaynowAZ.admin", method = RequestMethod.POST)
-    public ModelAndView paymentgatewaypaynowAZ(@ModelAttribute("creditCardForm") CreditCardForm creditCardForm,
-                                            BindingResult bindingResult,
-                                            HttpServletRequest request,
-                                            Principal principal) {
+    public ModelAndView paymentgatewaypaynowAZ(
+            @ModelAttribute("creditCardForm") CreditCardForm creditCardForm, BindingResult bindingResult,
+            HttpServletRequest request, Principal principal) {
+
         ModelAndView modelAndView = getModelAndView(request, ECOM_AZ_PAYMENT_GATEWAY_CONFIRMATION);
         try {
             CreditCard creditCard = null;
@@ -631,7 +629,7 @@ public class PaymentGatewayController extends AbstractBaseController {
             WebTx webTransaction =  null;
             HttpSession httpSession = request.getSession();
             String sessionId = httpSession.getId();
-            
+
             String invoiceId = httpSession.getAttribute("invoiceId_" + sessionId).toString();
             String imageUrl = httpSession.getAttribute("image_url_" + sessionId).toString();
             String footerUrl = httpSession.getAttribute("footer_url_" + sessionId).toString();
@@ -650,41 +648,46 @@ public class PaymentGatewayController extends AbstractBaseController {
             String locComments2 =  httpSession.getAttribute("loc_comments2" + sessionId).toString();
             String isAuthorizeTransaction =  httpSession.getAttribute("isAuthorizeTransaction" + sessionId).toString();
             String payByMethod =  request.getParameter("payByMethod").toString();
-            
-            if(payByMethod.equalsIgnoreCase("One")) {
-            	validate(creditCardForm, bindingResult, CreditCardGroup.class); // Performing validations specified by annotations.
+
+            if (payByMethod.equalsIgnoreCase("One")) {
+                validate(creditCardForm, bindingResult, CreditCardGroup.class);
                 if (bindingResult.hasErrors()) {
                     modelAndView = setModelAndViewForError(modelAndView, request, principal);
                     return modelAndView;
                 }
-                creditCardValidator.validate(creditCardForm, bindingResult); // Performing custom validations.
+                creditCardValidator.validate(creditCardForm, bindingResult);
                 if (bindingResult.hasErrors()) {
                     modelAndView = setModelAndViewForError(modelAndView, request, principal);
                     return modelAndView;
                 }
-                creditCard = this.buildCreditCard(creditCardForm,request); 
-            } else if(payByMethod.equalsIgnoreCase("Two"))  {            	
-            	validate(creditCardForm, bindingResult, BankAccountGroup.class); // Performing validations specified by annotations.
+                creditCard = this.buildCreditCard(creditCardForm, request);
+            } else if (payByMethod.equalsIgnoreCase("Two")) {
+                validate(creditCardForm, bindingResult, BankAccountGroup.class);
                 if (bindingResult.hasErrors()) {
                     modelAndView = setModelAndViewForError(modelAndView, request, principal);
                     return modelAndView;
                 }
-            	bankAccount = this.buildBankAccount(creditCardForm,request);           	
+                bankAccount = this.buildBankAccount(creditCardForm,request);           	
             } else if(payByMethod.equalsIgnoreCase("Three"))  {
-            	String paymentMethodThreeIdentifier = request.getParameter("paymentMethodThreeIdentifier");
-            	String cvv = request.getParameter("paymentMethodThreeCvv");
-            	if(!StringUtils.isBlank(paymentMethodThreeIdentifier) && !StringUtils.isBlank(cvv)){
-        			PaymentInfoDTO paymentInfoDTO = this.webTransactionService.getPaymentInfoByID(Long.valueOf(paymentMethodThreeIdentifier));
-        			creditCard = this.buildCreditCardFromPaymentInfoDTO(paymentInfoDTO, request);
-            	} else {
-            		modelAndView = setModelAndViewForError(modelAndView, request, principal);
+                String paymentMethodThreeIdentifier = request.getParameter("paymentMethodThreeIdentifier");
+                String cvv = request.getParameter("paymentMethodThreeCvv");
+                if (!StringUtils.isBlank(paymentMethodThreeIdentifier) && !StringUtils.isBlank(cvv)) {
+                    PaymentInfoDTO paymentInfoDTO = this.webTransactionService.getPaymentInfoByID(
+                            Long.valueOf(paymentMethodThreeIdentifier));
+                    creditCard = this.buildCreditCardFromPaymentInfoDTO(paymentInfoDTO, request);
+                } else {
+                    modelAndView = setModelAndViewForError(modelAndView, request, principal);
                     return modelAndView;
-            	}
+                }
             } else {
-            	 modelAndView = setModelAndViewForError(modelAndView, request, principal);
-                 return modelAndView;
+                modelAndView = setModelAndViewForError(modelAndView, request, principal);
+                return modelAndView;
             }
-            webTransactionDTO.setWebTransactionItemList((List<WebTxItem>) httpSession.getAttribute("gatewayItems_" + sessionId));
+
+            @SuppressWarnings("unchecked")
+            List<WebTxItem> itemList = (List<WebTxItem>) httpSession.getAttribute("gatewayItems_" + sessionId);
+
+            webTransactionDTO.setWebTransactionItemList(itemList);
             webTransactionDTO.setCreditCard(creditCard);
             webTransactionDTO.setBankAccount(bankAccount);
             webTransactionDTO.setTransactionLocation(request.getRemoteAddr());
@@ -755,28 +758,25 @@ public class PaymentGatewayController extends AbstractBaseController {
         }
         return modelAndView;
     }
-    
-    private BankAccount buildBankAccount(CreditCardForm creditCardForm,
-			HttpServletRequest request) {
-    	BankAccount bankAccount = new BankAccount();
-    	bankAccount.setBankAccountName(creditCardForm.getBankAccountName());
-    	bankAccount.setBankAccountNumber(creditCardForm.getBankAccountNumber());
-    	bankAccount.setBankRoutingNumber(creditCardForm.getBankRoutingNumber());
-    	bankAccount.setBankAccountType(creditCardForm.getBankAccountType());
-    	bankAccount.setAddressLine1(creditCardForm.getBankAccountAddressLine1());
-    	bankAccount.setAddressLine2(creditCardForm.getBankAccountAddressLine2());
-    	bankAccount.setCity(creditCardForm.getBankAccountCity());
-    	bankAccount.setState(creditCardForm.getBankAccountState());
-    	bankAccount.setZip(creditCardForm.getBankAccountZip());
-    	bankAccount.setPhone(creditCardForm.getBankAccountPhoneNumber());        
-        return bankAccount;
-	}
 
-	@RequestMapping(value = "/paymentgatewaypaynow.admin", method = RequestMethod.POST)
+    private BankAccount buildBankAccount(CreditCardForm creditCardForm, HttpServletRequest request) {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setBankAccountName(creditCardForm.getBankAccountName());
+        bankAccount.setBankAccountNumber(creditCardForm.getBankAccountNumber());
+        bankAccount.setBankRoutingNumber(creditCardForm.getBankRoutingNumber());
+        bankAccount.setBankAccountType(creditCardForm.getBankAccountType());
+        bankAccount.setAddressLine1(creditCardForm.getBankAccountAddressLine1());
+        bankAccount.setAddressLine2(creditCardForm.getBankAccountAddressLine2());
+        bankAccount.setCity(creditCardForm.getBankAccountCity());
+        bankAccount.setState(creditCardForm.getBankAccountState());
+        bankAccount.setZip(creditCardForm.getBankAccountZip());
+        bankAccount.setPhone(creditCardForm.getBankAccountPhoneNumber());
+        return bankAccount;
+    }
+
+    @RequestMapping(value = "/paymentgatewaypaynow.admin", method = RequestMethod.POST)
     public ModelAndView paymentGatewayPayNow(@ModelAttribute("creditCardForm") CreditCardForm creditCardForm,
-                                            BindingResult bindingResult,
-                                            HttpServletRequest request,
-                                            Principal principal) {
+            BindingResult bindingResult, HttpServletRequest request, Principal principal) {
         ModelAndView modelAndView = getModelAndView(request, ECOM_PAYMENT_GATEWAY_CONFIRMATION);
         try {
             CreditCard creditCard = null;
@@ -814,7 +814,11 @@ public class PaymentGatewayController extends AbstractBaseController {
                 return modelAndView;
             }
             creditCard = this.buildCreditCard(creditCardForm,request);
-            webTransactionDTO.setWebTransactionItemList((List<WebTxItem>) httpSession.getAttribute("gatewayItems_" + sessionId));
+
+            @SuppressWarnings("unchecked")
+            List<WebTxItem> itemList = (List<WebTxItem>) httpSession.getAttribute("gatewayItems_" + sessionId);
+
+            webTransactionDTO.setWebTransactionItemList(itemList);
             webTransactionDTO.setCreditCard(creditCard);
             webTransactionDTO.setTransactionLocation(request.getRemoteAddr());
             webTransactionDTO.setOfficeLoc(locName);
@@ -882,11 +886,12 @@ public class PaymentGatewayController extends AbstractBaseController {
     }
 
     @RequestMapping(value="/secure/viewpayasugopaymentinfo.admin", method=RequestMethod.GET)
-    public ModelAndView viewPayAsUGoPaymentinfo(HttpServletRequest request,
-                                           HttpServletResponse response,
-                                           @RequestParam(value = "token1") String userNameInParameter,
-                                           @RequestParam(value = "token3") String returnURL,
-                                           @RequestParam(value = "nodeName") String nodeName) {
+    public ModelAndView viewPayAsUGoPaymentinfo(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(value = "token1") String userNameInParameter,
+            @RequestParam(value = "token2") String credentialsInParameter,
+            @RequestParam(value = "token3") String returnURL,
+            @RequestParam(value = "nodeName") String nodeName) {
+
         Authentication authenticatedUser = this.reauthenticate(request);
         ModelAndView modelAndView = getModelAndView(request, ECOM_PAYASUGO_PAYMENT_INFO);
         HttpSession httpSession = request.getSession();
@@ -901,21 +906,32 @@ public class PaymentGatewayController extends AbstractBaseController {
             modelAndView.addObject("nodeName", nodeName);
             return modelAndView;
         }
-        CreditCardForm creditCardForm =  new CreditCardForm();
-        if (user.isCardAvailable()) {
-            CreditCard creditCard = this.userService.getCreditCardDetails(request.getRemoteUser()).get(0);
-            creditCardForm = this.buildCreditCardForm(creditCard);
-        }
+
+        List<CreditCard> cardList = userService.getCreditCardDetailsList(request.getRemoteUser());
+        List<CreditCard> sortedCardList = cardList.stream().sorted((one, two) -> {
+            return Boolean.compare(two.getDefaultCC(),  one.getDefaultCC());
+        }).collect(Collectors.toList());
+        CreditCardSelectionForm form = new CreditCardSelectionForm(sortedCardList);
 
         List<ShoppingCartItem> shoppingCart = getShoppingCart(request.getRemoteUser(), nodeName, request);
 
+        String thisUrl = request.getRequestURL() + "?" + request.getQueryString();
+        try {
+            thisUrl = URLEncoder.encode(thisUrl, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
         modelAndView.addObject("user", user);
-        modelAndView.addObject("creditCardForm", creditCardForm);
+        modelAndView.addObject("creditCardSelectionForm", form);
         modelAndView.addObject("returnUrl", returnURL);
+        modelAndView.addObject("token1", userNameInParameter);
+        modelAndView.addObject("token2", credentialsInParameter);
         modelAndView.addObject("nodeName", nodeName);
         modelAndView.addObject(SHOPPING_CART, shoppingCart);
+        modelAndView.addObject("thisUrl", thisUrl);
 
-        httpSession.setAttribute("creditCardForm" + request.getRemoteUser(), creditCardForm);
+        httpSession.setAttribute("creditCardForm" + request.getRemoteUser(), form);
         httpSession.setAttribute("token1" + request.getRemoteUser(), userNameInParameter);
         httpSession.setAttribute("returnUrl" + request.getRemoteUser(), returnURL);
         httpSession.setAttribute("nodeName" + request.getRemoteUser(), nodeName);
@@ -950,10 +966,10 @@ public class PaymentGatewayController extends AbstractBaseController {
         return modelAndView;
     }
 
-
     @RequestMapping(value = "/secure/payasugopaynow.admin", method = RequestMethod.POST)
-    public ModelAndView payPayAsUGoTransaction(@ModelAttribute("creditCardForm") CreditCardForm creditCardForm,
-                                            BindingResult bindingResult, HttpServletRequest request, Principal principal) {
+    public ModelAndView payPayAsUGoTransaction(
+            @ModelAttribute("creditCardForm") CreditCardSelectionForm form, BindingResult bindingResult,
+            HttpServletRequest request, Principal principal) {
         ModelAndView modelAndView = getModelAndView(request, ECOM_REDIRECT_PAYASUGO_PAYMENT_CONFIRMATION);
         try {
             CreditCard creditCard = null;
@@ -961,39 +977,12 @@ public class PaymentGatewayController extends AbstractBaseController {
             PayAsUSubDTO payAsUGoTransactionDTO = new PayAsUSubDTO();
             User user = this.getUser(request);
             modelAndView.addObject("user", user);
-            List<PayAsUGoTx> payAsUGoTransactionList =  null;
-            if(NEW_CREDIT_CARD.equalsIgnoreCase(creditCardForm.getUseExistingAccount())
-                    || UPDATE_CREDIT_CARD.equalsIgnoreCase(creditCardForm.getUseExistingAccount())) {
-                //Use New card.
-                validate(creditCardForm, bindingResult, CreditCardGroup.class); // Performing validations specified by annotations.
-                if (bindingResult.hasErrors()) {
-                    //modelAndView.setViewName(ECOM_REDIRECT_WEB_PAYMENT_INFO + "?token1=" + request.getSession().getAttribute("token1" + request.getRemoteUser())
-                    //                         + "&token3=" + request.getSession().getAttribute("returnUrl" + request.getRemoteUser())
-                    //                         + "&nodeName=" + request.getSession().getAttribute("nodeName" + request.getRemoteUser()));
-                    modelAndView.setViewName(ECOM_PAYASUGO_PAYMENT_INFO);
-                    List<ShoppingCartItem> shoppingCart = getShoppingCart(request.getRemoteUser(),
-                                request.getSession().getAttribute("nodeName" + request.getRemoteUser()).toString(), request);
-                    modelAndView.addObject("returnUrl", request.getSession().getAttribute("returnUrl" + request.getRemoteUser()));
-                    modelAndView.addObject("nodeName", request.getSession().getAttribute("nodeName" + request.getRemoteUser()));
-                    modelAndView.addObject(SHOPPING_CART, shoppingCart);
-                    return modelAndView;
-                }
-                creditCardValidator.validate(creditCardForm, bindingResult); // Performing custom validations.
-                if (bindingResult.hasErrors()) {
-                    //modelAndView.setViewName(ECOM_REDIRECT_WEB_PAYMENT_INFO + "?token1=" + request.getSession().getAttribute("token1" + request.getRemoteUser())
-                    //         + "&token3=" + request.getSession().getAttribute("returnUrl" + request.getRemoteUser())
-                    //         + "&nodeName=" + request.getSession().getAttribute("nodeName" + request.getRemoteUser()));
-                    modelAndView.setViewName(ECOM_PAYASUGO_PAYMENT_INFO);
-                    modelAndView.addObject("returnUrl", request.getSession().getAttribute("returnUrl" + request.getRemoteUser()));
-                    modelAndView.addObject("nodeName", request.getSession().getAttribute("nodeName" + request.getRemoteUser()));
-                    List<ShoppingCartItem> shoppingCart = getShoppingCart(request.getRemoteUser(),
-                                request.getSession().getAttribute("nodeName" + request.getRemoteUser()).toString(), request);
-                    modelAndView.addObject(SHOPPING_CART, shoppingCart);
-                    return modelAndView;
-                }
-                creditCard = this.buildCreditCard(creditCardForm,request);
-            } else if (FIRM_CREDIT_CARD.equalsIgnoreCase(creditCardForm.getUseExistingAccount())){
-            	payAsUGoTransactionDTO.setUseFirmsCreditCard(true);
+            List<PayAsUGoTx> payAsUGoTransactionList = null;
+            if (form.getUseFirmAccount() == null || !form.getUseFirmAccount()) {
+                Long selectedCardId = form.getSelectedCardId();
+                creditCard = userService.getCreditCardDetailsUnMasked(user.getId(), selectedCardId);
+            } else if (form.getUseFirmAccount()) {
+                payAsUGoTransactionDTO.setUseFirmsCreditCard(true);
             }
             List<ShoppingCartItem> itemList = new LinkedList<ShoppingCartItem>();
             itemList = this.payAsUGoSubService.getShoppingBasketItems(request.getRemoteUser(), request.getParameter("node_Name"));
@@ -1012,14 +1001,13 @@ public class PaymentGatewayController extends AbstractBaseController {
                     shoppingCartItemList.addAll(tempShoppingCartItemList);
                 }
                 payAsUGoTransactionDTO.setShoppingCartItemList(shoppingCartItemList);
-                payAsUGoTransactionDTO.setSaveCreditCard(creditCardForm.isSaveCreditCard());
                 payAsUGoTransactionDTO.setCreditCard(creditCard);
                 payAsUGoTransactionDTO.setTransactionLocation(request.getRemoteAddr());
                 payAsUGoTransactionList = this.payAsUGoSubService.doSalePayAsUGo(request.getRemoteUser(), payAsUGoTransactionDTO);
                 request.getSession().setAttribute("payAsUGoTransactionList", payAsUGoTransactionList);
                 request.getSession().removeAttribute(SHOPPING_CART + request.getRemoteUser());
-            }   else {
-            	request.getSession().setAttribute("ERROR", "Shopping Cart Cannot be Empty");
+            } else {
+                request.getSession().setAttribute("ERROR", "Shopping Cart Cannot be Empty");
             }
         } catch (SDLBusinessException sDLBusinessException) {
             request.getSession().setAttribute("ERROR", sDLBusinessException.getBusinessMessage());
@@ -1050,287 +1038,6 @@ public class PaymentGatewayController extends AbstractBaseController {
         httpSession.removeAttribute("nodeName" + request.getRemoteUser());
         this.logoutUser(request, response);
         return modelAndView;
-    }
-
-    @RequestMapping(value="/secure/purchaseItems.admin")
-    public ModelAndView purchaseItems(HttpServletRequest request, HttpServletResponse response, Principal principal) {
-       HttpSession session = request.getSession(false);
-       String sessionId = session.getId();
-       ErrorCode error = new ErrorCode();
-       Set<String> paramNames = null;
-       SavedRequest savedRequest = null;
-       ModelAndView modelAndView = getModelAndView(request, ECOM_REVIEW_SHOPPING_SERVER_CART);
-       if (session != null) {
-             savedRequest = sDLSavedRequestAwareAuthenticationSuccessHandler.getRequestCache()
-                   .getRequest(request, response);
-            if(savedRequest != null) {
-               paramNames = savedRequest.getParameterMap().keySet();
-            //sDLSavedRequestAwareAuthenticationSuccessHandler.getRequestCache().removeRequest(request, response);
-            } else {
-               error.setCode("ERROR");
-            error.setDescription("General System Exception.");
-            modelAndView.addObject("ERROR", error);
-            return modelAndView;
-            }
-        }
-        if (!request.getParameter("userName").equalsIgnoreCase(savedRequest.getParameterValues("userName")[0])) {
-            error.setCode("ERROR");
-            error.setDescription("Illegal Operation.");
-            modelAndView.addObject("ERROR", error);
-            return modelAndView;
-        }
-        Map<String, ShoppingCartItem> items = new HashMap<String,ShoppingCartItem>();
-        List<Code> codes = this.eComService.getCodes("REGISTERED_APPLICATION");
-        boolean isValidApplication = false;
-        for (Code code : codes) {
-            if (code.getCode().equals(savedRequest.getParameterValues("application_name")[0])) {
-                isValidApplication = true;
-            }
-        }
-        if (isValidApplication) {
-            if (savedRequest.getParameterValues("application_name")[0] != null &&
-            		savedRequest.getParameterValues("application_name")[0].trim() !="") {
-                for (String paramName:paramNames) {
-                      if (paramName.contains("item_type_")) {
-                          if (items.containsKey(paramName.replace("item_type_", ""))) {
-                            items.get(paramName.replace("item_type_", ""))
-                            .setProductType(savedRequest.getParameterValues(paramName)[0]);
-                          } else {
-                              ShoppingCartItem newItem = new ShoppingCartItem();
-                              newItem.setProductType(savedRequest.getParameterValues(paramName)[0]);
-                              items.put(paramName.replace("item_type_", ""), newItem);
-                          }
-                      } else if (paramName.contains("item_id_")) {
-                          if (items.containsKey(paramName.replace("item_id_", ""))) {
-                            items.get(paramName.replace("item_id_", ""))
-                            .setProductId(savedRequest.getParameterValues(paramName)[0]);
-                          } else {
-                              ShoppingCartItem newItem = new ShoppingCartItem();
-                              newItem.setProductId(savedRequest.getParameterValues(paramName)[0]);
-                              items.put(paramName.replace("item_id_", ""), newItem);
-                          }
-                      } else if (paramName.contains("item_pagecount_")) {
-                          if (items.containsKey(paramName.replace("item_pagecount_", ""))) {
-                            items.get(paramName.replace("item_pagecount_", ""))
-                            .setPageCount(Integer.parseInt(savedRequest.getParameterValues(paramName)[0]));
-                          } else {
-                              ShoppingCartItem newItem = new ShoppingCartItem();
-                              newItem.setPageCount(Integer.parseInt(savedRequest.getParameterValues(paramName)[0]));
-                              items.put(paramName.replace("item_pagecount_", ""), newItem);
-                          }
-                      } else if (paramName.contains("item_access_name_")) {
-                          if (items.containsKey(paramName.replace("item_access_name_", ""))) {
-                            items.get(paramName.replace("item_access_name_", ""))
-                            .setAccessName(savedRequest.getParameterValues(paramName)[0]);
-                          } else {
-                              ShoppingCartItem newItem = new ShoppingCartItem();
-                              newItem.setAccessName(savedRequest.getParameterValues(paramName)[0]);
-                              items.put(paramName.replace("item_access_name_", ""), newItem);
-                          }
-                      } else if (paramName.contains("item_unique_identifier_")) {
-                          if (items.containsKey(paramName.replace("item_unique_identifier_", ""))) {
-                            items.get(paramName.replace("item_unique_identifier_", ""))
-                            .setUniqueIdentifier(savedRequest.getParameterValues(paramName)[0]);
-                          } else {
-                              ShoppingCartItem newItem = new ShoppingCartItem();
-                              newItem.setUniqueIdentifier(savedRequest.getParameterValues(paramName)[0]);
-                              items.put(paramName.replace("item_unique_identifier_", ""), newItem);
-                          }
-                      } else if (paramName.contains("item_download_url_")) {
-                          if (items.containsKey(paramName.replace("item_download_url_", ""))) {
-                            items.get(paramName.replace("item_download_url_", ""))
-                            .setDownloadURL(savedRequest.getParameterValues(paramName)[0]);
-                          } else {
-                              ShoppingCartItem newItem = new ShoppingCartItem();
-                              newItem.setDownloadURL(savedRequest.getParameterValues(paramName)[0]);
-                              items.put(paramName.replace("item_download_url_", ""), newItem);
-                          }
-                      } else if (paramName.contains("item_application_")) {
-                          if (items.containsKey(paramName.replace("item_application_", ""))) {
-                            items.get(paramName.replace("item_application_", ""))
-                            .setApplication(savedRequest.getParameterValues(paramName)[0]);
-                          } else {
-                              ShoppingCartItem newItem = new ShoppingCartItem();
-                              newItem.setApplication(savedRequest.getParameterValues(paramName)[0]);
-                              items.put(paramName.replace("item_application_", ""), newItem);
-                          }
-                      }
-                }
-                CreditCardForm creditCardForm = new CreditCardForm();
-                CreditCard creditCard = this.userService.getCreditCardDetails(request.getRemoteUser()).get(0);
-                if (creditCard != null) {
-                    creditCardForm = this.buildCreditCardForm(creditCard);
-                }
-                UsernamePasswordAuthenticationToken userPasswordAuthToken = (UsernamePasswordAuthenticationToken)principal;
-                User user = (User)userPasswordAuthToken.getPrincipal();
-                List<ShoppingCartItem> itemList = null;
-                if (items != null && items.size() > 0) {
-                    itemList = new LinkedList<ShoppingCartItem>(items.values());
-                    try {
-                        itemList = this.payAsUGoSubService.doSalePayAsUGoInfo(request.getParameter("userName"), itemList);
-                    } catch (SDLBusinessException sDLBusinessException) {
-                        session.setAttribute(BUSSINESS_EXCP, sDLBusinessException.getBusinessMessage());
-                    }
-                }
-                session.setAttribute("SHOPPING_CART_" + sessionId, items);
-                session.setAttribute("siteName_" + sessionId,savedRequest.getParameterValues("site_name")[0]);
-                session.setAttribute("image_url_" + sessionId, savedRequest.getParameterValues("image_url")[0]);
-                session.setAttribute("footer_url_" + sessionId, savedRequest.getParameterValues("footer_url")[0]);
-                session.setAttribute("return_url_" + sessionId,savedRequest.getParameterValues("return_url")[0]);
-                session.setAttribute("return_text_" + sessionId,savedRequest.getParameterValues("return_text")[0]);
-                session.setAttribute("application_name_" + sessionId,savedRequest.getParameterValues("application_name")[0]);
-                session.setAttribute("user_name_" + sessionId,request.getParameter("userName"));
-                session.setAttribute("cancel_url_" + sessionId,savedRequest.getParameterValues("cancel_url")[0]);
-                session.setAttribute("cancel_text_" + sessionId,savedRequest.getParameterValues("cancel_text")[0]);
-                modelAndView.addObject("creditCardForm", creditCardForm);
-                modelAndView.addObject("image_url", session.getAttribute("image_url_" + sessionId));
-                modelAndView.addObject("footer_url", session.getAttribute("footer_url_" + sessionId));
-                modelAndView.addObject("ITEMS", itemList);
-                modelAndView.addObject("cancel_url", session.getAttribute("cancel_url_" + sessionId));
-                modelAndView.addObject("cancel_text", session.getAttribute("cancel_text_" + sessionId));
-                modelAndView.addObject("user_name", request.getParameter("userName"));
-                modelAndView.addObject("user", user);
-            }
-        } else {
-            error.setCode("ERROR");
-            error.setDescription("Invalid Application Name or Application is not registered with gateway.");
-            modelAndView.addObject("ERROR", error);
-        }
-        return modelAndView;
-    }
-
-
-    @RequestMapping(value = "/secure/purchaseItemsPayment.admin", method = RequestMethod.POST)
-    public ModelAndView purchaseItemsPayment(@ModelAttribute("creditCardForm") CreditCardForm creditCardForm,
-                                            BindingResult bindingResult,
-                                            HttpServletRequest request,
-                                            Principal principal) {
-        ModelAndView modelAndView = getModelAndView(request, ECOM_SHOPPING_CART_PAYMENT_CONFIRMATION);
-        HttpSession httpSession = request.getSession();
-        try {
-            CreditCard creditCard = null;
-            this.verifyBinding(bindingResult);
-            PayAsUSubDTO payAsUGoTransactionDTO = new PayAsUSubDTO();
-
-            String sessionId = httpSession.getId();
-            List<PayAsUGoTx> payAsUGoTransactionList =  null;
-            if(NEW_CREDIT_CARD.equalsIgnoreCase(creditCardForm.getUseExistingAccount())
-                    || UPDATE_CREDIT_CARD.equalsIgnoreCase(creditCardForm.getUseExistingAccount())) {
-                //Use New card.
-                validate(creditCardForm, bindingResult, CreditCardGroup.class); // Performing validations specified by annotations.
-                if (bindingResult.hasErrors()) {
-                    modelAndView = setModelAndViewForErrorForShoppingCart(modelAndView, request, principal);
-                    return modelAndView;
-                }
-                creditCardValidator.validate(creditCardForm, bindingResult); // Performing custom validations.
-                if (bindingResult.hasErrors()) {
-                    modelAndView = setModelAndViewForErrorForShoppingCart(modelAndView, request, principal);
-                    return modelAndView;
-                }
-                creditCard = this.buildCreditCard(creditCardForm,request);
-
-            }
-            String imageUrl = httpSession.getAttribute("image_url_" + sessionId).toString();
-            String footerUrl = httpSession.getAttribute("footer_url_" + sessionId).toString();
-            String returnUrl = httpSession.getAttribute("return_url_" + sessionId).toString();
-            String returnText = httpSession.getAttribute("return_text_" + sessionId).toString();
-            String userName =  httpSession.getAttribute("user_name_" + sessionId).toString();
-            HashMap<String, ShoppingCartItem> shoppingCartMap = (HashMap<String, ShoppingCartItem>) httpSession.
-                    getAttribute("SHOPPING_CART_" + sessionId);
-            if(shoppingCartMap != null) {
-                List<ShoppingCartItem> shoppingCartItemList = payAsUGoTransactionDTO.getShoppingCartItemList();
-                if(shoppingCartItemList == null) {
-                    shoppingCartItemList = new LinkedList<ShoppingCartItem>(shoppingCartMap.values());
-                } else {
-                    List<ShoppingCartItem> tempShoppingCartItemList = new LinkedList<ShoppingCartItem>(shoppingCartMap.values());
-                    shoppingCartItemList.addAll(tempShoppingCartItemList);
-                }
-                payAsUGoTransactionDTO.setShoppingCartItemList(shoppingCartItemList);
-            }
-            payAsUGoTransactionDTO.setSaveCreditCard(creditCardForm.isSaveCreditCard());
-            payAsUGoTransactionDTO.setCreditCard(creditCard);
-            payAsUGoTransactionDTO.setTransactionLocation(request.getRemoteAddr());
-            payAsUGoTransactionList = this.payAsUGoSubService.doSalePayAsUGo(userName, payAsUGoTransactionDTO);
-
-            UsernamePasswordAuthenticationToken userPasswordAuthToken = (UsernamePasswordAuthenticationToken)principal;
-            User user = (User)userPasswordAuthToken.getPrincipal();
-
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("payAsUGoTransactionList", payAsUGoTransactionList);
-            modelAndView.addObject("image_url", imageUrl);
-            modelAndView.addObject("footer_url", footerUrl);
-            modelAndView.addObject("return_url", returnUrl);
-            modelAndView.addObject("return_text", returnText);
-            httpSession.removeAttribute("siteName_" + sessionId);
-            httpSession.removeAttribute("image_url_" + sessionId);
-            httpSession.removeAttribute("footer_url_" + sessionId);
-            httpSession.removeAttribute("return_url_" + sessionId);
-            httpSession.removeAttribute("return_text_" + sessionId);
-            httpSession.removeAttribute("application_name_" + sessionId);
-            httpSession.removeAttribute("cancel_url_" + sessionId);
-            httpSession.removeAttribute("cancel_text_" + sessionId);
-            httpSession.removeAttribute("SHOPPING_CART_" + sessionId);
-            httpSession.removeAttribute("user_name_" + sessionId);
-
-        } catch (SDLBusinessException sDLBusinessException) {
-            modelAndView.addObject("ERROR", sDLBusinessException.getBusinessMessage());
-        } catch (PaymentGatewaySystemException paypalSystemException) {
-            modelAndView.addObject("ERROR", this.getMessage("paypal.errorcode.generalsystemerror"));
-        } catch (PaymentGatewayUserException paypalUserException) {
-            modelAndView.addObject("ERROR", this.getMessage("paypal.errorcode." + paypalUserException.getErrorCode()));
-        }
-        return modelAndView;
-    }
-
-
-    private ModelAndView setModelAndViewForErrorForShoppingCart(ModelAndView modelAndView,
-                                                                HttpServletRequest request,
-                                                                Principal principal) {
-    	HttpSession httpSession = request.getSession();
-    	String sessionId = httpSession.getId();
-        Map<String, ShoppingCartItem> items = (HashMap<String,ShoppingCartItem>) httpSession
-            .getAttribute("SHOPPING_CART_" + sessionId);
-        List<ShoppingCartItem> itemList = null;
-        if (items != null && items.size() > 0) {
-            itemList = new LinkedList<ShoppingCartItem>(items.values());
-            try {
-                itemList = this.payAsUGoSubService.doSalePayAsUGoInfo(httpSession.getAttribute("user_name_"
-                        + sessionId).toString(), itemList);
-            } catch (SDLBusinessException sDLBusinessException) {
-            	httpSession.setAttribute(BUSSINESS_EXCP, sDLBusinessException.getBusinessMessage());
-            }
-        }
-        UsernamePasswordAuthenticationToken userPasswordAuthToken = (UsernamePasswordAuthenticationToken)principal;
-        User user = (User)userPasswordAuthToken.getPrincipal();
-
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("image_url", httpSession.getAttribute("image_url_" + sessionId));
-        modelAndView.addObject("footer_url", httpSession.getAttribute("footer_url_" + sessionId));
-        modelAndView.addObject("ITEMS", itemList);
-        modelAndView.addObject("cancel_url", httpSession.getAttribute("cancel_url" + sessionId));
-        modelAndView.addObject("cancel_text", httpSession.getAttribute("cancel_text" + sessionId));
-        modelAndView.addObject("user_name", httpSession.getAttribute("user_name_" + sessionId));
-        modelAndView.setViewName(ECOM_REVIEW_SHOPPING_SERVER_CART);
-        return modelAndView;
-    }
-
-    private CreditCardForm buildCreditCardForm(CreditCard creditCard) {
-        CreditCardForm creditCardForm = new CreditCardForm();
-        creditCardForm.setAccountName(creditCard.getName());
-        creditCardForm.setNumber(creditCard.getNumber());
-        creditCardForm.setAddressLine1(creditCard.getAddressLine1());
-        creditCardForm.setAddressLine2(creditCard.getAddressLine2());
-        creditCardForm.setCity(creditCard.getCity());
-        creditCardForm.setState(creditCard.getState());
-        creditCardForm.setZip(creditCard.getZip());
-        if(creditCard.getExpiryMonth() < 10){
-            creditCardForm.setExpMonthS("0" + (creditCard.getExpiryMonth().toString()));
-        }else {
-            creditCardForm.setExpMonthS(creditCard.getExpiryMonth().toString());
-        }
-        creditCardForm.setExpYear(creditCard.getExpiryYear());
-        creditCardForm.setPhoneNumber(creditCard.getPhone());
-        return creditCardForm;
     }
 
     // Supporting function of validate.

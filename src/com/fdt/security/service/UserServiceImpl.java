@@ -32,8 +32,6 @@ import com.fdt.ecom.entity.UserTerm;
 import com.fdt.ecom.util.CreditCardUtil;
 import com.fdt.email.EmailProducer;
 import com.fdt.payasugotx.dao.PayAsUGoTxDAO;
-import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
-import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
 import com.fdt.security.dao.UserDAO;
 import com.fdt.security.dto.FirmUserDTO;
 import com.fdt.security.entity.Access;
@@ -774,21 +772,28 @@ public class UserServiceImpl implements UserService {
         return cardInfo;
     }
 
+    @Override
     @Transactional(readOnly = true)
     public CreditCard getCreditCardDetails(Long userId, Long creditCardId) {
-        Assert.notNull(userId, "User Id Cannot be Null");
-        CreditCard cardInfo = this.userDAO.getCreditCardDetails(userId, creditCardId);
-        if(cardInfo == null){
+        CreditCard cardInfo = userDAO.getCreditCardDetails(userId, creditCardId);
+        if (cardInfo == null) {
             return null;
         }
         String creditCardNumber = cardInfo.getNumber();
         int length = creditCardNumber.length();
-        String toBeMaskedPart = creditCardNumber.substring(0, length-4);
+        String toBeMaskedPart = creditCardNumber.substring(0, length - 4);
         String maskedNumber = creditCardNumber.replace(toBeMaskedPart, "XXXX-XXXX-XXXX-");
         cardInfo.setNumber(maskedNumber);
         return cardInfo;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public CreditCard getCreditCardDetailsUnMasked(Long userId, Long creditCardId) {
+        return userDAO.getCreditCardDetails(userId, creditCardId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<CreditCard> getCreditCardDetailsList(String userName) {
         Assert.hasLength(userName, "User Name Cannot be Null/Empty");

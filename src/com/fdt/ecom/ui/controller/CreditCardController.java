@@ -3,13 +3,14 @@ package com.fdt.ecom.ui.controller;
 import static com.fdt.ecom.ui.EcomViewConstants.ECOM_CC_INFO;
 import static com.fdt.ecom.ui.EcomViewConstants.ECOM_VIEW_SECURITY_CODE_HELP;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +21,7 @@ import javax.validation.metadata.ConstraintDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -40,8 +42,7 @@ import com.fdt.ecom.ui.form.CreditCardForm;
 import com.fdt.ecom.ui.form.CreditCardForm.CreditCardGroup;
 import com.fdt.ecom.ui.form.CreditCardForm.UpdateCreditCardGroup;
 import com.fdt.ecom.ui.validator.CreditCardFormValidator;
-import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
-import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
+import com.fdt.security.entity.User;
 
 @Controller
 public class CreditCardController extends AbstractBaseController {
@@ -115,6 +116,46 @@ public class CreditCardController extends AbstractBaseController {
             }
         }
         creditCardForm.setEmailId(userName);
+        modelAndView.addObject("creditCardForm", creditCardForm);
+        modelAndView.addObject("addNewCard", addNewCard);
+        modelAndView.addObject("returnUrl", returnURL);
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/secure/viewAccountInformationEcom.admin")
+    public ModelAndView viewCreditCardInformationEcom(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(value = "return_url") String returnURL,
+            @RequestParam(value = "addNewCard", defaultValue = "false") boolean addNewCard,
+            @RequestParam(value = "creditCardId", defaultValue = "-1") Long creditCardId) {
+
+        Authentication authenticatedUser = this.reauthenticate(request);
+        User user = (User) authenticatedUser.getPrincipal();
+
+        CreditCardForm creditCardForm = new CreditCardForm();
+        request.getSession().setMaxInactiveInterval(Integer.parseInt(sessionTimeout));
+        ModelAndView modelAndView = this.getModelAndView(request, ECOM_CC_INFO);
+        if (!addNewCard) {
+            CreditCard card = null;
+            if (creditCardId > -1) {
+                card = userService.getCreditCardDetails(user.getId(), creditCardId);
+            } else {
+                List<CreditCard> cardList = userService.getCreditCardDetailsList(user.getId());
+                if (cardList != null && !cardList.isEmpty()) {
+                    card = cardList.get(0);
+                }
+            }
+            if (card != null) {
+                creditCardForm = buildCreditCardForm(card);
+            }
+        }
+
+        try {
+            returnURL = URLDecoder.decode(returnURL, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
+        creditCardForm.setEmailId(user.getUsername());
         modelAndView.addObject("creditCardForm", creditCardForm);
         modelAndView.addObject("addNewCard", addNewCard);
         modelAndView.addObject("returnUrl", returnURL);

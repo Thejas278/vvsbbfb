@@ -16,8 +16,6 @@ public interface EcomViewConstants extends BaseViewConstants {
 
     public static final String ECOM_VIEW_SECURITY_CODE_HELP   = "ecom/securityCodeHelp";
 
-    public static final String ECOM_REVIEW_SHOPPING_SERVER_CART = "ecom/reviewShoppingServerCart";
-
     public static final String ECOM_SHOPPING_CART_PAYMENT_CONFIRMATION = "ecom/shoppingCartConfirmation";
 
     public static final String ECOM_REDIRECT_PAYASUGO_PAYMENT_CONFIRMATION = "redirect:/secure/payAsUGoPaymentConfirmation.admin";

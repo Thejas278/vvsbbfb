@@ -247,7 +247,11 @@ span.loading {
           <br />
           <span id="ERROR"></span>
           <span id="SUCCESS"></span>
-          <a href="${returnUrl}?isReAu=true">Return to Previous Page</a>&nbsp;&nbsp;
+          <#if returnUrl?contains("?")>
+            <a href="${returnUrl}">Return to Previous Page</a>&nbsp;&nbsp;
+          <#else>
+            <a href="${returnUrl}?isReAu=true">Return to Previous Page</a>&nbsp;&nbsp;
+          </#if>
           <#if addNewCard == true>
             <input class="button" type="submit" id="btnUpdateAcct" name="btnUpdateAcct" tabindex="21" value='<@spring.message code="security.authentication.addCard"/>' />
           <#else>

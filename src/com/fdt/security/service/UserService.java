@@ -6,8 +6,6 @@ import com.fdt.common.dto.ServiceResponseDTO;
 import com.fdt.common.exception.SDLBusinessException;
 import com.fdt.ecom.entity.CreditCard;
 import com.fdt.ecom.entity.Term;
-import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
-import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
 import com.fdt.security.dto.FirmUserDTO;
 import com.fdt.security.entity.User;
 import com.fdt.security.entity.UserEvent;
@@ -211,6 +209,8 @@ public interface UserService {
 
     public CreditCard getCreditCardDetails(Long userId, Long creditCardId);
 
+    public CreditCard getCreditCardDetailsUnMasked(Long id, Long selectedCardId);
+
     public List<CreditCard> getCreditCardDetailsList(String username);
 
     public List<CreditCard> getCreditCardDetailsList(Long userId);
@@ -225,10 +225,9 @@ public interface UserService {
      * @throws UserNameNotFoundException
      */
     public User findUser(String userName) throws UserNameNotFoundException;
-    
+
     public int getFirmUsersCount(Long adminUserId, Long accessId);
 
-	public boolean removeCard(String username, String creditCardId);
+    public boolean removeCard(String username, String creditCardId);
 
-    
 }
