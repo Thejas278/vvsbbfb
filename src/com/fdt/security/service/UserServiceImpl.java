@@ -656,10 +656,20 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     public void addCreditCard(String userName, String modifiedBy, CreditCard creditCardInfo) {
+
         User user = userDAO.getUser(userName);
+
         if (creditCardInfo.getDefaultCC()) {
             clearDefaultFromUsersCards(user.getId());
+        } else {
+            // If this is not a default CC, make sure the user has a default CC.
+            // If the user does not, then make this one the default.
+            List<CreditCard> cardList = userDAO.getCreditCardDetailsList(user.getId());
+            if (!cardList.stream().anyMatch(CreditCard::getDefaultCC)) {
+                creditCardInfo.setDefaultCC(true);
+            }
         }
+
         creditCardInfo.setUserId(user.getId());
         creditCardInfo.setModifiedBy(modifiedBy);
         creditCardInfo.setCreatedBy(userName);

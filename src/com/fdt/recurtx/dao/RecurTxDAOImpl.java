@@ -29,80 +29,81 @@ public class RecurTxDAOImpl extends AbstractBaseDAOImpl implements RecurTxDAO {
     private static final Logger logger = LoggerFactory.getLogger(RecurTxDAOImpl.class);
 
     public List<RecurTxSchedulerDTO> getRecurringProfilesForVerification() {
+
         List<RecurTxSchedulerDTO> paypalVerificationDTOs = new LinkedList<RecurTxSchedulerDTO>();
-        Session session = currentSession();
-        Query sqlQuery =  session.getNamedQuery("GET_RECUR_PROFILES_FOR_VERIFICATION");
-        List<Object> resultSet = sqlQuery.list();
-        if(resultSet.size() > 0){
-            ListIterator<Object> resultSetIterator = (ListIterator<Object>) resultSet.listIterator();
-            while(resultSetIterator.hasNext()) {
-                RecurTxSchedulerDTO paypalVerificationDTO = new RecurTxSchedulerDTO();
-                Object[] row = (Object[]) resultSetIterator.next();
-                Long userId = this.getLongFromBigInteger(row[0]);
-                Long accessId = this.getLongFromInteger(row[1]);
-                String accessDescription = this.getString(row[10]);
-                Long userAccessId = this.getLongFromInteger(row[2]);
-                Long userAccountId = this.getLongFromBigInteger(row[3]);
-                String userFirstName = this.getString(row[12]);
-                String userLastName = this.getString(row[13]);
-                paypalVerificationDTO.setUserId(userId);
-                paypalVerificationDTO.setAccessId(accessId);
-                paypalVerificationDTO.setAccessDescription(accessDescription);
-                paypalVerificationDTO.setUserAccessId(userAccessId);
-                paypalVerificationDTO.setUserAccountId(userAccountId);
-                paypalVerificationDTO.setUserFirstName(userFirstName);
-                paypalVerificationDTO.setUserLastName(userLastName);
-                paypalVerificationDTO.setClientShare(this.getDoubleFromBigDecimal(row[19]));
-                paypalVerificationDTO.setAccountNumber(row[20] == null ? null :
-                	this.getPbeStringEncryptor().decrypt(row[20].toString()));
-                Merchant merchant = new Merchant();
-                merchant.setUserName(this.getString(row[4]));
-                merchant.setPassword(row[5] == null ? null : this.getPbeStringEncryptor().decrypt(row[5].toString()));
-                merchant.setPartner(this.getString(row[6]));
-                merchant.setVendorName(this.getString(row[7]));
-                merchant.setId(this.getLongFromInteger(row[16]));
-                merchant.setTxFeePercent(this.getDoubleFromBigDecimal(row[17]));
-                merchant.setTxFeeFlat(this.getDoubleFromBigDecimal(row[18]));
-                merchant.setTxFeePercentAmex(this.getDoubleFromBigDecimal(row[21]));
-                merchant.setTxFeeFlatAmex(this.getDoubleFromBigDecimal(row[22]));
-                Site site = new Site();
-                site.setId(this.getLongFromInteger(row[8]));
-                site.setName(this.getString(row[11]));
-                site.setDescription(this.getString(row[42]));
-                site.setTimeZone(this.getString(row[36]));
-                site.setRevenueThresholdAmount(this.getDoubleFromBigDecimal(row[40]));
-                site.setRevenueThresholdStartDate(this.getDate(row[41]));
-                String userName = this.getString(row[9]);
-                site.addMerchant(merchant);
-                CreditCard creditCard = null;
-                Long creditCardID = this.getLongFromInteger(row[23]);
-                if (creditCardID != null) {
-                	creditCard = new CreditCard();
-                    creditCard.setId(creditCardID);
-                    creditCard.setName(this.getString(row[24]));
-                    creditCard.setNumber(row[25] == null ? null : this.getPbeStringEncryptor().decrypt(row[25].toString()));
-                    creditCard.setExpiryMonth(this.getInteger(row[26]));
-                    creditCard.setExpiryYear(this.getInteger(row[27]));
-                    creditCard.setAddressLine1(this.getString(row[28]));
-                    creditCard.setAddressLine2(this.getString(row[29]));
-                    creditCard.setCity(this.getString(row[30]));
-                    creditCard.setState(this.getString(row[31]));
-                    creditCard.setZip(this.getString(row[32]));
-                    creditCard.setPhone(this.getLongFromBigInteger(row[33]));
-				}
-                paypalVerificationDTO.setAmtToCarge(this.getDoubleFromBigDecimal(row[34]));
-                paypalVerificationDTO.setPaymentPeriod(this.getString(row[35]));
-                paypalVerificationDTO.setCreditCard(creditCard);
-                paypalVerificationDTO.setUserName(userName);
-                paypalVerificationDTO.setSite(site);
-                paypalVerificationDTO.setLastBillingDate(this.getDate(row[14]));
-                paypalVerificationDTO.setNextBillingDate(this.getDate(row[15]));
-                paypalVerificationDTO.setFirmLevelAccess(this.getBoolean(row[37]));
-                paypalVerificationDTO.setFirmAccessAdmin(this.getBoolean(row[38]));
-                paypalVerificationDTO.setFirmAdminUserAccessId(this.getLongFromInteger(row[39]));
-                paypalVerificationDTOs.add(paypalVerificationDTO);
-           }
+
+        @SuppressWarnings("unchecked")
+        List<Object> resultSet = currentSession()
+                .getNamedQuery("GET_RECUR_PROFILES_FOR_VERIFICATION")
+                .list();
+
+        for (Object object : resultSet) {
+            RecurTxSchedulerDTO paypalVerificationDTO = new RecurTxSchedulerDTO();
+            Object[] row = (Object[]) object;
+            Long userId = this.getLongFromBigInteger(row[0]);
+            Long accessId = this.getLongFromInteger(row[1]);
+            String accessDescription = this.getString(row[10]);
+            Long userAccessId = this.getLongFromInteger(row[2]);
+            Long userAccountId = this.getLongFromBigInteger(row[3]);
+            String userFirstName = this.getString(row[12]);
+            String userLastName = this.getString(row[13]);
+            paypalVerificationDTO.setUserId(userId);
+            paypalVerificationDTO.setAccessId(accessId);
+            paypalVerificationDTO.setAccessDescription(accessDescription);
+            paypalVerificationDTO.setUserAccessId(userAccessId);
+            paypalVerificationDTO.setUserAccountId(userAccountId);
+            paypalVerificationDTO.setUserFirstName(userFirstName);
+            paypalVerificationDTO.setUserLastName(userLastName);
+            paypalVerificationDTO.setClientShare(this.getDoubleFromBigDecimal(row[19]));
+            paypalVerificationDTO.setAccountNumber(row[24] == null ? null : getPbeStringEncryptor().decrypt(row[24].toString()));
+            Merchant merchant = new Merchant();
+            merchant.setUserName(this.getString(row[4]));
+            merchant.setPassword(row[5] == null ? null : getPbeStringEncryptor().decrypt(row[5].toString()));
+            merchant.setPartner(this.getString(row[6]));
+            merchant.setVendorName(this.getString(row[7]));
+            merchant.setId(this.getLongFromInteger(row[16]));
+            merchant.setTxFeePercent(this.getDoubleFromBigDecimal(row[17]));
+            merchant.setTxFeeFlat(this.getDoubleFromBigDecimal(row[18]));
+            merchant.setTxFeePercentAmex(this.getDoubleFromBigDecimal(row[20]));
+            merchant.setTxFeeFlatAmex(this.getDoubleFromBigDecimal(row[21]));
+            Site site = new Site();
+            site.setId(this.getLongFromInteger(row[8]));
+            site.setName(this.getString(row[11]));
+            site.setDescription(this.getString(row[41]));
+            site.setTimeZone(this.getString(row[35]));
+            site.setRevenueThresholdAmount(this.getDoubleFromBigDecimal(row[39]));
+            site.setRevenueThresholdStartDate(this.getDate(row[40]));
+            String userName = this.getString(row[9]);
+            site.addMerchant(merchant);
+            CreditCard creditCard = null;
+            Long creditCardID = this.getLongFromInteger(row[23]);
+            if (creditCardID != null) {
+                creditCard = new CreditCard();
+                creditCard.setId(creditCardID);
+                creditCard.setName(this.getString(row[23]));
+                creditCard.setNumber(row[24] == null ? null : this.getPbeStringEncryptor().decrypt(row[24].toString()));
+                creditCard.setExpiryMonth(this.getInteger(row[25]));
+                creditCard.setExpiryYear(this.getInteger(row[26]));
+                creditCard.setAddressLine1(this.getString(row[27]));
+                creditCard.setAddressLine2(this.getString(row[28]));
+                creditCard.setCity(this.getString(row[29]));
+                creditCard.setState(this.getString(row[30]));
+                creditCard.setZip(this.getString(row[31]));
+                creditCard.setPhone(this.getLongFromBigInteger(row[32]));
+            }
+            paypalVerificationDTO.setAmtToCarge(this.getDoubleFromBigDecimal(row[33]));
+            paypalVerificationDTO.setPaymentPeriod(this.getString(row[34]));
+            paypalVerificationDTO.setCreditCard(creditCard);
+            paypalVerificationDTO.setUserName(userName);
+            paypalVerificationDTO.setSite(site);
+            paypalVerificationDTO.setLastBillingDate(this.getDate(row[14]));
+            paypalVerificationDTO.setNextBillingDate(this.getDate(row[15]));
+            paypalVerificationDTO.setFirmLevelAccess(this.getBoolean(row[36]));
+            paypalVerificationDTO.setFirmAccessAdmin(this.getBoolean(row[37]));
+            paypalVerificationDTO.setFirmAdminUserAccessId(this.getLongFromInteger(row[38]));
+            paypalVerificationDTOs.add(paypalVerificationDTO);
         }
+
         return paypalVerificationDTOs;
     }
 
