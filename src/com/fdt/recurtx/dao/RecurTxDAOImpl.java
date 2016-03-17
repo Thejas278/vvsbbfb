@@ -76,7 +76,7 @@ public class RecurTxDAOImpl extends AbstractBaseDAOImpl implements RecurTxDAO {
             String userName = this.getString(row[9]);
             site.addMerchant(merchant);
             CreditCard creditCard = null;
-            Long creditCardID = this.getLongFromInteger(row[23]);
+            Long creditCardID = this.getLongFromInteger(row[22]);
             if (creditCardID != null) {
                 creditCard = new CreditCard();
                 creditCard.setId(creditCardID);
