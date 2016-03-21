@@ -692,12 +692,13 @@ public class UserServiceImpl implements UserService {
     public void updateCreditCard(String userName, String modifiedBy, CreditCard newCreditCard) {
 
         User user = userDAO.getUser(userName);
-
         if (newCreditCard.getDefaultCC()) {
             clearDefaultFromUsersCards(user.getId());
         }
-
         CreditCard creditCard = userDAO.getCreditCardDetails(user.getId(), newCreditCard.getId());
+        if(newCreditCard.getNumber() != null) {
+        	creditCard.setNumber(newCreditCard.getNumber());
+        }
         creditCard.setActive(true);
         creditCard.setAddressLine1(newCreditCard.getAddressLine1());
         creditCard.setAddressLine2(newCreditCard.getAddressLine2());
