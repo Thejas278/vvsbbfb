@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -696,7 +697,7 @@ public class UserServiceImpl implements UserService {
             clearDefaultFromUsersCards(user.getId());
         }
         CreditCard creditCard = userDAO.getCreditCardDetails(user.getId(), newCreditCard.getId());
-        if(newCreditCard.getNumber() != null) {
+        if(!StringUtils.isBlank(newCreditCard.getNumber()) && StringUtils.isNumeric(newCreditCard.getNumber())) {
         	creditCard.setNumber(newCreditCard.getNumber());
         }
         creditCard.setActive(true);
