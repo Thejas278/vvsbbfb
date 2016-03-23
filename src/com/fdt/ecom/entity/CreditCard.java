@@ -198,8 +198,7 @@ public class CreditCard extends AbstractBaseEntity {
 	@Override
 	public String toString() {
 		return "CreditCard [name=" + name + ", userId=" + userId
-				+ ", userAccount=" + userAccount + "]";
+				+ ", defaultCC=" + defaultCC + ", id=" + id + "]";
 	}
-
 
 }

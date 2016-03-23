@@ -16,6 +16,7 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.slf4j.Logger;
@@ -68,6 +69,7 @@ import com.fdt.security.exception.UserNameNotFoundException;
 import com.fdt.security.service.validator.FirmUserSubscriptionValidator;
 import com.fdt.subscriptions.dao.SubDAO;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
+import com.fdt.subscriptions.dto.CreditCardForChangeSubscriptionDTO;
 import com.fdt.subscriptions.dto.SubscriptionDTO;
 
 @Service("subService")
@@ -884,23 +886,42 @@ public class SubServiceImpl implements SubService {
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class, readOnly = false)
     public UpgradeDowngradeDTO changeFromRecurToRecurSub(Long existingUserAccessId, Long newAccessId,
-            String userName, String machineName) throws PaymentGatewaySystemException, PaymentGatewayUserException,
-                SDLBusinessException, MaxUsersExceededException {
+            String userName, String machineName, CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO) 
+            		throws PaymentGatewaySystemException, PaymentGatewayUserException,
+        				SDLBusinessException, MaxUsersExceededException {
         Assert.notNull(newAccessId, "Access Id Cannot be Null");
         Assert.notNull(existingUserAccessId, "User AccessId Cannot be Null");
         Assert.notNull(userName, "User Name Cannot be Null");
         UpgradeDowngradeDTO upgradeDowngradeDTO = this.getRecurChangeSubInfo(existingUserAccessId, newAccessId, userName);
         UserAccountDetailDTO existingUserAccountDTO = upgradeDowngradeDTO.getExistingUserAccountDetail();
         AccessDetailDTO newAccessDTO = upgradeDowngradeDTO.getNewAccessDetailDTO();
+        Long creditCardIdForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription().getId();
+        creditCardIdForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription().getId();
+        Long creditCardIdForNewSubscription = null;
+        creditCardIdForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForNewSubscription().getId();
+        CreditCard creditCardForOldSubscription = null;
+        CreditCard creditCardForNewSubscription = null;
+        if(creditCardIdForOldSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForOldSubscription))) {
+        	creditCardForOldSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForOldSubscription);
+        }
+        creditCardForChangeSubscriptionDTO.setCreditCardForOldSubscription(creditCardForOldSubscription);
+        if(creditCardIdForOldSubscription.equals(creditCardIdForNewSubscription)){        	
+        	creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForOldSubscription);
+        } else {
+        	if(creditCardIdForNewSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForNewSubscription))) {
+        		creditCardForNewSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForNewSubscription);
+        	}
+            creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForNewSubscription);
+        }
         if (existingUserAccountDTO != null && existingUserAccountDTO.getUserAccount() != null
                 && existingUserAccountDTO.getUserAccount().getId() != null ) {
             if(existingUserAccountDTO.getUserAccount().isActive()) {
                 if(newAccessDTO.isAuthorizationRequired()) {
                     upgradeDowngradeDTO = this.changeFromCurrentlyPaidToRestrictedSubscription(existingUserAccessId,
-                        newAccessId, userName, upgradeDowngradeDTO, machineName);
+                        newAccessId, userName, upgradeDowngradeDTO, machineName, creditCardForChangeSubscriptionDTO);
                 } else {
                     upgradeDowngradeDTO = this.changeFromCurrentlyPaidToUnrestrictedSubscription(existingUserAccessId,
-                        newAccessId, userName, upgradeDowngradeDTO, machineName);
+                        newAccessId, userName, upgradeDowngradeDTO, machineName, creditCardForChangeSubscriptionDTO);
                 }
             } else {
             	/* Changing of subscription whose recurring payment is failed. Deletion Of Existing UserAccount, and
@@ -910,19 +931,19 @@ public class SubServiceImpl implements SubService {
     			this.subDAO.deleteUserAccountByUserAccessId(userAccessIds);
     			if(newAccessDTO.isAuthorizationRequired()) {
                     upgradeDowngradeDTO = this.changeFromCurrentlyUnPaidToRestrictedSubscription(existingUserAccessId,
-                        newAccessId, userName, upgradeDowngradeDTO);
+                        newAccessId, userName, upgradeDowngradeDTO, creditCardForChangeSubscriptionDTO);
                 } else {
                     upgradeDowngradeDTO = this.changeFromCurrentlyUnPaidToUnrestrictedSubscription(existingUserAccessId,
-                        newAccessId, userName, upgradeDowngradeDTO, machineName);
+                        newAccessId, userName, upgradeDowngradeDTO, machineName, creditCardForChangeSubscriptionDTO);
                 }
             }
         } else {
             if(newAccessDTO.isAuthorizationRequired()) {
                 upgradeDowngradeDTO = this.changeFromCurrentlyUnPaidToRestrictedSubscription(existingUserAccessId,
-                    newAccessId, userName, upgradeDowngradeDTO);
+                    newAccessId, userName, upgradeDowngradeDTO, creditCardForChangeSubscriptionDTO);
             } else {
                 upgradeDowngradeDTO = this.changeFromCurrentlyUnPaidToUnrestrictedSubscription(existingUserAccessId,
-                    newAccessId, userName, upgradeDowngradeDTO, machineName);
+                    newAccessId, userName, upgradeDowngradeDTO, machineName, creditCardForChangeSubscriptionDTO);
             }
         }
 
@@ -942,7 +963,7 @@ public class SubServiceImpl implements SubService {
     }
 
     private UpgradeDowngradeDTO changeFromCurrentlyPaidToRestrictedSubscription(Long existingUserAccessId, Long newAccessId,
-            String userName, UpgradeDowngradeDTO upgradeDowngradeDTO, String machineName)
+            String userName, UpgradeDowngradeDTO upgradeDowngradeDTO, String machineName, CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO)
                     throws PaymentGatewaySystemException, PaymentGatewayUserException, SDLBusinessException {
         /* Change Subscription When Existing Access is paid one, and destination access requires authorization.*/
         Double totalAmount = null;
@@ -953,7 +974,7 @@ public class SubServiceImpl implements SubService {
         UserAccountDetailDTO existingUserAccountDTO = upgradeDowngradeDTO.getExistingUserAccountDetail();
         AccessDetailDTO newAccessDTO = upgradeDowngradeDTO.getNewAccessDetailDTO();
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(true);
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
+        CreditCard creditCard = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription();
         if(creditCard != null && creditCard.isActive()) {
             Site site = existingUserAccountDTO.getSite();
             if (upgradeDowngradeDTO.isDowngrade()) {
@@ -961,7 +982,7 @@ public class SubServiceImpl implements SubService {
                     /** Put the Money Back to the Customer By Doing a Credit **/
                     totalAmount = upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee();
                     transactionId = this.paymentGateway.doCredit(existingUserAccountDTO, newAccessDTO, totalAmount,
-                        "changeFromCurrentlyPaidToRestrictedSubscription", userName);
+                        "changeFromCurrentlyPaidToRestrictedSubscription", userName, creditCard);
                     settlementStatusType = SettlementStatusType.UNSETTLED;
                 } else if ( upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee() < 0) {
                     totalAmount = upgradeDowngradeDTO.getDowngradeFee() - upgradeDowngradeDTO.getUnUsedBalance();
@@ -975,7 +996,7 @@ public class SubServiceImpl implements SubService {
                     /** Put the Money Back to the Customer By Doing a Credit **/
                     totalAmount = upgradeDowngradeDTO.getUnUsedBalance();
                     transactionId = this.paymentGateway.doCredit(existingUserAccountDTO, newAccessDTO, totalAmount,
-                        "changeFromCurrentlyPaidToRestrictedSubscription", userName);
+                        "changeFromCurrentlyPaidToRestrictedSubscription", userName, creditCard);
                     settlementStatusType = SettlementStatusType.UNSETTLED;
                 }
             }
@@ -1049,7 +1070,8 @@ public class SubServiceImpl implements SubService {
     }
 
     private UpgradeDowngradeDTO changeFromCurrentlyPaidToUnrestrictedSubscription(Long existingUserAccessId,
-            Long newAccessId, String userName, UpgradeDowngradeDTO upgradeDowngradeDTO, String machineName)
+            Long newAccessId, String userName, UpgradeDowngradeDTO upgradeDowngradeDTO, String machineName, 
+            CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO)
                 throws PaymentGatewaySystemException, PaymentGatewayUserException, SDLBusinessException {
         /* Change Subscription When Existing Access is paid one */
         Double secondaryTxAmount = 0.0d;
@@ -1063,28 +1085,29 @@ public class SubServiceImpl implements SubService {
         AccessDetailDTO newAccessDTO = upgradeDowngradeDTO.getNewAccessDetailDTO();
         UserAccount userAccount = (existingUserAccountDTO.getUserAccount() == null) ? null : (existingUserAccountDTO
             .getUserAccount());
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
+        CreditCard creditCardForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription();
+        CreditCard creditCardForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription();
         boolean isEnableAccess = false;
         PayPalDTO paymentTxResponseDTO = new PayPalDTO();
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(false);
-        if(creditCard != null && creditCard.isActive()) {
+        if(creditCardForOldSubscription != null && creditCardForOldSubscription.isActive()) {
             if (upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee() > 0) {
                 /** Put the Money Back to the Customer By Doing a Credit **/
                 secondaryTxAmount = upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee();
                 secondaryTxId = this.paymentGateway.doCredit(existingUserAccountDTO, newAccessDTO, secondaryTxAmount,
-                    "changeFromCurrentlyPaidToRestrictedSubscription", userName);
+                    "changeFromCurrentlyPaidToRestrictedSubscription", userName, creditCardForOldSubscription);
                 isBalanceRefunded = true;
                 settlementStatusType = SettlementStatusType.UNSETTLED;
             } else if ( upgradeDowngradeDTO.getUnUsedBalance() - upgradeDowngradeDTO.getDowngradeFee() < 0) {
                 secondaryTxAmount = upgradeDowngradeDTO.getDowngradeFee() - upgradeDowngradeDTO.getUnUsedBalance();
                 paymentTxResponseDTO = this.paymentGateway.doSale(existingUserAccountDTO.getSite(), secondaryTxAmount,
-                    creditCard, "changeFromCurrentlyPaidToRestrictedSubscription", userName, true);
+                    creditCardForOldSubscription, "changeFromCurrentlyPaidToRestrictedSubscription", userName, true);
                 secondaryTxId = paymentTxResponseDTO.getTxRefNum();
                 settlementStatusType = SettlementStatusType.UNSETTLED;
             }
             if (upgradeDowngradeDTO.getNewBalance() > 0 ) {
                 paymentTxResponseDTO = this.paymentGateway.doSale(newAccessDTO.getSite(),
-                    upgradeDowngradeDTO.getNewBalance(), creditCard, "changeFromCurrentlyPaidToUnrestrictedSubscription",
+                    upgradeDowngradeDTO.getNewBalance(), creditCardForNewSubscription, "changeFromCurrentlyPaidToUnrestrictedSubscription",
                         userName, true);
                 transactionId = paymentTxResponseDTO.getTxRefNum();
                 settlementStatusType = SettlementStatusType.UNSETTLED;
@@ -1136,8 +1159,8 @@ public class SubServiceImpl implements SubService {
                 throw new RuntimeException("The User Access is not Disabled");
             }
 
-            creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
-            CardType cardType = CreditCardUtil.getCardType(creditCard.getNumber());
+            creditCardForOldSubscription = this.userDAO.getCreditCardDetails(userName).get(0);
+            CardType cardType = CreditCardUtil.getCardType(creditCardForOldSubscription.getNumber());
 
             String orgTxRefNum = null;
             if (upgradeDowngradeDTO.getUnUsedBalance() > 0.0d) {
@@ -1148,9 +1171,9 @@ public class SubServiceImpl implements SubService {
                 recurTransactionPrimary.setTxRefNum(transactionId);
                 recurTransactionPrimary.setTransactionType(TransactionType.CHARGE);
                 recurTransactionPrimary.setSettlementStatus(settlementStatusType);
-                recurTransactionPrimary.setCardNumber(creditCard.getNumber());
+                recurTransactionPrimary.setCardNumber(creditCardForNewSubscription.getNumber());
                 recurTransactionPrimary.setCardType(cardType);
-                recurTransactionPrimary.setAccountName(creditCard.getName());
+                recurTransactionPrimary.setAccountName(creditCardForNewSubscription.getName());
                 recurTransactionPrimary.setModifiedBy(userName);
                 recurTransactionPrimary.setTransactionDate(SystemUtil.changeTimeZone(new Date(),
                     TimeZone.getTimeZone(upgradeDowngradeDTO.getExistingUserAccountDetail().getSite().getTimeZone())));
@@ -1206,9 +1229,9 @@ public class SubServiceImpl implements SubService {
                         recurTransactionSecondary.setTransactionType(TransactionType.CHARGE);
                     }
                     recurTransactionSecondary.setSettlementStatus(settlementStatusType);
-                    recurTransactionSecondary.setCardNumber(creditCard.getNumber());
+                    recurTransactionSecondary.setCardNumber(creditCardForOldSubscription.getNumber());
                     recurTransactionSecondary.setCardType(cardType);
-                    recurTransactionSecondary.setAccountName(creditCard.getName());
+                    recurTransactionSecondary.setAccountName(creditCardForOldSubscription.getName());
                     recurTransactionSecondary.setModifiedBy(userName);
                     recurTransactionSecondary.setModifiedDate(new Date());
                     recurTransactionSecondary.setCreatedDate(new Date());
@@ -1247,7 +1270,7 @@ public class SubServiceImpl implements SubService {
     }
 
     private UpgradeDowngradeDTO changeFromCurrentlyUnPaidToRestrictedSubscription(Long existingUserAccessId,
-            Long newAccessId, String userName, UpgradeDowngradeDTO upgradeDowngradeDTO)
+            Long newAccessId, String userName, UpgradeDowngradeDTO upgradeDowngradeDTO, CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO)
                     throws PaymentGatewaySystemException, PaymentGatewayUserException {
         /* Change Subscription When existing Subscription is not paid */
         boolean enableAccess = false;
@@ -1283,7 +1306,7 @@ public class SubServiceImpl implements SubService {
     }
 
     private UpgradeDowngradeDTO changeFromCurrentlyUnPaidToUnrestrictedSubscription(Long existingUserAccessId,
-            Long newAccessId, String userName, UpgradeDowngradeDTO upgradeDowngradeDTO, String machineName)
+            Long newAccessId, String userName, UpgradeDowngradeDTO upgradeDowngradeDTO, String machineName, CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO)
                     throws PaymentGatewaySystemException, PaymentGatewayUserException {
         /* Change Subscription When existing Subscription is not paid and destination subscription is not restricted.  */
         String transactionId = null;
@@ -1291,7 +1314,7 @@ public class SubServiceImpl implements SubService {
         boolean enableAccess = false;
         Site site = null;
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(false);
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
+        CreditCard creditCard = creditCardForChangeSubscriptionDTO.getCreditCardForNewSubscription();
         if (creditCard != null && creditCard.isActive()) {
             /* User Account Does not Exist. But Credit Card Exist for the User */
             site = newAccessDTO.getSite();

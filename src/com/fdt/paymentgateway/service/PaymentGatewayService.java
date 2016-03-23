@@ -24,7 +24,7 @@ public interface PaymentGatewayService {
      * @throws PaymentGatewaySystemException
      */
     public String doCredit(UserAccountDetailDTO existingUserAccountDTO, AccessDetailDTO newAccessDTO, Double amount,
-            String moduleName, String userName) throws PaymentGatewayUserException, PaymentGatewaySystemException;
+            String moduleName, String userName, CreditCard creditCard) throws PaymentGatewayUserException, PaymentGatewaySystemException;
 
     /** The Method Is Used Do Credit Amount To Card Supplied. This Method Takes OriginalTxNumber Also And It Ensures
      * That Amount To Be Credited Is Less Than The Amount Charged Previously.

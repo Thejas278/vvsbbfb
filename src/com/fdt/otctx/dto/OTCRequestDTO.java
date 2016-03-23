@@ -1,6 +1,5 @@
 package com.fdt.otctx.dto;
 
-import java.util.Arrays;
 
 
 public class OTCRequestDTO {

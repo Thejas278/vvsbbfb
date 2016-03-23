@@ -45,7 +45,15 @@
   <xs:element name="getCreditCardDetails" type="tns:getCreditCardDetails"/>
   <xs:element name="getCreditCardDetailsByUserName" type="tns:getCreditCardDetailsByUserName"/>
   <xs:element name="getCreditCardDetailsByUserNameResponse" type="tns:getCreditCardDetailsByUserNameResponse"/>
+  <xs:element name="getCreditCardDetailsByUserNameWithId" type="tns:getCreditCardDetailsByUserNameWithId"/>
+  <xs:element name="getCreditCardDetailsByUserNameWithIdResponse" type="tns:getCreditCardDetailsByUserNameWithIdResponse"/>
+  <xs:element name="getCreditCardDetailsList" type="tns:getCreditCardDetailsList"/>
+  <xs:element name="getCreditCardDetailsListByUserName" type="tns:getCreditCardDetailsListByUserName"/>
+  <xs:element name="getCreditCardDetailsListByUserNameResponse" type="tns:getCreditCardDetailsListByUserNameResponse"/>
+  <xs:element name="getCreditCardDetailsListResponse" type="tns:getCreditCardDetailsListResponse"/>
   <xs:element name="getCreditCardDetailsResponse" type="tns:getCreditCardDetailsResponse"/>
+  <xs:element name="getCreditCardDetailsWithId" type="tns:getCreditCardDetailsWithId"/>
+  <xs:element name="getCreditCardDetailsWithIdResponse" type="tns:getCreditCardDetailsWithIdResponse"/>
   <xs:element name="getDocumentIdByCertifiedDocumentNumber" type="tns:getDocumentIdByCertifiedDocumentNumber"/>
   <xs:element name="getDocumentIdByCertifiedDocumentNumberResponse" type="tns:getDocumentIdByCertifiedDocumentNumberResponse"/>
   <xs:element name="getFirmUsers" type="tns:getFirmUsers"/>
@@ -379,6 +387,7 @@
           <xs:element minOccurs="0" name="addressLine2" type="xs:string"/>
           <xs:element minOccurs="0" name="cardType" type="tns:cardType"/>
           <xs:element minOccurs="0" name="city" type="xs:string"/>
+          <xs:element name="defaultCC" type="xs:boolean"/>
           <xs:element minOccurs="0" name="expiryMonth" type="xs:int"/>
           <xs:element minOccurs="0" name="expiryYear" type="xs:int"/>
           <xs:element minOccurs="0" name="name" type="xs:string"/>
@@ -397,7 +406,6 @@
     <xs:complexContent>
       <xs:extension base="tns:abstractBaseEntity">
         <xs:sequence>
-          <xs:element minOccurs="0" name="creditCard" type="tns:creditCard"/>
           <xs:element minOccurs="0" name="lastBillingDate" type="xs:dateTime"/>
           <xs:element minOccurs="0" name="lastTxRefNum" type="xs:string"/>
           <xs:element name="markForCancellation" type="xs:boolean"/>
@@ -983,12 +991,30 @@
   <xs:complexType name="checkValidResetPasswordRequestResponse">
     <xs:sequence/>
   </xs:complexType>
+  <xs:complexType name="getCreditCardDetailsByUserNameWithId">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="userName" type="xs:string"/>
+      <xs:element minOccurs="0" name="creditCardId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getCreditCardDetailsByUserNameWithIdResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:creditCard"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="changeFromRecurringToRecurringSubscription">
     <xs:sequence>
       <xs:element minOccurs="0" name="userAccessId" type="xs:long"/>
       <xs:element minOccurs="0" name="accessId" type="xs:long"/>
       <xs:element minOccurs="0" name="userName" type="xs:string"/>
       <xs:element minOccurs="0" name="machineName" type="xs:string"/>
+      <xs:element minOccurs="0" name="creditCardForChangeSubscriptionDTO" type="tns:creditCardForChangeSubscriptionDTO"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="creditCardForChangeSubscriptionDTO">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="creditCardForNewSubscription" type="tns:creditCard"/>
+      <xs:element minOccurs="0" name="creditCardForOldSubscription" type="tns:creditCard"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="changeFromRecurringToRecurringSubscriptionResponse">
@@ -1434,6 +1460,16 @@
       <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:accessDetailDTO"/>
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="getCreditCardDetailsListByUserName">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="userName" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getCreditCardDetailsListByUserNameResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:creditCard"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="getUserAlertsByUserName">
     <xs:sequence>
       <xs:element minOccurs="0" name="userName" type="xs:string"/>
@@ -1463,6 +1499,17 @@
   <xs:complexType name="findUserResponse">
     <xs:sequence>
       <xs:element minOccurs="0" name="return" type="tns:user"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getCreditCardDetailsWithId">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="userId" type="xs:long"/>
+      <xs:element minOccurs="0" name="creditCardId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getCreditCardDetailsWithIdResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:creditCard"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="getCreditCardDetailsByUserName">
@@ -1503,6 +1550,16 @@
   <xs:complexType name="getCodesResponse">
     <xs:sequence>
       <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:code"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getCreditCardDetailsList">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="userId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getCreditCardDetailsListResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:creditCard"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="getAccessesForSite">
@@ -1689,6 +1746,10 @@
     <wsdl:part element="tns:getPayAsUGoTxIdForPurchasedDoc" name="parameters">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="getCreditCardDetailsListByUserNameResponse">
+    <wsdl:part element="tns:getCreditCardDetailsListByUserNameResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="DuplicateAlertException">
     <wsdl:part element="tns:DuplicateAlertException" name="DuplicateAlertException">
     </wsdl:part>
@@ -1731,6 +1792,10 @@
   </wsdl:message>
   <wsdl:message name="doSaleGetInfoWEBResponse">
     <wsdl:part element="tns:doSaleGetInfoWEBResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCreditCardDetailsByUserNameWithId">
+    <wsdl:part element="tns:getCreditCardDetailsByUserNameWithId" name="parameters">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="changeFromRecurringToRecurringSubscription">
@@ -1861,6 +1926,10 @@
     <wsdl:part element="tns:removeFirmLevelUserAccess" name="parameters">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="getCreditCardDetailsListByUserName">
+    <wsdl:part element="tns:getCreditCardDetailsListByUserName" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="getPayAsUGoTransactionsByNodeResponse">
     <wsdl:part element="tns:getPayAsUGoTransactionsByNodeResponse" name="parameters">
     </wsdl:part>
@@ -1919,6 +1988,10 @@
   </wsdl:message>
   <wsdl:message name="getCodes">
     <wsdl:part element="tns:getCodes" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCreditCardDetailsListResponse">
+    <wsdl:part element="tns:getCreditCardDetailsListResponse" name="parameters">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="getRecurTxDetailResponse">
@@ -2003,6 +2076,10 @@
   </wsdl:message>
   <wsdl:message name="getAccessDetailsResponse">
     <wsdl:part element="tns:getAccessDetailsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCreditCardDetailsWithIdResponse">
+    <wsdl:part element="tns:getCreditCardDetailsWithIdResponse" name="parameters">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="updateLastLoginTime">
@@ -2145,6 +2222,10 @@
     <wsdl:part element="tns:findUser" name="parameters">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="getCreditCardDetailsWithId">
+    <wsdl:part element="tns:getCreditCardDetailsWithId" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="updateLastLoginTimeResponse">
     <wsdl:part element="tns:updateLastLoginTimeResponse" name="parameters">
     </wsdl:part>
@@ -2163,6 +2244,14 @@
   </wsdl:message>
   <wsdl:message name="checkValidResetPasswordRequestResponse">
     <wsdl:part element="tns:checkValidResetPasswordRequestResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCreditCardDetailsByUserNameWithIdResponse">
+    <wsdl:part element="tns:getCreditCardDetailsByUserNameWithIdResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCreditCardDetailsList">
+    <wsdl:part element="tns:getCreditCardDetailsList" name="parameters">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="getAccessesForSite">
@@ -2293,6 +2382,12 @@
     </wsdl:output>
       <wsdl:fault message="tns:InvalidDataException" name="InvalidDataException">
     </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCreditCardDetailsByUserNameWithId">
+      <wsdl:input message="tns:getCreditCardDetailsByUserNameWithId" name="getCreditCardDetailsByUserNameWithId">
+    </wsdl:input>
+      <wsdl:output message="tns:getCreditCardDetailsByUserNameWithIdResponse" name="getCreditCardDetailsByUserNameWithIdResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="changeFromRecurringToRecurringSubscription">
       <wsdl:input message="tns:changeFromRecurringToRecurringSubscription" name="changeFromRecurringToRecurringSubscription">
@@ -2550,6 +2645,12 @@
       <wsdl:output message="tns:getAccessDetailsResponse" name="getAccessDetailsResponse">
     </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="getCreditCardDetailsListByUserName">
+      <wsdl:input message="tns:getCreditCardDetailsListByUserName" name="getCreditCardDetailsListByUserName">
+    </wsdl:input>
+      <wsdl:output message="tns:getCreditCardDetailsListByUserNameResponse" name="getCreditCardDetailsListByUserNameResponse">
+    </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="getUserAlertsByUserName">
       <wsdl:input message="tns:getUserAlertsByUserName" name="getUserAlertsByUserName">
     </wsdl:input>
@@ -2573,6 +2674,12 @@
     </wsdl:output>
       <wsdl:fault message="tns:UserNameNotFoundException" name="UserNameNotFoundException">
     </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCreditCardDetailsWithId">
+      <wsdl:input message="tns:getCreditCardDetailsWithId" name="getCreditCardDetailsWithId">
+    </wsdl:input>
+      <wsdl:output message="tns:getCreditCardDetailsWithIdResponse" name="getCreditCardDetailsWithIdResponse">
+    </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getCreditCardDetailsByUserName">
       <wsdl:input message="tns:getCreditCardDetailsByUserName" name="getCreditCardDetailsByUserName">
@@ -2598,6 +2705,12 @@
       <wsdl:input message="tns:getCodes" name="getCodes">
     </wsdl:input>
       <wsdl:output message="tns:getCodesResponse" name="getCodesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCreditCardDetailsList">
+      <wsdl:input message="tns:getCreditCardDetailsList" name="getCreditCardDetailsList">
+    </wsdl:input>
+      <wsdl:output message="tns:getCreditCardDetailsListResponse" name="getCreditCardDetailsListResponse">
     </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getAccessesForSite">
@@ -2669,12 +2782,12 @@
         <soap12:fault name="UserNameNotFoundException" use="literal"/>
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="lockUnLockUser">
+    <wsdl:operation name="getPayAsUGoTransactionsByNodePerPage">
       <soap12:operation soapAction="" style="document"/>
-      <wsdl:input name="lockUnLockUser">
+      <wsdl:input name="getPayAsUGoTransactionsByNodePerPage">
         <soap12:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="lockUnLockUserResponse">
+      <wsdl:output name="getPayAsUGoTransactionsByNodePerPageResponse">
         <soap12:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -2687,12 +2800,12 @@
         <soap12:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="getPayAsUGoTransactionsByNodePerPage">
+    <wsdl:operation name="lockUnLockUser">
       <soap12:operation soapAction="" style="document"/>
-      <wsdl:input name="getPayAsUGoTransactionsByNodePerPage">
+      <wsdl:input name="lockUnLockUser">
         <soap12:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="getPayAsUGoTransactionsByNodePerPageResponse">
+      <wsdl:output name="lockUnLockUserResponse">
         <soap12:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -2794,6 +2907,15 @@
       <wsdl:fault name="InvalidDataException">
         <soap12:fault name="InvalidDataException" use="literal"/>
       </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCreditCardDetailsByUserNameWithId">
+      <soap12:operation soapAction="" style="document"/>
+      <wsdl:input name="getCreditCardDetailsByUserNameWithId">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCreditCardDetailsByUserNameWithIdResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="changeFromRecurringToRecurringSubscription">
       <soap12:operation soapAction="" style="document"/>
@@ -3179,6 +3301,15 @@
         <soap12:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="getCreditCardDetailsListByUserName">
+      <soap12:operation soapAction="" style="document"/>
+      <wsdl:input name="getCreditCardDetailsListByUserName">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCreditCardDetailsListByUserNameResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="getUserAlertsByUserName">
       <soap12:operation soapAction="" style="document"/>
       <wsdl:input name="getUserAlertsByUserName">
@@ -3214,6 +3345,15 @@
       <wsdl:fault name="UserNameNotFoundException">
         <soap12:fault name="UserNameNotFoundException" use="literal"/>
       </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCreditCardDetailsWithId">
+      <soap12:operation soapAction="" style="document"/>
+      <wsdl:input name="getCreditCardDetailsWithId">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCreditCardDetailsWithIdResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getCreditCardDetailsByUserName">
       <soap12:operation soapAction="" style="document"/>
@@ -3251,6 +3391,15 @@
         <soap12:body use="literal"/>
       </wsdl:input>
       <wsdl:output name="getCodesResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCreditCardDetailsList">
+      <soap12:operation soapAction="" style="document"/>
+      <wsdl:input name="getCreditCardDetailsList">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCreditCardDetailsListResponse">
         <soap12:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>

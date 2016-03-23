@@ -19,6 +19,7 @@ import com.fdt.security.entity.User;
 import com.fdt.security.exception.MaxUsersExceededException;
 import com.fdt.security.exception.UserNameNotFoundException;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
+import com.fdt.subscriptions.dto.CreditCardForChangeSubscriptionDTO;
 import com.fdt.subscriptions.dto.SubscriptionDTO;
 
 public interface SubService {
@@ -184,8 +185,9 @@ public interface SubService {
      * @throws SDLBusinessException
      */
     public UpgradeDowngradeDTO changeFromRecurToRecurSub(Long userAccessId, Long accessId, String userName,
-            String machineName) throws PaymentGatewaySystemException, PaymentGatewayUserException, 
-            SDLBusinessException, MaxUsersExceededException;
+            String machineName, CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO)
+            		throws PaymentGatewaySystemException, PaymentGatewayUserException, 
+            			SDLBusinessException, MaxUsersExceededException;
 
     public UserAccessDetailDTO getUserAccessDetails(Long userAccessId);
     

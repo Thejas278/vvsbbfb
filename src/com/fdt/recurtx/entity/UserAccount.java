@@ -15,7 +15,6 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import com.fdt.common.entity.AbstractBaseEntity;
-import com.fdt.ecom.entity.CreditCard;
 import com.fdt.security.entity.UserAccess;
 
 
