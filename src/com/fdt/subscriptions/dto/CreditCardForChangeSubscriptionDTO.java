@@ -4,6 +4,10 @@ import com.fdt.ecom.entity.CreditCard;
 
 public class CreditCardForChangeSubscriptionDTO {
 
+	public CreditCardForChangeSubscriptionDTO() {
+		super();
+	}
+
 	private CreditCard creditCardForOldSubscription = null;
 	
 	private CreditCard creditCardForNewSubscription = null;

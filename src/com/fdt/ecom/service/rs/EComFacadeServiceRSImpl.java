@@ -551,11 +551,11 @@ public class EComFacadeServiceRSImpl implements EComFacadeServiceRS {
 
     @WebMethod
     @POST
-    @Path("changeFromRecurringToRecurringSubscription/{userAccessId}/{accessId}/{userName}/{machineName}/{creditCardForChangeSubscriptionDTO}")
+    @Path("changeFromRecurringToRecurringSubscription/{userAccessId}/{accessId}/{userName}/{machineName}")
     @Produces({MediaType.APPLICATION_JSON})
     public UpgradeDowngradeDTO changeFromRecurringToRecurringSubscription(@PathParam("userAccessId") Long userAccessId,
             @PathParam("accessId") Long accessId, @PathParam("userName") String userName,
-            @PathParam("machineName") String machineName, @PathParam("creditCardForChangeSubscriptionDTO") CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO)
+            @PathParam("machineName") String machineName, @RequestBody CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO)
                     throws PaymentGatewaySystemException, PaymentGatewayUserException, SDLBusinessException,
                     MaxUsersExceededException {
         try {
