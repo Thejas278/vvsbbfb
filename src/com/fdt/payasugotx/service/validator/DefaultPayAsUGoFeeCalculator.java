@@ -19,7 +19,6 @@ import com.fdt.ecom.entity.NonRecurringFee;
 import com.fdt.ecom.entity.ShoppingCartItem;
 import com.fdt.security.dto.FirmUserDTO;
 import com.fdt.security.entity.Access;
-import com.fdt.security.entity.User;
 
 public class DefaultPayAsUGoFeeCalculator extends AbstractPayAsUGoFeeCalculator {
 

@@ -46,7 +46,6 @@ import com.fdt.paymentgateway.exception.PaymentGatewaySystemException;
 import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
 import com.fdt.paymentgateway.exception.PaymentGatewayUserExceptionCodes;
 import com.fdt.recurtx.dto.UserAccountDetailDTO;
-import com.fdt.recurtx.entity.UserAccount;
 import com.fdt.security.dao.UserDAO;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
 
@@ -522,11 +521,11 @@ public class PayPalPaymentGatewayServiceImpl implements PaymentGatewayService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = PaymentGatewaySystemException.class)
     public String doCredit(UserAccountDetailDTO existingUserAccountDTO, AccessDetailDTO newAccessDTO, Double amount,
-            String moduleName, String userName) throws PaymentGatewayUserException, PaymentGatewaySystemException {
+            String moduleName, String userName, CreditCard creditCard) throws PaymentGatewayUserException, PaymentGatewaySystemException {
         PayflowConnectionData connection = new PayflowConnectionData();
         String txRefNumber = null;
         Site site = existingUserAccountDTO.getSite();
-        CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
+        //CreditCard creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
         UserInfo user = this.getMerchantInfo(site.getNormalMerchant());
         Invoice invoice = new Invoice();
         BillTo bill = new BillTo();

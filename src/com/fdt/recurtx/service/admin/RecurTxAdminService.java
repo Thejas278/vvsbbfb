@@ -9,7 +9,6 @@ import com.fdt.paymentgateway.exception.PaymentGatewayUserException;
 import com.fdt.recurtx.dto.OverriddenSubscriptionDTO;
 import com.fdt.recurtx.dto.RecurTxSchedulerDTO;
 import com.fdt.recurtx.entity.RecurTx;
-import com.fdt.security.entity.UserAccess;
 
 public interface RecurTxAdminService {
 

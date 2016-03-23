@@ -45,6 +45,7 @@ import com.fdt.security.exception.UserNameAlreadyExistsException;
 import com.fdt.security.exception.UserNameNotFoundException;
 import com.fdt.security.exception.UserNotActiveException;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
+import com.fdt.subscriptions.dto.CreditCardForChangeSubscriptionDTO;
 import com.fdt.subscriptions.dto.SubscriptionDTO;
 import com.fdt.webtx.entity.WebTxItem;
 
@@ -216,7 +217,8 @@ public interface EComFacadeService {
         @WebParam(name="userAccessId") Long userAccessId,
         @WebParam(name="accessId") Long accessId,
         @WebParam(name="userName") String userName,
-        @WebParam(name="machineName") String machineName)
+        @WebParam(name="machineName") String machineName,
+        @WebParam(name="creditCardForChangeSubscriptionDTO") CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO)
         throws PaymentGatewaySystemException, PaymentGatewayUserException, SDLBusinessException, MaxUsersExceededException;
 
     @WebMethod

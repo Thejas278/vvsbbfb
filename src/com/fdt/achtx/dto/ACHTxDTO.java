@@ -2,8 +2,6 @@ package com.fdt.achtx.dto;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-
 import com.fdt.common.dto.AbstractBaseDTO;
 import com.fdt.ecom.entity.enums.PaymentType;
 

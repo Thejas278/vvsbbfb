@@ -59,6 +59,7 @@ import com.fdt.security.exception.UserNameNotFoundException;
 import com.fdt.security.exception.UserNotActiveException;
 import com.fdt.security.service.UserService;
 import com.fdt.subscriptions.dto.AccessDetailDTO;
+import com.fdt.subscriptions.dto.CreditCardForChangeSubscriptionDTO;
 import com.fdt.subscriptions.dto.SubscriptionDTO;
 import com.fdt.subscriptions.service.SubService;
 import com.fdt.webtx.entity.WebTxItem;
@@ -423,11 +424,12 @@ public class EComFacadeServiceImpl implements EComFacadeService {
     }
 
     public UpgradeDowngradeDTO changeFromRecurringToRecurringSubscription(Long userAccessId, Long accessId, String userName,
-            String machineName) throws PaymentGatewaySystemException, PaymentGatewayUserException, SDLBusinessException,
+            String machineName, CreditCardForChangeSubscriptionDTO creditCardForChangeSubscriptionDTO) 
+            		throws PaymentGatewaySystemException, PaymentGatewayUserException, SDLBusinessException,
             MaxUsersExceededException {
         try {
             return this.subService.changeFromRecurToRecurSub(userAccessId, accessId, userName,
-                machineName);
+                machineName, creditCardForChangeSubscriptionDTO);
         } catch(RuntimeException runtimeException) {
             logger.error(NOTIFY_ADMIN, "Error in changeFromRecurringToRecurringSubscription for userAccessId {}, " +
                 "accessId {}, userName {}, machineName{}", userAccessId, accessId, userName, machineName, runtimeException);

@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.list.SetUniqueList;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
