@@ -232,9 +232,9 @@ public class UserAdminDAOImpl extends AbstractBaseDAOImpl implements UserAdminDA
                 subscriptionDTO.setCreatedDate(this.getDate(row[21]));
                 subscriptionDTO.setCategory(this.getString(row[22]));
                 subscriptionDTO.setSubscriptionFee(this.getDoubleFromBigDecimal(row[23]));
-                subscriptionDTO.setFirmLevelAccess(this.getBoolean(row[49]));
-                subscriptionDTO.setFirmAccessAdmin(this.getBoolean(row[50]));
-                subscriptionDTO.setOverriddenUntillDate(this.getDate(row[52]));
+                subscriptionDTO.setFirmLevelAccess(this.getBoolean(row[37]));
+                subscriptionDTO.setFirmAccessAdmin(this.getBoolean(row[38]));
+                subscriptionDTO.setOverriddenUntillDate(this.getDate(row[40]));
             	if(user.getId() != null) {
             		continue;
             	}
@@ -251,31 +251,9 @@ public class UserAdminDAOImpl extends AbstractBaseDAOImpl implements UserAdminDA
 	            user.setAccountNonExpired(this.getBoolean(row[34]));
 	            user.setCredentialsNonExpired(this.getBoolean(row[35]));
 	            user.setAccountNonLocked(this.getBoolean(row[36]));
-	            user.setFirmName(this.getString(row[51]));
-	            CreditCard creditCard = null;
-	            String number =  null;
-	            if (row[37] != null) {
-	            	user.setCardAvailable(true);
-	            	creditCard = new CreditCard();
-	            	creditCard.setId(this.getLongFromInteger(row[37]));
-	                number = this.getPbeStringEncryptor().decrypt(row[38].toString());
-	                creditCard.setCardType(SystemUtil.getCardType(number));
-	                int length = number.length();
-	                number = number.replace(number.substring(0, length-4), "XXXX-XXXX-XXXX-");
-	                creditCard.setNumber(row[38] == null ? null : number);
-	                creditCard.setName(this.getString(row[39]));
-	                creditCard.setExpiryMonth(this.getInteger(row[40]));
-	                creditCard.setExpiryYear(this.getInteger(row[41]));
-	                creditCard.setAddressLine1(this.getString(row[42]));
-	                creditCard.setAddressLine2(this.getString(row[43]));
-	                creditCard.setCity(this.getString(row[44]));
-	                creditCard.setState(this.getString(row[45]));
-	                creditCard.setZip(this.getString(row[46]));
-	                creditCard.setPhone(this.getLongFromBigInteger(row[47]));
-	                creditCard.setActive(this.getBoolean(row[48]));
-	                user.setCreditCardActive(this.getBoolean(row[48]));
-	                user.setCreditCard(creditCard);
-	            }
+	            user.setFirmName(this.getString(row[39]));
+	           
+	            
             }
         }
         return subscriptionDTOs;

@@ -1018,6 +1018,7 @@ public class SubServiceImpl implements SubService {
             userAccessIds.add(existingUserAccessId);
             this.subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId,
                     false, false, userName, RECURRING_PAID_TO_AUTHORIZED_COMMENTS, false);
+            this.subDAO.disableUserAccount(existingUserAccessId, userName);
         } else {
             SDLBusinessException sDLBussExcep = new SDLBusinessException();
             sDLBussExcep.setBusinessMessage(this.getMessage("recur.changesub.cardnotactive"));
@@ -1035,7 +1036,6 @@ public class SubServiceImpl implements SubService {
             recurTransactionRefund.setTxRefNum(transactionId);
             recurTransactionRefund.setTransactionType(TransactionType.REFUND);
             recurTransactionRefund.setSettlementStatus(settlementStatusType);
-            creditCard = this.userDAO.getCreditCardDetails(userName).get(0);
             CardType cardType = CreditCardUtil.getCardType(creditCard.getNumber());
             recurTransactionRefund.setCardNumber(creditCard.getNumber());
             recurTransactionRefund.setCardType(cardType);
