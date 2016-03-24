@@ -828,7 +828,7 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
         if (updateFirmAdminUserAccessId) {
             updateQueryBldr.append(", userAccess.firmAdminUserAccessId = :firmAdminUserAccessId ");
         }
-        updateQueryBldr.append("WHERE userAccess.id in (:existingUserAccessIds)");
+        updateQueryBldr.append("WHERE userAccess.id in :existingUserAccessIds ");
 
         Query updateQuery = currentSession().createQuery(updateQueryBldr.toString());
 
@@ -845,7 +845,6 @@ public class SubDAOImpl extends AbstractBaseDAOImpl implements SubDAO {
         if (updateFirmAdminUserAccessId) {
             updateQuery = updateQuery.setParameter("firmAdminUserAccessId", firmAdminUserAccessId);
         }
-
         return updateQuery.executeUpdate();
     }
 

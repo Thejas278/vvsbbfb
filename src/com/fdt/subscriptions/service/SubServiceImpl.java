@@ -1063,6 +1063,7 @@ public class SubServiceImpl implements SubService {
             originalTx.setActive(true);
             originalTx.setModifiedDate(new Date());
             originalTx.setModifiedBy(userName);
+            originalTx.setAccessId(existingUserAccountDTO.getSite().getAccess().get(0).getId());
             this.recurTxDAO.saveRecurTransaction(originalTx);
             upgradeDowngradeDTO.setSecondaryTxId(transactionId);
         }
@@ -1086,7 +1087,7 @@ public class SubServiceImpl implements SubService {
         UserAccount userAccount = (existingUserAccountDTO.getUserAccount() == null) ? null : (existingUserAccountDTO
             .getUserAccount());
         CreditCard creditCardForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription();
-        CreditCard creditCardForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription();
+        CreditCard creditCardForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForNewSubscription();
         boolean isEnableAccess = false;
         PayPalDTO paymentTxResponseDTO = new PayPalDTO();
         upgradeDowngradeDTO.setAccessUnAuthorizedExceptionFlag(false);
@@ -1132,15 +1133,17 @@ public class SubServiceImpl implements SubService {
                 List<Long> userAccessIds = firmUsers.stream()
                         .map(dto -> dto.getUserAccessId())
                         .collect(Collectors.toList());
-                if (isNewAccessAFirmAccess) {
-                    subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, true, true, userName,
-                            RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, false);
-                } else {
-                    // New subscription is not a firm level subscription so we need to
-                    //   - Set individual users subs to inactive intially
-                    //   - Clear the firmAccessAdmin ID flag
-                    subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, false, true, userName,
-                            RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, false, null);
+                if(userAccessIds != null && userAccessIds.size() > 0) {
+	                if (isNewAccessAFirmAccess) {
+	                    subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, true, true, userName,
+	                            RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, false);
+	                } else {
+	                    // New subscription is not a firm level subscription so we need to
+	                    //   - Set individual users subs to inactive intially
+	                    //   - Clear the firmAccessAdmin ID flag
+	                    subDAO.updateUserAccessWithAccessId(userAccessIds, newAccessId, false, true, userName,
+	                            RECURRING_PAID_TO_UNRESTRICTED_COMMENTS, false, null);
+	                }
                 }
             }
 
