@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.fdt.common.dao.AbstractBaseDAOImpl;
 import com.fdt.common.dto.PageRecordsDTO;
-import com.fdt.common.util.SystemUtil;
-import com.fdt.ecom.entity.CreditCard;
 import com.fdt.security.dto.SearchCriteriaDTO;
 import com.fdt.security.entity.User;
 import com.fdt.subscriptions.dto.SubscriptionDTO;

@@ -895,24 +895,26 @@ public class SubServiceImpl implements SubService {
         UpgradeDowngradeDTO upgradeDowngradeDTO = this.getRecurChangeSubInfo(existingUserAccessId, newAccessId, userName);
         UserAccountDetailDTO existingUserAccountDTO = upgradeDowngradeDTO.getExistingUserAccountDetail();
         AccessDetailDTO newAccessDTO = upgradeDowngradeDTO.getNewAccessDetailDTO();
-        Long creditCardIdForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription().getId();
-        creditCardIdForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription().getId();
-        Long creditCardIdForNewSubscription = null;
-        creditCardIdForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForNewSubscription().getId();
         CreditCard creditCardForOldSubscription = null;
         CreditCard creditCardForNewSubscription = null;
+        Long creditCardIdForOldSubscription = null;
+        Long creditCardIdForNewSubscription = null;
+        creditCardIdForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription().getId();       
+        creditCardIdForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForNewSubscription().getId();         
         if(creditCardIdForOldSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForOldSubscription))) {
         	creditCardForOldSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForOldSubscription);
-        }
-        creditCardForChangeSubscriptionDTO.setCreditCardForOldSubscription(creditCardForOldSubscription);
-        if(creditCardIdForOldSubscription.equals(creditCardIdForNewSubscription)){        	
-        	creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForOldSubscription);
-        } else {
         	if(creditCardIdForNewSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForNewSubscription))) {
-        		creditCardForNewSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForNewSubscription);
-        	}
-            creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForNewSubscription);
+	        	if(creditCardIdForOldSubscription.equals(creditCardIdForNewSubscription)){        	
+	            	creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForOldSubscription);
+	            } else {            	
+            		creditCardForNewSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForNewSubscription);
+            	}
+                creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForNewSubscription);
+            }        	
         }
+        creditCardForChangeSubscriptionDTO.setCreditCardForOldSubscription(creditCardForOldSubscription);  
+        
+        
         if (existingUserAccountDTO != null && existingUserAccountDTO.getUserAccount() != null
                 && existingUserAccountDTO.getUserAccount().getId() != null ) {
             if(existingUserAccountDTO.getUserAccount().isActive()) {
