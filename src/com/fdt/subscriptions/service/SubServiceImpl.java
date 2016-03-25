@@ -900,7 +900,10 @@ public class SubServiceImpl implements SubService {
         Long creditCardIdForOldSubscription = null;
         Long creditCardIdForNewSubscription = null;
         creditCardIdForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription().getId();       
-        creditCardIdForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForNewSubscription().getId();         
+        creditCardIdForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForNewSubscription().getId();
+        
+        
+        
         if(creditCardIdForOldSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForOldSubscription))) {
         	creditCardForOldSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForOldSubscription);
         	if(creditCardIdForNewSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForNewSubscription))) {
@@ -911,6 +914,9 @@ public class SubServiceImpl implements SubService {
             	}
                 creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForNewSubscription);
             }        	
+        } else if(creditCardIdForNewSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForNewSubscription))) {
+        	creditCardForNewSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForNewSubscription);
+        	creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForNewSubscription);
         }
         creditCardForChangeSubscriptionDTO.setCreditCardForOldSubscription(creditCardForOldSubscription);  
         
