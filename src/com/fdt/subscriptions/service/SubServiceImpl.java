@@ -901,9 +901,7 @@ public class SubServiceImpl implements SubService {
         Long creditCardIdForNewSubscription = null;
         creditCardIdForOldSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForOldSubscription().getId();       
         creditCardIdForNewSubscription = creditCardForChangeSubscriptionDTO.getCreditCardForNewSubscription().getId();
-        
-        
-        
+               
         if(creditCardIdForOldSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForOldSubscription))) {
         	creditCardForOldSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForOldSubscription);
         	if(creditCardIdForNewSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForNewSubscription))) {
@@ -911,15 +909,14 @@ public class SubServiceImpl implements SubService {
 	            	creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForOldSubscription);
 	            } else {            	
             		creditCardForNewSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForNewSubscription);
-            	}
-                creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForNewSubscription);
+            		creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForNewSubscription);
+            	}                
             }        	
         } else if(creditCardIdForNewSubscription !=null && StringUtils.isNumeric(String.valueOf(creditCardIdForNewSubscription))) {
         	creditCardForNewSubscription = this.userDAO.getCreditCardDetails(userName, creditCardIdForNewSubscription);
         	creditCardForChangeSubscriptionDTO.setCreditCardForNewSubscription(creditCardForNewSubscription);
         }
         creditCardForChangeSubscriptionDTO.setCreditCardForOldSubscription(creditCardForOldSubscription);  
-        
         
         if (existingUserAccountDTO != null && existingUserAccountDTO.getUserAccount() != null
                 && existingUserAccountDTO.getUserAccount().getId() != null ) {
